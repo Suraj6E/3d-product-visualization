@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Images</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Upload Images</h1>
+    <form action="/" method="post" enctype="multipart/form-data">
+        <input type="file" name="files[]" multiple>
+        <input type="submit" value="Upload">
+    </form>
+
+    {% if zipped_data %}
+        <h2>Results</h2>
+        <div class="gallery">
+            {% for image, result in zipped_data %}
+                <div class="image-container">
+                    <img src="{{ url_for('static', filename='uploads/' + image.split('/')[-1]) }}" alt="Image" style="max-width:300px;">
+                    <p>Result: {{ result }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</body>
+</html>
