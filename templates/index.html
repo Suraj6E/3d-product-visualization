@@ -3,26 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Images</title>
+    <title>Image Uploader</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <h1>Upload Images</h1>
-    <form action="/" method="post" enctype="multipart/form-data">
-        <input type="file" name="files[]" multiple>
-        <input type="submit" value="Upload">
-    </form>
-
-    {% if zipped_data %}
-        <h2>Results</h2>
-        <div class="gallery">
-            {% for image, result in zipped_data %}
-                <div class="image-container">
-                    <img src="{{ url_for('static', filename='uploads/' + image.split('/')[-1]) }}" alt="Image" style="max-width:300px;">
-                    <p>Result: {{ result }}</p>
+    <div class="container">
+        <aside class="sidebar">
+            <h2>Uploaded Images</h2>
+            {% for folder, images in folders.items() %}
+                <div class="folder">
+                    <h3>{{ folder }}</h3>
+                    <ul>
+                        {% for image in images %}
+                            <li>{{ image }}</li>
+                        {% endfor %}
+                    </ul>
                 </div>
             {% endfor %}
-        </div>
-    {% endif %}
+        </aside>
+        <main class="content">
+            <h1>Upload Images</h1>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form action="{{ url_for('upload_images') }}" method="post" enctype="multipart/form-data" id="upload-form">
+                <input type="text" name="folder_title" placeholder="Folder Title" required>
+                <input type="file" name="files[]" multiple id="file-input" accept="image/*">
+                <div id="preview"></div>
+                <progress id="upload-progress" max="100" value="0"></progress>
+                <input type="submit" value="Upload">
+            </form>
+
+            <div id="gallery"></div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
