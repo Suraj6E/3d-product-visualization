@@ -10,35 +10,30 @@
     <div class="container">
         <aside class="sidebar">
             <h2>Uploaded Images</h2>
-            {% for folder, images in folders.items() %}
-                <div class="folder">
-                    <h3>{{ folder }}</h3>
-                    <ul>
-                        {% for image in images %}
-                            <li>{{ image }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endfor %}
+            <div id="folders-list">
+                {% for folder, images in folders.items() %}
+                    <div class="folder" data-folder="{{ folder }}">
+                        <h3>{{ folder }}</h3>
+                    </div>
+                {% endfor %}
+            </div>
         </aside>
         <main class="content">
             <h1>Upload Images</h1>
             
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-            
-            <form action="{{ url_for('upload_images') }}" method="post" enctype="multipart/form-data" id="upload-form">
-                <input type="text" name="folder_title" placeholder="Folder Title" required>
-                <input type="file" name="files[]" multiple id="file-input" accept="image/*">
-                <div id="preview"></div>
-                <progress id="upload-progress" max="100" value="0"></progress>
-                <input type="submit" value="Upload">
-            </form>
+            <div id="upload-area">
+                <label for="file-input" class="custom-file-upload">
+                    Choose Files
+                </label>
+                <input type="file" id="file-input" multiple accept="image/*" style="display:none;">
+            </div>
+
+            <div id="preview"></div>
+
+            <div id="folder-save-area" style="display:none;">
+                <input type="text" id="folder-title" placeholder="Folder Title" required>
+                <button id="save-folder" class="save-btn">Save Images to Folder</button>
+            </div>
 
             <div id="gallery"></div>
         </main>
