@@ -9,11 +9,11 @@
 <body>
     <div class="container">
         <aside class="sidebar">
-            <h2>Uploaded Images</h2>
+            <h2>Products</h2>
             <div id="folders-list">
                 {% for folder, images in folders.items() %}
                     <div class="folder" data-folder="{{ folder }}">
-                        <h3>{{ folder }}</h3>
+                        <p>{{ folder }}</p>
                     </div>
                 {% endfor %}
             </div>

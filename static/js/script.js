@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const folderSaveArea = document.getElementById('folder-save-area');
 
     let selectedFiles = [];
+    let currentFolder = null;
 
     fileInput.addEventListener('change', function(e) {
         const newFiles = Array.from(this.files);
@@ -25,11 +26,21 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
 
     foldersList.addEventListener('click', function(e) {
-        if (e.target.closest('.folder')) {
-            const folderName = e.target.closest('.folder').dataset.folder;
+        const folderElement = e.target.closest('.folder');
+        if (folderElement) {
+            const folderName = folderElement.dataset.folder;
+            setActiveFolder(folderElement);
             displayFolderImages(folderName);
         }
     });
+
+    function setActiveFolder(folderElement) {
+        // Remove active class from all folders
+        document.querySelectorAll('.folder').forEach(f => f.classList.remove('active'));
+        // Add active class to clicked folder
+        folderElement.classList.add('active');
+        currentFolder = folderElement.dataset.folder;
+    }
 
     function updatePreview() {
         preview.innerHTML = '';
@@ -90,6 +101,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     }
 
+
     function displayFolderImages(folderName) {
         gallery.innerHTML = '';
         fetch(`/get_images/${folderName}`)
@@ -97,16 +109,70 @@ document.addEventListener('DOMContentLoaded', (event) => {
             .then(data => {
                 if (data.success) {
                     data.images.forEach(image => {
+                        const imgContainer = document.createElement('div');
+                        imgContainer.className = 'image-container';
+
                         const img = document.createElement('img');
                         img.src = `/get_image/${folderName}/${image}`;
                         img.alt = image;
                         img.className = 'gallery-image';
-                        gallery.appendChild(img);
+
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.className = 'delete-image';
+                        deleteBtn.textContent = 'Delete';
+                        deleteBtn.onclick = () => deleteImage(folderName, image);
+
+                        imgContainer.appendChild(img);
+                        imgContainer.appendChild(deleteBtn);
+                        gallery.appendChild(imgContainer);
                     });
+
+                    // Add delete folder button
+                    const deleteFolderBtn = document.createElement('button');
+                    deleteFolderBtn.className = 'delete-folder';
+                    deleteFolderBtn.textContent = 'Delete Folder';
+                    deleteFolderBtn.onclick = () => deleteFolder(folderName);
+                    gallery.appendChild(deleteFolderBtn);
                 } else {
                     console.error('Error:', data.message);
                 }
             })
             .catch(error => console.error('Error:', error));
+    }
+
+    function deleteImage(folderName, imageName) {
+        if (confirm(`Are you sure you want to delete ${imageName}?`)) {
+            fetch(`/delete_image/${folderName}/${imageName}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displayFolderImages(folderName);
+                    } else {
+                        alert('Error deleting image');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the image');
+                });
+        }
+    }
+
+    function deleteFolder(folderName) {
+        if (confirm(`Are you sure you want to delete the folder "${folderName}" and all its contents?`)) {
+            fetch(`/delete_folder/${folderName}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload(); // Refresh the page to update the folder list
+                    } else {
+                        alert('Error deleting folder');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while deleting the folder');
+                });
+        }
     }
 });

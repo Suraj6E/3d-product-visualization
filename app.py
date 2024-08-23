@@ -58,5 +58,24 @@ def get_images(folder):
 def get_image(folder, filename):
     return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER'], folder), filename)
 
+@app.route('/delete_image/<folder>/<filename>', methods=['DELETE'])
+def delete_image(folder, filename):
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], folder, filename)
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        return jsonify({'success': True, 'message': 'Image deleted successfully'})
+    else:
+        return jsonify({'success': False, 'message': 'Image not found'})
+
+@app.route('/delete_folder/<folder>', methods=['DELETE'])
+def delete_folder(folder):
+    folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder)
+    if os.path.exists(folder_path):
+        shutil.rmtree(folder_path)
+        return jsonify({'success': True, 'message': 'Folder deleted successfully'})
+    else:
+        return jsonify({'success': False, 'message': 'Folder not found'})
+
+
 if __name__ == '__main__':
     app.run(debug=True)
