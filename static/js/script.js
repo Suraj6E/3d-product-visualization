@@ -15,6 +15,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
         selectedFiles = [...selectedFiles, ...newFiles];
         updatePreview();
         folderSaveArea.style.display = 'block';
+        if (currentFolder) {
+            folderTitle.value = currentFolder;
+            saveFolderBtn.textContent = 'Add Images to Folder';
+        } else {
+            saveFolderBtn.textContent = 'Save Images to New Folder';
+        }
     });
 
     saveFolderBtn.addEventListener('click', function() {
@@ -26,20 +32,26 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
 
     foldersList.addEventListener('click', function(e) {
-        const folderElement = e.target.closest('.folder');
-        if (folderElement) {
-            const folderName = folderElement.dataset.folder;
-            setActiveFolder(folderElement);
-            displayFolderImages(folderName);
+        if (e.target.classList.contains('delete-folder')) {
+            e.stopPropagation();
+            const folderName = e.target.dataset.folder;
+            deleteFolder(folderName);
+        } else {
+            const folderElement = e.target.closest('.folder');
+            if (folderElement) {
+                const folderName = folderElement.dataset.folder;
+                setActiveFolder(folderElement);
+                displayFolderImages(folderName);
+            }
         }
     });
 
     function setActiveFolder(folderElement) {
-        // Remove active class from all folders
         document.querySelectorAll('.folder').forEach(f => f.classList.remove('active'));
-        // Add active class to clicked folder
         folderElement.classList.add('active');
         currentFolder = folderElement.dataset.folder;
+        folderTitle.value = currentFolder;
+        saveFolderBtn.textContent = 'Add Images to Folder';
     }
 
     function updatePreview() {
@@ -101,7 +113,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     }
 
-
     function displayFolderImages(folderName) {
         gallery.innerHTML = '';
         fetch(`/get_images/${folderName}`)
@@ -110,29 +121,22 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 if (data.success) {
                     data.images.forEach(image => {
                         const imgContainer = document.createElement('div');
-                        imgContainer.className = 'image-container';
+                        imgContainer.className = 'preview-image-container';
 
                         const img = document.createElement('img');
                         img.src = `/get_image/${folderName}/${image}`;
                         img.alt = image;
-                        img.className = 'gallery-image';
+                        img.className = 'preview-image';
 
                         const deleteBtn = document.createElement('button');
-                        deleteBtn.className = 'delete-image';
-                        deleteBtn.textContent = 'Delete';
+                        deleteBtn.className = 'remove-image';
+                        deleteBtn.textContent = 'X';
                         deleteBtn.onclick = () => deleteImage(folderName, image);
 
                         imgContainer.appendChild(img);
                         imgContainer.appendChild(deleteBtn);
                         gallery.appendChild(imgContainer);
                     });
-
-                    // Add delete folder button
-                    const deleteFolderBtn = document.createElement('button');
-                    deleteFolderBtn.className = 'delete-folder';
-                    deleteFolderBtn.textContent = 'Delete Folder';
-                    deleteFolderBtn.onclick = () => deleteFolder(folderName);
-                    gallery.appendChild(deleteFolderBtn);
                 } else {
                     console.error('Error:', data.message);
                 }

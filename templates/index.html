@@ -14,6 +14,7 @@
                 {% for folder, images in folders.items() %}
                     <div class="folder" data-folder="{{ folder }}">
                         <p>{{ folder }}</p>
+                        <button class="delete-folder" data-folder="{{ folder }}">X</button>
                     </div>
                 {% endfor %}
             </div>
