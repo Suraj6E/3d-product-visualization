@@ -6,9 +6,26 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const foldersList = document.getElementById('folders-list');
     const saveFolderBtn = document.getElementById('save-folder');
     const folderSaveArea = document.getElementById('folder-save-area');
+    const processingStatus = document.getElementById('processing-status');
+    const plotContainer = document.getElementById('plot-container');
 
     let selectedFiles = [];
     let currentFolder = null;
+
+    const socket = io();
+    
+    socket.on('processing_status', function(data) {
+        if (data.status === 'started') {
+            processingStatus.innerHTML = `Processing images in folder "${data.folder}"...`;
+        } else if (data.status === 'failed') {
+            processingStatus.innerHTML = `Failed to process images in folder "${data.folder}"`;
+        }
+    });
+
+    socket.on('processing_result', function(data) {
+        processingStatus.innerHTML = `Finished processing images in folder "${data.folder}"`;
+        Plotly.newPlot(plotContainer, JSON.parse(data.plot));
+    });
 
     fileInput.addEventListener('change', function(e) {
         const newFiles = Array.from(this.files);
@@ -42,6 +59,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 const folderName = folderElement.dataset.folder;
                 setActiveFolder(folderElement);
                 displayFolderImages(folderName);
+                processFolder(folderName);
             }
         }
     });
@@ -178,5 +196,21 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     alert('An error occurred while deleting the folder');
                 });
         }
+    }
+
+    function processFolder(folderName) {
+        fetch(`/process_image/${folderName}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log(data.message);
+                } else {
+                    console.error(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while processing the folder');
+            });
     }
 });

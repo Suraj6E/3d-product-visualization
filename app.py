@@ -3,9 +3,18 @@ import os
 from werkzeug.utils import secure_filename
 import shutil
 
+from models.vision_processing import process_image
+import threading
+from flask_socketio import SocketIO
+import plotly
+import json
+
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 app.config['SECRET_KEY'] = 'your_secret_key_here'
+socketio = SocketIO(app)
+
+
 
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
@@ -23,6 +32,27 @@ def get_folders_and_images():
 def index():
     folders = get_folders_and_images()
     return render_template('index.html', folders=folders)
+
+@app.route('/process_image/<folder>')
+def process_folder_image(folder):
+    folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder)
+    if os.path.exists(folder_path):
+        images = [f for f in os.listdir(folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+        if images:
+            image_path = os.path.join(folder_path, images[0])
+            thread = threading.Thread(target=process_image_thread, args=(image_path, folder))
+            thread.start()
+            return jsonify({'success': True, 'message': 'Processing started'})
+    return jsonify({'success': False, 'message': 'No images found in the folder'})
+
+def process_image_thread(image_path, folder):
+    socketio.emit('processing_status', {'status': 'started', 'folder': folder})
+    fig = process_image(image_path)
+    if fig:
+        plot_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+        socketio.emit('processing_result', {'status': 'completed', 'folder': folder, 'plot': plot_json})
+    else:
+        socketio.emit('processing_status', {'status': 'failed', 'folder': folder})
 
 @app.route('/upload', methods=['POST'])
 def upload_images():
@@ -79,4 +109,4 @@ def delete_folder(folder):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    socketio.run(app, debug=True)
