@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Uploader</title>
+    <title>Image Analysis Platform</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -16,32 +16,60 @@
                 {% for folder, images in folders.items() %}
                     <div class="folder" data-folder="{{ folder }}">
                         <p>{{ folder }}</p>
-                        <button class="delete-folder" data-folder="{{ folder }}">X</button>
+                        <button class="delete-folder" data-folder="{{ folder }}">×</button>
                     </div>
                 {% endfor %}
             </div>
         </aside>
+        
         <main class="content">
-            <h1>Upload Images</h1>
-            
-            <div id="upload-area">
-                <label for="file-input" class="custom-file-upload">
-                    Choose Files
-                </label>
-                <input type="file" id="file-input" multiple accept="image/*" style="display:none;">
+            <div class="upload-section">
+                <h1>Image Analysis Platform</h1>
+                <div id="upload-area">
+                    <label for="file-input" class="custom-file-upload">
+                        <i class="fas fa-cloud-upload-alt"></i> Choose Files
+                    </label>
+                    <input type="file" id="file-input" multiple accept="image/*" style="display:none;">
+                </div>
+
+                <div id="folder-save-area" style="display:none;">
+                    <input type="text" id="folder-title" placeholder="Folder Title" required>
+                    <button id="save-folder" class="save-btn">Save Images to Folder</button>
+                </div>
+
+                <div id="preview" class="preview-grid"></div>
             </div>
 
-            <div id="preview"></div>
-
-            <div id="folder-save-area" style="display:none;">
-                <input type="text" id="folder-title" placeholder="Folder Title" required>
-                <button id="save-folder" class="save-btn">Save Images to Folder</button>
+            <div class="gallery-section">
+                <div id="gallery" class="gallery-grid"></div>
+                
+                <div class="analysis-container">
+                    <div id="processing-status" class="status-message"></div>
+                    <div id="plot-container" class="plot-wrapper"></div>
+                </div>
             </div>
 
-            <div id="gallery"></div>
-
-            <div id="processing-status"></div>
-            <div id="plot-container"></div>
+            <div id="feedback-section" class="feedback-section" style="display: none;">
+                <h3>Image Feedback</h3>
+                <div class="rating-container">
+                    <label>Rating:</label>
+                    <div class="rating-stars">
+                        {% for i in range(1, 11) %}
+                            <button class="rating-btn" data-rating="{{ i }}">{{ i }}</button>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="comment-container">
+                    <label for="feedback-comment">Your thoughts:</label>
+                    <textarea id="feedback-comment" rows="4" placeholder="Share your thoughts about this image..."></textarea>
+                </div>
+                <button id="submit-feedback" class="submit-btn">Submit Feedback</button>
+                
+                <div class="previous-feedback">
+                    <h4>Previous Feedback</h4>
+                    <div id="feedback-list"></div>
+                </div>
+            </div>
         </main>
     </div>
 

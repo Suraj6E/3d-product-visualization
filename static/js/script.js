@@ -213,4 +213,81 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 alert('An error occurred while processing the folder');
             });
     }
+
+    function setupFeedbackSystem() {
+        const feedbackSection = document.getElementById('feedback-section');
+        const ratingBtns = document.querySelectorAll('.rating-btn');
+        const submitBtn = document.getElementById('submit-feedback');
+        const commentInput = document.getElementById('feedback-comment');
+        let currentRating = 0;
+        let currentImagePath = '';
+    
+        ratingBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentRating = parseInt(btn.dataset.rating);
+                ratingBtns.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+            });
+        });
+    
+        submitBtn.addEventListener('click', () => {
+            if (!currentRating) {
+                alert('Please select a rating');
+                return;
+            }
+    
+            const feedback = {
+                rating: currentRating,
+                comment: commentInput.value,
+                timestamp: new Date().toISOString(),
+                imagePath: currentImagePath
+            };
+    
+            saveFeedback(feedback);
+        });
+    }
+    
+    function saveFeedback(feedback) {
+        fetch('/save_feedback', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(feedback)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Feedback saved successfully');
+                loadPreviousFeedback(feedback.imagePath);
+            } else {
+                alert('Error saving feedback');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while saving feedback');
+        });
+    }
+    
+    function loadPreviousFeedback(imagePath) {
+        fetch(`/get_feedback/${imagePath}`)
+            .then(response => response.json())
+            .then(data => {
+                const feedbackList = document.getElementById('feedback-list');
+                feedbackList.innerHTML = '';
+                
+                data.feedback.forEach(item => {
+                    const feedbackItem = document.createElement('div');
+                    feedbackItem.className = 'feedback-item';
+                    feedbackItem.innerHTML = `
+                        <div class="feedback-rating">Rating: ${item.rating}/10</div>
+                        <div class="feedback-comment">${item.comment}</div>
+                        <div class="feedback-time">${new Date(item.timestamp).toLocaleString()}</div>
+                    `;
+                    feedbackList.appendChild(feedbackItem);
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    }
 });
