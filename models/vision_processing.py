@@ -53,7 +53,26 @@ def extract_edges_and_contour(image_color):
         return output_image, edges, mask_blurred
     return None, edges, mask
 
+# def find_depth_for_edges(model, image, mask):
+#     if isinstance(image, np.ndarray):
+#         input_batch = transform_image(image)
+#     else:
+#         raise ValueError("Input image should be a numpy array.")
+
+#     depth_map = estimate_depth(model, image)
+#     mask_resized = cv2.resize(mask, (depth_map.shape[1], depth_map.shape[0]))
+#     mask_contour = mask_resized > 0
+#     depth_edges = np.zeros_like(depth_map)
+#     depth_edges[mask_contour] = depth_map[mask_contour]
+#     depth_edges_smoothed = cv2.GaussianBlur(depth_edges, (5, 5), 0)
+
+#     return depth_edges_smoothed
+
 def find_depth_for_edges(model, image, mask):
+    """
+    Estimates depth for edges in an image.
+    Returns depth map as numpy array.
+    """
     if isinstance(image, np.ndarray):
         input_batch = transform_image(image)
     else:
@@ -62,43 +81,116 @@ def find_depth_for_edges(model, image, mask):
     depth_map = estimate_depth(model, image)
     mask_resized = cv2.resize(mask, (depth_map.shape[1], depth_map.shape[0]))
     mask_contour = mask_resized > 0
+    
     depth_edges = np.zeros_like(depth_map)
     depth_edges[mask_contour] = depth_map[mask_contour]
     depth_edges_smoothed = cv2.GaussianBlur(depth_edges, (5, 5), 0)
 
     return depth_edges_smoothed
+# def plot_3d(output_image, depth_map, depth_threshold = 0.75):
+#     output_rgb = cv2.cvtColor(output_image, cv2.COLOR_BGR2RGB)
+#     height, width, _ = output_image.shape
+#     depth_map_resized = cv2.resize(depth_map, (width, height))
+#     depth_norm = (depth_map_resized - depth_map_resized.min()) / (depth_map_resized.max() - depth_map_resized.min())
+#     depth_norm[depth_norm < depth_threshold] = 0
 
-def plot_3d(output_image, depth_map, depth_threshold = 0.75):
+#     x_coords, y_coords = np.meshgrid(np.arange(width), np.arange(height))
+#     x_coords_flat = x_coords.ravel()
+#     y_coords_flat = y_coords.ravel()
+#     z_coords_flat = depth_norm.ravel()
+#     colors_flat = output_rgb.reshape(-1, 3)
+
+#     mask = (z_coords_flat > 0) & np.all(colors_flat != [0, 0, 0], axis=1)
+#     x_filtered = x_coords_flat[mask]
+#     y_filtered = y_coords_flat[mask]
+#     z_filtered = z_coords_flat[mask]
+#     colors_filtered = colors_flat[mask]
+
+#     z_filtered_adjusted = z_filtered - depth_threshold
+#     x_mirrored = x_filtered
+#     y_mirrored = y_filtered
+#     z_mirrored = -z_filtered + depth_threshold
+
+#     x_combined = np.concatenate([x_filtered, x_mirrored])
+#     y_combined = np.concatenate([y_filtered, y_mirrored])
+#     z_combined = np.concatenate([z_filtered_adjusted, z_mirrored])
+#     colors_combined = np.vstack([colors_filtered, colors_filtered])
+
+#     colors_hex = ['rgb({}, {}, {})'.format(r, g, b) for r, g, b in colors_combined]
+
+#     fig = go.Figure(data=[go.Scatter3d(
+#         x=x_combined,
+#         y=y_combined,
+#         z=z_combined,
+#         mode='markers',
+#         marker=dict(
+#             size=2,
+#             color=colors_hex,
+#             opacity=1
+#         )
+#     )])
+
+#     fig.update_layout(
+#         scene=dict(
+#             xaxis=dict(nticks=10, range=[0, width]),
+#             yaxis=dict(nticks=10, range=[0, height]),
+#             zaxis=dict(nticks=10, range=[-depth_threshold, depth_threshold]),
+#         ),
+#         margin=dict(l=0, r=0, b=0, t=0)
+#     )
+
+#     return fig
+
+def plot_3d(output_image, depth_map, depth_threshold=0.75):
+    """
+    Creates a 3D visualization of an image using depth information.
+    Converts all NumPy arrays to Python lists for JSON serialization.
+    """
     output_rgb = cv2.cvtColor(output_image, cv2.COLOR_BGR2RGB)
     height, width, _ = output_image.shape
     depth_map_resized = cv2.resize(depth_map, (width, height))
+    
+    # Normalize depth values
     depth_norm = (depth_map_resized - depth_map_resized.min()) / (depth_map_resized.max() - depth_map_resized.min())
     depth_norm[depth_norm < depth_threshold] = 0
 
+    # Create coordinate grids
     x_coords, y_coords = np.meshgrid(np.arange(width), np.arange(height))
-    x_coords_flat = x_coords.ravel()
-    y_coords_flat = y_coords.ravel()
-    z_coords_flat = depth_norm.ravel()
-    colors_flat = output_rgb.reshape(-1, 3)
+    
+    # Flatten arrays and convert to lists
+    x_coords_flat = x_coords.ravel().tolist()
+    y_coords_flat = y_coords.ravel().tolist()
+    z_coords_flat = depth_norm.ravel().tolist()
+    colors_flat = output_rgb.reshape(-1, 3).tolist()
 
-    mask = (z_coords_flat > 0) & np.all(colors_flat != [0, 0, 0], axis=1)
-    x_filtered = x_coords_flat[mask]
-    y_filtered = y_coords_flat[mask]
-    z_filtered = z_coords_flat[mask]
-    colors_filtered = colors_flat[mask]
+    # Create mask for valid points
+    mask = []
+    for z, color in zip(z_coords_flat, colors_flat):
+        is_valid = (z > 0) and not (color[0] == 0 and color[1] == 0 and color[2] == 0)
+        mask.append(is_valid)
 
-    z_filtered_adjusted = z_filtered - depth_threshold
+    # Filter coordinates and colors based on mask
+    x_filtered = [x for x, m in zip(x_coords_flat, mask) if m]
+    y_filtered = [y for y, m in zip(y_coords_flat, mask) if m]
+    z_filtered = [z for z, m in zip(z_coords_flat, mask) if m]
+    colors_filtered = [c for c, m in zip(colors_flat, mask) if m]
+
+    # Create mirrored points
+    z_filtered_adjusted = [z - depth_threshold for z in z_filtered]
     x_mirrored = x_filtered
     y_mirrored = y_filtered
-    z_mirrored = -z_filtered + depth_threshold
+    z_mirrored = [-z + depth_threshold for z in z_filtered]
 
-    x_combined = np.concatenate([x_filtered, x_mirrored])
-    y_combined = np.concatenate([y_filtered, y_mirrored])
-    z_combined = np.concatenate([z_filtered_adjusted, z_mirrored])
-    colors_combined = np.vstack([colors_filtered, colors_filtered])
+    # Combine original and mirrored points
+    x_combined = x_filtered + x_mirrored
+    y_combined = y_filtered + y_mirrored
+    z_combined = z_filtered_adjusted + z_mirrored
+    colors_combined = colors_filtered + colors_filtered
 
-    colors_hex = ['rgb({}, {}, {})'.format(r, g, b) for r, g, b in colors_combined]
+    # Convert RGB colors to hex format
+    colors_hex = [f'rgb({r}, {g}, {b})' for r, g, b in colors_combined]
 
+    # Create the Plotly figure with basic Python types
     fig = go.Figure(data=[go.Scatter3d(
         x=x_combined,
         y=y_combined,
@@ -111,6 +203,7 @@ def plot_3d(output_image, depth_map, depth_threshold = 0.75):
         )
     )])
 
+    # Update layout with explicit values
     fig.update_layout(
         scene=dict(
             xaxis=dict(nticks=10, range=[0, width]),
@@ -121,6 +214,24 @@ def plot_3d(output_image, depth_map, depth_threshold = 0.75):
     )
 
     return fig
+
+# def process_image(image_path):
+#     image = cv2.imread(image_path)
+#     if image is None:
+#         return None
+
+#     model = load_model()
+#     output_image, edges, mask = extract_edges_and_contour(image)
+
+#     if output_image is None:
+#         return None
+
+#     depth_edges = find_depth_for_edges(model, image, mask)
+#     depth_norm = (depth_edges - depth_edges.min()) / (depth_edges.max() - depth_edges.min())
+#     threshold = 0.75
+#     fig = plot_3d(output_image, depth_norm, threshold)
+    
+#     return fig
 
 def process_image(image_path):
     image = cv2.imread(image_path)
@@ -138,4 +249,5 @@ def process_image(image_path):
     threshold = 0.75
     fig = plot_3d(output_image, depth_norm, threshold)
     
-    return fig
+    # Convert the Plotly figure to JSON-serializable format
+    return fig.to_dict()  # This converts the Plotly figure to a dictionary

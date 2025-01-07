@@ -1,0 +1,199 @@
+/* static/css/index.css */
+
+:root {
+    /* Color Scheme */
+    --primary-color: #2196F3;       /* A pleasant blue */
+    --primary-dark: #1976D2;
+    --accent-color: #FF4081;        /* Pink accent for hover states */
+    --background-color: #FAFAFA;    /* Light gray background */
+    --card-background: #FFFFFF;
+    --text-primary: #212121;        /* Dark gray for main text */
+    --text-secondary: #757575;      /* Medium gray for secondary text */
+    --border-color: #E0E0E0;
+    --success-color: #4CAF50;
+    
+    /* Shadows */
+    --shadow-soft: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Base Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+/* The main container uses CSS Grid for a modern layout */
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: grid;
+    gap: 40px;
+}
+
+/* Header Section */
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+/* Upload Section */
+.upload-section {
+    background-color: var(--card-background);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-soft);
+    transition: box-shadow 0.3s ease;
+}
+
+.upload-section:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+.upload-section h2 {
+    color: var(--text-primary);
+    margin: 0 0 20px 0;
+    font-size: 1.8rem;
+}
+
+.upload-form {
+    display: grid;
+    gap: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Input Styling */
+input[type="text"] {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+/* File Input Button */
+.file-input-label {
+    display: inline-block;
+    padding: 14px 24px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.file-input-label:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+/* Primary Button */
+.primary-btn {
+    padding: 14px 24px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.primary-btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.primary-btn:active {
+    transform: translateY(0);
+}
+
+/* Folders Grid */
+.folders-section {
+    margin-top: 20px;
+}
+
+.folders-section h2 {
+    color: var(--text-primary);
+    margin: 0 0 20px 0;
+    font-size: 1.8rem;
+}
+
+.folders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    padding: 10px;
+}
+
+/* Folder Card */
+.folder-card {
+    background-color: var(--card-background);
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: var(--shadow-soft);
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.folder-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--primary-color);
+}
+
+.folder-card h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--text-primary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        margin: 20px auto;
+        padding: 0 15px;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .folders-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .upload-section, .folder-card {
+        padding: 20px;
+    }
+}

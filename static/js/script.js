@@ -9,6 +9,21 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const processingStatus = document.getElementById('processing-status');
     const plotContainer = document.getElementById('plot-container');
 
+    // Add feedback submission handler
+    const submitFeedbackBtn = document.getElementById('submit-feedback');
+    if (submitFeedbackBtn) {
+        submitFeedbackBtn.addEventListener('click', submitFeedback);
+    }
+    
+    // Add rating button handlers
+    document.querySelectorAll('.rating-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.rating-btn').forEach(b => 
+                b.classList.remove('selected'));
+            e.target.classList.add('selected');
+        });
+    });
+
     let selectedFiles = [];
     let currentFolder = null;
 
@@ -131,36 +146,44 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     }
 
-    function displayFolderImages(folderName) {
-        gallery.innerHTML = '';
-        fetch(`/get_images/${folderName}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    data.images.forEach(image => {
-                        const imgContainer = document.createElement('div');
-                        imgContainer.className = 'preview-image-container';
-
-                        const img = document.createElement('img');
-                        img.src = `/get_image/${folderName}/${image}`;
-                        img.alt = image;
-                        img.className = 'preview-image';
-
-                        const deleteBtn = document.createElement('button');
-                        deleteBtn.className = 'remove-image';
-                        deleteBtn.textContent = 'X';
-                        deleteBtn.onclick = () => deleteImage(folderName, image);
-
-                        imgContainer.appendChild(img);
-                        imgContainer.appendChild(deleteBtn);
-                        gallery.appendChild(imgContainer);
-                    });
-                } else {
-                    console.error('Error:', data.message);
-                }
-            })
-            .catch(error => console.error('Error:', error));
-    }
+    // function displayFolderImages(folderName) {
+    //     gallery.innerHTML = '';
+    //     fetch(`/get_images/${folderName}`)
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             if (data.success) {
+    //                 data.images.forEach(image => {
+    //                     const imgContainer = document.createElement('div');
+    //                     imgContainer.className = 'preview-image-container';
+    
+    //                     const img = document.createElement('img');
+    //                     img.src = `/get_image/${folderName}/${image}`;
+    //                     img.alt = image;
+    //                     img.className = 'preview-image';
+    
+    //                     // Add click handler for showing feedback section
+    //                     imgContainer.addEventListener('click', () => {
+    //                         showFeedbackSection(folderName, image);
+    //                     });
+    
+    //                     const deleteBtn = document.createElement('button');
+    //                     deleteBtn.className = 'remove-image';
+    //                     deleteBtn.textContent = '×';
+    //                     deleteBtn.onclick = (e) => {
+    //                         e.stopPropagation(); // Prevent triggering the container's click
+    //                         deleteImage(folderName, image);
+    //                     };
+    
+    //                     imgContainer.appendChild(img);
+    //                     imgContainer.appendChild(deleteBtn);
+    //                     gallery.appendChild(imgContainer);
+    //                 });
+    //             } else {
+    //                 console.error('Error:', data.message);
+    //             }
+    //         })
+    //         .catch(error => console.error('Error:', error));
+    // }
 
     function deleteImage(folderName, imageName) {
         if (confirm(`Are you sure you want to delete ${imageName}?`)) {
@@ -247,7 +270,94 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     }
     
+
+    function displayFolderImages(folderName) {
+        gallery.innerHTML = '';
+        fetch(`/get_images/${folderName}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    data.images.forEach(image => {
+                        const imgContainer = document.createElement('div');
+                        imgContainer.className = 'preview-image-container';
+    
+                        const img = document.createElement('img');
+                        img.src = `/get_image/${folderName}/${image}`;
+                        img.alt = image;
+                        img.className = 'preview-image';
+    
+                        // When an image is clicked, update the selected image info
+                        imgContainer.addEventListener('click', () => {
+                            // Update the selected image information
+                            const selectedImageInfo = document.getElementById('selected-image-info');
+                            selectedImageInfo.innerHTML = `
+                                <p>Selected Image: ${image}</p>
+                                <p>Folder: ${folderName}</p>
+                            `;
+                            
+                            // Store the current selection in data attributes
+                            const feedbackSection = document.getElementById('feedback-section');
+                            feedbackSection.dataset.currentFolder = folderName;
+                            feedbackSection.dataset.currentImage = image;
+                            
+                            // Load existing feedback for this image
+                            loadPreviousFeedback(folderName, image);
+                        });
+    
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.className = 'remove-image';
+                        deleteBtn.textContent = '×';
+                        deleteBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            deleteImage(folderName, image);
+                        };
+    
+                        imgContainer.appendChild(img);
+                        imgContainer.appendChild(deleteBtn);
+                        gallery.appendChild(imgContainer);
+                    });
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+    
+    function submitFeedback() {
+        const feedbackSection = document.getElementById('feedback-section');
+        const folderName = feedbackSection.dataset.currentFolder;
+        const imageName = feedbackSection.dataset.currentImage;
+        
+        // Check if an image is selected
+        if (!folderName || !imageName) {
+            alert('Please select an image first');
+            return;
+        }
+        
+        const selectedRating = document.querySelector('.rating-btn.selected');
+        const comment = document.getElementById('feedback-comment').value;
+        
+        if (!selectedRating) {
+            alert('Please select a rating');
+            return;
+        }
+        
+        const feedback = {
+            rating: parseInt(selectedRating.dataset.rating),
+            comment: comment,
+            timestamp: new Date().toISOString(),
+            folderPath: folderName, // This ensures we're passing the folder path
+            imageName: imageName
+        };
+    
+        // Add console.log to debug the feedback object
+        console.log('Submitting feedback:', feedback);
+        
+        saveFeedback(feedback);
+    }
+    
     function saveFeedback(feedback) {
+        // Add console.log to debug the request
+        console.log('Sending feedback data:', feedback);
+    
         fetch('/save_feedback', {
             method: 'POST',
             headers: {
@@ -259,9 +369,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
         .then(data => {
             if (data.success) {
                 alert('Feedback saved successfully');
-                loadPreviousFeedback(feedback.imagePath);
+                // Refresh the feedback list
+                loadPreviousFeedback(feedback.folderPath, feedback.imageName);
+                
+                // Clear the form
+                document.querySelectorAll('.rating-btn').forEach(btn => btn.classList.remove('selected'));
+                document.getElementById('feedback-comment').value = '';
             } else {
-                alert('Error saving feedback');
+                alert('Error saving feedback: ' + (data.error || 'Unknown error'));
+                console.error('Server response:', data);
             }
         })
         .catch(error => {
@@ -270,24 +386,50 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     }
     
-    function loadPreviousFeedback(imagePath) {
-        fetch(`/get_feedback/${imagePath}`)
+    function loadPreviousFeedback(folderName, imageName) {
+        fetch(`/get_feedback/${folderName}/${imageName}`)
             .then(response => response.json())
             .then(data => {
                 const feedbackList = document.getElementById('feedback-list');
                 feedbackList.innerHTML = '';
                 
-                data.feedback.forEach(item => {
-                    const feedbackItem = document.createElement('div');
-                    feedbackItem.className = 'feedback-item';
-                    feedbackItem.innerHTML = `
-                        <div class="feedback-rating">Rating: ${item.rating}/10</div>
-                        <div class="feedback-comment">${item.comment}</div>
-                        <div class="feedback-time">${new Date(item.timestamp).toLocaleString()}</div>
-                    `;
-                    feedbackList.appendChild(feedbackItem);
-                });
+                if (data.feedback && data.feedback.length > 0) {
+                    data.feedback.forEach(item => {
+                        const feedbackItem = document.createElement('div');
+                        feedbackItem.className = 'feedback-item';
+                        feedbackItem.innerHTML = `
+                            <div class="feedback-header">
+                                <span class="feedback-rating">Rating: ${item.rating}/10</span>
+                                <span class="feedback-time">${new Date(item.timestamp).toLocaleString()}</span>
+                            </div>
+                            <div class="feedback-comment">${item.comment}</div>
+                        `;
+                        feedbackList.appendChild(feedbackItem);
+                    });
+                } else {
+                    feedbackList.innerHTML = '<p>No feedback yet for this image.</p>';
+                }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('feedback-list').innerHTML = 
+                    '<p>Error loading feedback. Please try again later.</p>';
+            });
+    }
+
+    function showFeedbackSection(folderName, imageName) {
+        const feedbackSection = document.getElementById('feedback-section');
+        feedbackSection.style.display = 'block';
+        
+        // Store current image information
+        feedbackSection.dataset.currentFolder = folderName;
+        feedbackSection.dataset.currentImage = imageName;
+        
+        // Reset previous feedback
+        document.querySelectorAll('.rating-btn').forEach(btn => btn.classList.remove('selected'));
+        document.getElementById('feedback-comment').value = '';
+        
+        // Load existing feedback for this image
+        loadPreviousFeedback(folderName, imageName);
     }
 });

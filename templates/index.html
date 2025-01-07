@@ -1,78 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Analysis Platform</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>Product Analysis Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 </head>
+
 <body>
     <div class="container">
-        <aside class="sidebar">
-            <h2>Products</h2>
-            <div id="folders-list">
-                {% for folder, images in folders.items() %}
-                    <div class="folder" data-folder="{{ folder }}">
-                        <p>{{ folder }}</p>
-                        <button class="delete-folder" data-folder="{{ folder }}">×</button>
-                    </div>
-                {% endfor %}
-            </div>
-        </aside>
-        
-        <main class="content">
-            <div class="upload-section">
-                <h1>Image Analysis Platform</h1>
-                <div id="upload-area">
-                    <label for="file-input" class="custom-file-upload">
-                        <i class="fas fa-cloud-upload-alt"></i> Choose Files
+        <header>
+            <h1>Product Analysis Platform</h1>
+        </header>
+
+        <main>
+            <!-- Upload Section -->
+            <section class="upload-section">
+                <h2>Upload New Products</h2>
+                <div class="upload-form">
+                    <input type="text" id="folder-name" placeholder="Folder Name" required>
+                    <label for="file-input" class="file-input-label">
+                        Choose Files
+                        <input type="file" id="file-input" multiple accept="image/*">
                     </label>
-                    <input type="file" id="file-input" multiple accept="image/*" style="display:none;">
+                    <button id="upload-btn" class="primary-btn">Upload Files</button>
                 </div>
+            </section>
 
-                <div id="folder-save-area" style="display:none;">
-                    <input type="text" id="folder-title" placeholder="Folder Title" required>
-                    <button id="save-folder" class="save-btn">Save Images to Folder</button>
+            <!-- Folders List -->
+            <section class="folders-section">
+                <h2>Product Folders</h2>
+                <div class="folders-grid">
+                    {% for folder in folders %}
+                    <a href="{{ url_for('view_folder', folder_name=folder) }}" class="folder-card">
+                        <h3>{{ folder }}</h3>
+                    </a>
+                    {% endfor %}
                 </div>
-
-                <div id="preview" class="preview-grid"></div>
-            </div>
-
-            <div class="gallery-section">
-                <div id="gallery" class="gallery-grid"></div>
-                
-                <div class="analysis-container">
-                    <div id="processing-status" class="status-message"></div>
-                    <div id="plot-container" class="plot-wrapper"></div>
-                </div>
-            </div>
-
-            <div id="feedback-section" class="feedback-section" style="display: none;">
-                <h3>Image Feedback</h3>
-                <div class="rating-container">
-                    <label>Rating:</label>
-                    <div class="rating-stars">
-                        {% for i in range(1, 11) %}
-                            <button class="rating-btn" data-rating="{{ i }}">{{ i }}</button>
-                        {% endfor %}
-                    </div>
-                </div>
-                <div class="comment-container">
-                    <label for="feedback-comment">Your thoughts:</label>
-                    <textarea id="feedback-comment" rows="4" placeholder="Share your thoughts about this image..."></textarea>
-                </div>
-                <button id="submit-feedback" class="submit-btn">Submit Feedback</button>
-                
-                <div class="previous-feedback">
-                    <h4>Previous Feedback</h4>
-                    <div id="feedback-list"></div>
-                </div>
-            </div>
+            </section>
         </main>
     </div>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fileInput = document.getElementById('file-input');
+            const folderInput = document.getElementById('folder-name');
+            const uploadBtn = document.getElementById('upload-btn');
+
+            uploadBtn.addEventListener('click', async () => {
+                const files = fileInput.files;
+                const folderName = folderInput.value.trim();
+
+                if (!files.length || !folderName) {
+                    alert('Please select files and provide a folder name');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('folder_name', folderName);
+                for (let file of files) {
+                    formData.append('files[]', file);
+                }
+
+                try {
+                    const response = await fetch('/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        window.location.href = data.redirect;
+                    } else {
+                        alert(data.message || 'Upload failed');
+                    }
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    alert('Upload failed. Please try again.');
+                }
+            });
+        });
+    </script>
 </body>
+
 </html>

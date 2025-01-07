@@ -1,146 +1,146 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, send_from_directory
 import os
 from werkzeug.utils import secure_filename
-import shutil
-
-from models.vision_processing import process_image
-import threading
-from flask_socketio import SocketIO
-import plotly
 import json
+from models.vision_processing import process_image
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
-app.config['SECRET_KEY'] = 'your_secret_key_here'
-socketio = SocketIO(app)
 
-
-
+# Ensure upload directory exists
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 
-def get_folders_and_images():
-    folders = {}
-    for folder in os.listdir(app.config['UPLOAD_FOLDER']):
-        folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder)
-        if os.path.isdir(folder_path):
-            images = [f for f in os.listdir(folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
-            folders[folder] = images
-    return folders
-
 @app.route('/')
 def index():
-    folders = get_folders_and_images()
+    """Home page showing list of folders"""
+    folders = [f for f in os.listdir(app.config['UPLOAD_FOLDER']) 
+              if os.path.isdir(os.path.join(app.config['UPLOAD_FOLDER'], f))]
     return render_template('index.html', folders=folders)
 
-@app.route('/process_image/<folder>')
-def process_folder_image(folder):
-    folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder)
+@app.route('/folder/<folder_name>')
+def view_folder(folder_name):
+    """Dedicated page for each folder"""
+    folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder_name)
+    
+    # Get images in folder
+    images = []
     if os.path.exists(folder_path):
-        images = [f for f in os.listdir(folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
-        if images:
-            image_path = os.path.join(folder_path, images[0])
-            thread = threading.Thread(target=process_image_thread, args=(image_path, folder))
-            thread.start()
-            return jsonify({'success': True, 'message': 'Processing started'})
-    return jsonify({'success': False, 'message': 'No images found in the folder'})
+        images = [f for f in os.listdir(folder_path) 
+                 if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+    
+    # Get feedback for this folder
+    feedback_file = os.path.join(folder_path, 'feedback.json')
+    feedback_data = {}
+    if os.path.exists(feedback_file):
+        with open(feedback_file, 'r') as f:
+            feedback_data = json.load(f)
 
-def process_image_thread(image_path, folder):
-    socketio.emit('processing_status', {'status': 'started', 'folder': folder})
-    fig = process_image(image_path)
-    if fig:
-        plot_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-        socketio.emit('processing_result', {'status': 'completed', 'folder': folder, 'plot': plot_json})
-    else:
-        socketio.emit('processing_status', {'status': 'failed', 'folder': folder})
+    return render_template('folder.html', 
+                         folder_name=folder_name,
+                         images=images,
+                         feedback=feedback_data)
 
 @app.route('/upload', methods=['POST'])
-def upload_images():
+def upload_files():
+    """Handle file uploads to a folder"""
     if 'files[]' not in request.files:
-        return jsonify({'success': False, 'message': 'No file part'})
+        return jsonify({'success': False, 'message': 'No files provided'})
 
-    files = request.files.getlist('files[]')
-    folder_title = request.form.get('folder_title', 'Untitled')
-    folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder_title)
+    folder_name = request.form.get('folder_name', 'Untitled')
+    folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder_name)
 
+    # Create folder if it doesn't exist
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
 
+    files = request.files.getlist('files[]')
     uploaded_files = []
+    
     for file in files:
-        if file and file.filename != '':
+        if file and file.filename:
             filename = secure_filename(file.filename)
             file_path = os.path.join(folder_path, filename)
             file.save(file_path)
             uploaded_files.append(filename)
 
-    return jsonify({'success': True, 'message': 'Files uploaded successfully', 'files': uploaded_files})
+    return jsonify({'success': True, 
+                   'message': 'Files uploaded successfully',
+                   'redirect': url_for('view_folder', folder_name=folder_name)})
 
-@app.route('/get_images/<folder>')
-def get_images(folder):
-    folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder)
-    if os.path.exists(folder_path):
-        images = [f for f in os.listdir(folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
-        return jsonify({'success': True, 'images': images})
-    else:
-        return jsonify({'success': False, 'message': 'Folder not found'})
-
-@app.route('/get_image/<folder>/<filename>')
-def get_image(folder, filename):
-    return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER'], folder), filename)
-
-@app.route('/delete_image/<folder>/<filename>', methods=['DELETE'])
-def delete_image(folder, filename):
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], folder, filename)
-    if os.path.exists(file_path):
-        os.remove(file_path)
-        return jsonify({'success': True, 'message': 'Image deleted successfully'})
-    else:
-        return jsonify({'success': False, 'message': 'Image not found'})
-
-@app.route('/delete_folder/<folder>', methods=['DELETE'])
-def delete_folder(folder):
-    folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder)
-    if os.path.exists(folder_path):
-        shutil.rmtree(folder_path)
-        return jsonify({'success': True, 'message': 'Folder deleted successfully'})
-    else:
-        return jsonify({'success': False, 'message': 'Folder not found'})
+@app.route('/process/<folder_name>')
+def process_folder(folder_name):
+    """Process images in a folder and generate 3D visualization"""
+    folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder_name)
     
-@app.route('/save_feedback', methods=['POST'])
-def save_feedback():
-    feedback = request.json
-    folder_name = os.path.dirname(feedback['imagePath'])
-    feedback_file = os.path.join(app.config['UPLOAD_FOLDER'], folder_name, 'feedback.json')
+    # Get first image in folder
+    images = [f for f in os.listdir(folder_path) 
+             if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
     
+    if not images:
+        return jsonify({'success': False, 'message': 'No images found'})
+
+    # Process the first image
+    image_path = os.path.join(folder_path, images[0])
     try:
-        if os.path.exists(feedback_file):
-            with open(feedback_file, 'r') as f:
-                feedback_data = json.load(f)
-        else:
-            feedback_data = []
-            
-        feedback_data.append(feedback)
+        plot_data = process_image(image_path)
         
-        with open(feedback_file, 'w') as f:
-            json.dump(feedback_data, f, indent=2)
+        if plot_data is None:
+            return jsonify({'success': False, 'message': 'Failed to process image'})
             
-        return jsonify({'success': True})
+        # Save plot data to folder
+        plot_file = os.path.join(folder_path, 'plot_data.json')
+        with open(plot_file, 'w') as f:
+            json.dump(plot_data, f)
+            
+        return jsonify({
+            'success': True, 
+            'plot': plot_data  # Now this is JSON-serializable
+        })
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)})
+        print(f"Processing error: {str(e)}")  # Add logging for debugging
+        return jsonify({'success': False, 'message': str(e)})
 
-@app.route('/get_feedback/<path:image_path>')
-def get_feedback(image_path):
-    folder_name = os.path.dirname(image_path)
+@app.route('/get_feedback/<folder_name>')
+def get_feedback(folder_name):
+    """Get all feedback for a folder"""
     feedback_file = os.path.join(app.config['UPLOAD_FOLDER'], folder_name, 'feedback.json')
     
     if os.path.exists(feedback_file):
         with open(feedback_file, 'r') as f:
             feedback_data = json.load(f)
         return jsonify({'success': True, 'feedback': feedback_data})
-    else:
-        return jsonify({'success': True, 'feedback': []})
+    
+    return jsonify({'success': True, 'feedback': []})
 
+@app.route('/feedback/<folder_name>', methods=['POST'])
+def save_feedback(folder_name):
+    """Save feedback for a folder"""
+    feedback_data = request.json
+    folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder_name)
+    feedback_file = os.path.join(folder_path, 'feedback.json')
+    
+    try:
+        # Ensure the folder exists
+        if not os.path.exists(folder_path):
+            return jsonify({'success': False, 'error': 'Folder not found'})
+            
+        # Load existing feedback or create new list
+        existing_feedback = []
+        if os.path.exists(feedback_file):
+            with open(feedback_file, 'r') as f:
+                existing_feedback = json.load(f)
+        
+        # Add new feedback
+        existing_feedback.append(feedback_data)
+        
+        # Save updated feedback
+        with open(feedback_file, 'w') as f:
+            json.dump(existing_feedback, f, indent=2)
+            
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    app.run(debug=True)
