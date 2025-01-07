@@ -106,6 +106,40 @@ def delete_folder(folder):
         return jsonify({'success': True, 'message': 'Folder deleted successfully'})
     else:
         return jsonify({'success': False, 'message': 'Folder not found'})
+    
+@app.route('/save_feedback', methods=['POST'])
+def save_feedback():
+    feedback = request.json
+    folder_name = os.path.dirname(feedback['imagePath'])
+    feedback_file = os.path.join(app.config['UPLOAD_FOLDER'], folder_name, 'feedback.json')
+    
+    try:
+        if os.path.exists(feedback_file):
+            with open(feedback_file, 'r') as f:
+                feedback_data = json.load(f)
+        else:
+            feedback_data = []
+            
+        feedback_data.append(feedback)
+        
+        with open(feedback_file, 'w') as f:
+            json.dump(feedback_data, f, indent=2)
+            
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/get_feedback/<path:image_path>')
+def get_feedback(image_path):
+    folder_name = os.path.dirname(image_path)
+    feedback_file = os.path.join(app.config['UPLOAD_FOLDER'], folder_name, 'feedback.json')
+    
+    if os.path.exists(feedback_file):
+        with open(feedback_file, 'r') as f:
+            feedback_data = json.load(f)
+        return jsonify({'success': True, 'feedback': feedback_data})
+    else:
+        return jsonify({'success': True, 'feedback': []})
 
 
 if __name__ == '__main__':
