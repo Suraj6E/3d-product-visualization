@@ -1,34 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Analysis Platform</title>
+    <title>3D product Visualization</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-
 <body>
     <div class="container">
         <header>
-            <h1>Product Analysis Platform</h1>
+            <h1>3D product Visualization</h1>
         </header>
 
         <main>
             <!-- Upload Section -->
             <section class="upload-section">
-                <h2>Upload New Products</h2>
-                <div class="upload-form">
-                    <input type="text" id="folder-name" placeholder="Folder Name" required>
-                    <label for="file-input" class="file-input-label">
-                        Choose Files
-                        <input type="file" id="file-input" multiple accept="image/*">
-                    </label>
-                    <button id="upload-btn" class="primary-btn">Upload Files</button>
+                <div class="form-header">
+                    <h2>Upload New Product Views</h2>
+                    <input type="text" id="folder-name" class="folder-input" placeholder="Enter Product Name" required>
                 </div>
+
+                <div class="upload-grid">
+                    <!-- Front View Upload -->
+                    <div class="upload-box" id="front-upload">
+                        <input type="file" class="file-input" id="front-input" accept="image/*">
+                        <div class="icon-placeholder">
+                            <i class="fas fa-image"></i>
+                            <h3>Front View</h3>
+                            <p>Click to upload</p>
+                        </div>
+                        <img class="preview-image" id="front-preview" alt="Front view preview">
+                    </div>
+
+                    <!-- Back View Upload -->
+                    <div class="upload-box" id="back-upload">
+                        <input type="file" class="file-input" id="back-input" accept="image/*">
+                        <div class="icon-placeholder">
+                            <i class="fas fa-image fa-flip-horizontal"></i>
+                            <h3>Back View</h3>
+                            <p>Click to upload</p>
+                        </div>
+                        <img class="preview-image" id="back-preview" alt="Back view preview">
+                    </div>
+
+                    <!-- Top View Upload -->
+                    <div class="upload-box" id="top-upload">
+                        <input type="file" class="file-input" id="top-input" accept="image/*">
+                        <div class="icon-placeholder">
+                            <i class="fas fa-arrow-down"></i>
+                            <h3>Top View</h3>
+                            <p>Click to upload</p>
+                        </div>
+                        <img class="preview-image" id="top-preview" alt="Top view preview">
+                    </div>
+                </div>
+
+                <button id="upload-btn" class="upload-btn">Upload Product Images</button>
             </section>
 
-            <!-- Folders List -->
+            <!-- Folders Section -->
             <section class="folders-section">
                 <h2>Product Folders</h2>
                 <div class="folders-grid">
@@ -44,24 +75,64 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const fileInput = document.getElementById('file-input');
-            const folderInput = document.getElementById('folder-name');
+            // Setup file upload preview functionality for each view
+            ['front', 'back', 'top'].forEach(view => {
+                const uploadBox = document.getElementById(`${view}-upload`);
+                const fileInput = document.getElementById(`${view}-input`);
+                const preview = document.getElementById(`${view}-preview`);
+
+                // Trigger file input when clicking upload box
+                uploadBox.addEventListener('click', () => fileInput.click());
+
+                // Handle file selection
+                fileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            preview.src = e.target.result;
+                            uploadBox.classList.add('has-image');
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            });
+
+            // Handle form submission
             const uploadBtn = document.getElementById('upload-btn');
+            const folderInput = document.getElementById('folder-name');
 
             uploadBtn.addEventListener('click', async () => {
-                const files = fileInput.files;
                 const folderName = folderInput.value.trim();
+                const formData = new FormData();
 
-                if (!files.length || !folderName) {
-                    alert('Please select files and provide a folder name');
+                // Validate folder name
+                if (!folderName) {
+                    alert('Please provide a product name');
                     return;
                 }
 
-                const formData = new FormData();
-                formData.append('folder_name', folderName);
-                for (let file of files) {
-                    formData.append('files[]', file);
+                // Check if all views are uploaded
+                const fileInputs = {
+                    'front': document.getElementById('front-input'),
+                    'back': document.getElementById('back-input'),
+                    'top': document.getElementById('top-input')
+                };
+
+                let hasFiles = false;
+                for (const [view, input] of Object.entries(fileInputs)) {
+                    if (input.files[0]) {
+                        formData.append('files[]', input.files[0]);
+                        hasFiles = true;
+                    }
                 }
+
+                if (!hasFiles) {
+                    alert('Please upload at least one product view');
+                    return;
+                }
+
+                formData.append('folder_name', folderName);
 
                 try {
                     const response = await fetch('/upload', {
@@ -84,5 +155,4 @@
         });
     </script>
 </body>
-
 </html>
