@@ -92,10 +92,10 @@ body {
 } */
 
 .folder-input {
-    outline: -webkit-focus-ring-color auto 1px;
+    /* outline: -webkit-focus-ring-color auto 1px; */
     width: 98%;
     padding: 10px;
-    border: 1px solid var(--background-color);
+    border: 1px solid var(--primary-dark);
     border-radius: 5px;
     
     /* margin-bottom: 20px; */
