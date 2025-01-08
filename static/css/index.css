@@ -59,6 +59,7 @@ body {
 .upload-box:hover {
     border-color: var(--primary-dark);
     background-color: var(--background-color);
+    transform: translateY(-5px);
 }
 
 .upload-box i {
