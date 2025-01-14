@@ -36,11 +36,16 @@ def view_folder(folder_name):
     if os.path.exists(feedback_file):
         with open(feedback_file, 'r') as f:
             feedback_data = json.load(f)
+            
+    # Check if plot data exists
+    plot_file = os.path.join(folder_path, 'plot_data.json')
+    has_plot = os.path.exists(plot_file)
 
     return render_template('folder.html', 
                          folder_name=folder_name,
                          images=images,
-                         feedback=feedback_data)
+                         feedback=feedback_data,
+                         has_plot=has_plot)  # Pass this to template if needed
 
 
 @app.route('/upload', methods=['POST'])

@@ -3,34 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Folder View</title>
+    <title>{{ folder_name }} - Product Analysis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/folder.css') }}">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.24.2/plotly.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <header>
-            <nav>
-                <a href="{{ url_for('index') }}" class="back-link">
-                    <i class="fas fa-arrow-left"></i> Back to Products
-                </a>
-                <h1>{{ folder_name }}</h1>
-            </nav>
+        <header class="folder-header">
+            <a href="{{ url_for('index') }}" class="back-link">← Back to Folders</a>
+            <h2>{{ folder_name }}</h2>
         </header>
 
-        <main>
-            <!-- Image Gallery -->
-            <section class="image-gallery">
+        <main class="folder-content">
+            <!-- Images Gallery -->
+            <section class="images-section">
                 <h2>Product Views</h2>
-                <div class="view-grid">
+                <div class="images-grid">
                     {% for image in images %}
-                    <div class="view-card">
+                    <div class="image-card">
                         <img src="{{ url_for('static', filename='uploads/' + folder_name + '/' + image) }}" 
                              alt="{{ image }}" 
                              class="product-view">
-                        <div class="view-info">
-                            <span class="view-name">{{ image }}</span>
+                        <div class="image-info">
                             {% if 'front' in image.lower() %}
                                 <span class="view-type">Front View</span>
                             {% elif 'back' in image.lower() %}
@@ -47,12 +41,12 @@
             </section>
 
             <!-- 3D Visualization -->
-            <section class="visualization">
-                <h2>3D Visualization</h2>
+            <section class="visualization-section">
+                <h2>3D Analysis</h2>
                 <div class="vis-container">
                     <div id="plot-container"></div>
                     <div class="vis-controls">
-                        <button id="process-btn" class="action-btn">
+                        <button id="process-btn" class="primary-btn">
                             Generate 3D Model
                         </button>
                         <div id="processing-status" class="status-message"></div>
@@ -61,63 +55,188 @@
             </section>
 
             <!-- Feedback Section -->
-            <section class="feedback">
-                <h2>Processing Feedback</h2>
-                <div id="feedback-container">
-                    {% for item in feedback %}
-                    <div class="feedback-item">
-                        <p class="timestamp">{{ item.timestamp }}</p>
-                        <p class="message">{{ item.message }}</p>
+            <section class="feedback-section">
+                <h2>Product Feedback</h2>
+                <div class="feedback-form">
+                    <div class="rating-container">
+                        <label>Overall Rating:</label>
+                        <div class="rating-buttons">
+                            {% for i in range(1, 11) %}
+                            <button class="rating-btn" data-rating="{{ i }}">{{ i }}</button>
+                            {% endfor %}
+                        </div>
                     </div>
-                    {% endfor %}
+                    <div class="comment-container">
+                        <label for="feedback-comment">Your Analysis:</label>
+                        <textarea id="feedback-comment" rows="4" 
+                                placeholder="Share your thoughts about this product's analysis..."></textarea>
+                    </div>
+                    <button id="submit-feedback" class="primary-btn">Submit Feedback</button>
+                </div>
+                <div class="feedback-history">
+                    <h3>Previous Analysis</h3>
+                    <div id="feedback-list"></div>
                 </div>
             </section>
         </main>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const processBtn = document.getElementById('process-btn');
             const plotContainer = document.getElementById('plot-container');
             const statusMessage = document.getElementById('processing-status');
-            
-            processBtn.addEventListener('click', async () => {
+            const submitFeedbackBtn = document.getElementById('submit-feedback');
+            const folderName = '{{ folder_name }}';
+
+            // Function to load and display plot data
+            async function loadPlotData(isReprocessing = false) {
                 try {
-                    statusMessage.textContent = 'Processing images...';
-                    processBtn.disabled = true;
+                    statusMessage.textContent = isReprocessing ? 'Reprocessing images...' : 'Loading visualization...';
+                    if (isReprocessing) {
+                        processBtn.disabled = true;
+                    }
                     
-                    const response = await fetch(`/process/{{ folder_name }}`);
+                    const endpoint = isReprocessing ? 
+                        `/process/${folderName}` : 
+                        `/static/uploads/${folderName}/plot_data.json`;
+                    
+                    const response = await fetch(endpoint);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
                     const data = await response.json();
                     
-                    if (data.success) {
-                        // Update status based on processed views
-                        const views = data.processedViews;
-                        const viewStatus = [];
-                        if (views.front) viewStatus.push('front');
-                        if (views.back) viewStatus.push('back');
-                        if (views.top) viewStatus.push('top');
+                    if (isReprocessing ? data.success : true) {
+                        const plotData = isReprocessing ? data.plot : data;
                         
-                        statusMessage.textContent = `Successfully processed ${viewStatus.join(', ')} view${viewStatus.length > 1 ? 's' : ''}`;
-                        
-                        // Create the 3D visualization
-                        Plotly.newPlot('plot-container', 
-                            data.plot.data, 
-                            data.plot.layout,
+                        await Plotly.newPlot('plot-container', 
+                            plotData.data, 
+                            plotData.layout,
                             {
                                 responsive: true,
                                 displayModeBar: true,
                                 displaylogo: false
                             }
                         );
-                    } else {
+
+                        statusMessage.textContent = isReprocessing ? 
+                            'Successfully reprocessed visualization' : 
+                            'Visualization loaded';
+                    } else if (isReprocessing) {
                         statusMessage.textContent = data.message || 'Processing failed';
                     }
                 } catch (error) {
                     console.error('Processing error:', error);
-                    statusMessage.textContent = 'Error during processing';
-                } finally {
+                    statusMessage.textContent = isReprocessing ? 
+                        'Error during reprocessing' : 
+                        'Error loading visualization';
+                }
+                if (isReprocessing) {
                     processBtn.disabled = false;
                 }
+            }
+
+            // Try to load existing plot data when page loads
+            await loadPlotData(false);
+            
+            // Handle reprocessing button click
+            processBtn.addEventListener('click', () => loadPlotData(true));
+
+            // Load initial feedback
+            loadFolderFeedback();
+
+            // Function to load folder feedback
+            async function loadFolderFeedback() {
+                try {
+                    const response = await fetch(`/get_feedback/${folderName}`);
+                    const data = await response.json();
+
+                    const feedbackList = document.getElementById('feedback-list');
+                    feedbackList.innerHTML = '';
+
+                    if (data.feedback && data.feedback.length > 0) {
+                        data.feedback.forEach(item => {
+                            const feedbackItem = document.createElement('div');
+                            feedbackItem.className = 'feedback-item';
+                            feedbackItem.innerHTML = `
+                                <div class="feedback-header">
+                                    <span class="feedback-rating">Rating: ${item.rating}/10</span>
+                                    <span class="feedback-time">
+                                        ${new Date(item.timestamp).toLocaleString()}
+                                    </span>
+                                </div>
+                                <div class="feedback-comment">${item.comment}</div>
+                            `;
+                            feedbackList.appendChild(feedbackItem);
+                        });
+                    } else {
+                        feedbackList.innerHTML = '<p>No feedback yet for this product.</p>';
+                    }
+                } catch (error) {
+                    console.error('Error loading feedback:', error);
+                    document.getElementById('feedback-list').innerHTML =
+                        '<p>Error loading feedback. Please try again later.</p>';
+                }
+            }
+
+            // Handle feedback submission
+            submitFeedbackBtn.addEventListener('click', async () => {
+                const selectedRating = document.querySelector('.rating-btn.selected');
+                const comment = document.getElementById('feedback-comment').value;
+
+                if (!selectedRating) {
+                    alert('Please select a rating');
+                    return;
+                }
+
+                if (!comment.trim()) {
+                    alert('Please provide some analysis comments');
+                    return;
+                }
+
+                const feedback = {
+                    rating: parseInt(selectedRating.dataset.rating),
+                    comment: comment,
+                    timestamp: new Date().toISOString()
+                };
+
+                try {
+                    const response = await fetch(`/feedback/${folderName}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(feedback)
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Clear form
+                        document.querySelectorAll('.rating-btn').forEach(btn =>
+                            btn.classList.remove('selected'));
+                        document.getElementById('feedback-comment').value = '';
+
+                        // Reload feedback
+                        loadFolderFeedback();
+                        alert('Feedback saved successfully');
+                    } else {
+                        alert(data.error || 'Failed to save feedback');
+                    }
+                } catch (error) {
+                    console.error('Feedback error:', error);
+                    alert('Failed to save feedback. Please try again.');
+                }
+            });
+
+            // Rating button handlers
+            document.querySelectorAll('.rating-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.rating-btn').forEach(b =>
+                        b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                });
             });
         });
     </script>
