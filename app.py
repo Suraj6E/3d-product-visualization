@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify, send_from_directory
 import os
-from werkzeug.utils import secure_filename
 import json
+import numpy as np
+from flask import Flask, render_template, request, redirect, url_for, jsonify, send_from_directory
 from models.vision_processing import process_image, process_orthogonal_views
+import plotly.utils
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
@@ -101,7 +102,7 @@ def process_folder(folder_name):
         'top': os.path.join(folder_path, 'top.jpg')
     }
     
-    # Also check for other possible extensions
+    # Check for other possible extensions
     for view in view_files.keys():
         if not os.path.exists(view_files[view]):
             for ext in ['.png', '.jpeg', '.gif']:
@@ -119,7 +120,7 @@ def process_folder(folder_name):
         # Check if we have all three views
         if all(os.path.exists(path) for path in view_files.values()):
             print("DEBUG: Processing with all three views")
-            plot_data = process_orthogonal_views(
+            figure = process_orthogonal_views(
                 view_files['front'],
                 view_files['back'],
                 view_files['top']
@@ -136,29 +137,49 @@ def process_folder(folder_name):
                     return jsonify({'success': False, 'message': 'No valid views found'})
                 front_path = available_views[0]
             
-            plot_data = process_image(front_path)
+            figure = process_image(front_path)
             
-        if plot_data is None:
+        if figure is None:
             print("DEBUG: Failed to generate plot data")
             return jsonify({'success': False, 'message': 'Failed to process images'})
-            
-        # Save plot data
-        plot_file = os.path.join(folder_path, 'plot_data.json')
-        with open(plot_file, 'w') as f:
-            json.dump(plot_data, f)
-        print("DEBUG: Successfully saved plot data")
-            
-        # Return processing results with view status
-        return jsonify({
-            'success': True, 
-            'plot': plot_data,
-            'processedViews': {
-                'front': os.path.exists(view_files['front']),
-                'back': os.path.exists(view_files['back']),
-                'top': os.path.exists(view_files['top'])
-            }
-        })
         
+        # Convert Plotly figure to JSON-serializable format and handle NumPy arrays
+        try:
+            # Custom conversion of any NumPy arrays in the figure data
+            def convert_numpy(obj):
+                if isinstance(obj, np.ndarray):
+                    return obj.tolist()
+                elif isinstance(obj, dict):
+                    return {key: convert_numpy(value) for key, value in obj.items()}
+                elif isinstance(obj, list):
+                    return [convert_numpy(item) for item in list(obj)]
+                return obj
+            
+            # First convert any NumPy arrays to Python lists
+            plot_data = convert_numpy(figure)
+            # Save plot data
+            plot_file = os.path.join(folder_path, 'plot_data.json')
+            with open(plot_file, 'w') as f:
+                json.dump(plot_data, f, cls=plotly.utils.PlotlyJSONEncoder)
+            print("DEBUG: Successfully saved plot data")
+                
+            # Return processing results with view status
+            return jsonify({
+                'success': True, 
+                'plot': plot_data,
+                'processedViews': {
+                    'front': os.path.exists(view_files['front']),
+                    'back': os.path.exists(view_files['back']),
+                    'top': os.path.exists(view_files['top'])
+                }
+            })
+        except TypeError as json_error:
+            print(f"DEBUG: JSON serialization error: {str(json_error)}")
+            return jsonify({
+                'success': False,
+                'message': 'Failed to serialize visualization data'
+            })
+            
     except Exception as e:
         print(f"DEBUG: Processing error: {str(e)}")
         import traceback

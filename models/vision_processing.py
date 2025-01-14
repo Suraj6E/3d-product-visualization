@@ -1,11 +1,9 @@
 import torch
 import cv2
 import numpy as np
-from torchvision.transforms import Compose, Resize, ToTensor, Normalize
 from PIL import Image
 import plotly.graph_objects as go
 from transformers import pipeline
-import scipy.interpolate as interp
 
 def load_and_normalize_images(image_paths):
     """
