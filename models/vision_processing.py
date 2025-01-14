@@ -7,276 +7,37 @@ import plotly.graph_objects as go
 from transformers import pipeline
 import scipy.interpolate as interp
 
-# Original functions needed for backward compatibility
-def load_model():
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    checkpoint = "depth-anything/Depth-Anything-V2-base-hf"
-    return pipeline("depth-estimation", model=checkpoint, device=device)
-
-def transform_image(img):
-    transform = Compose([
-        Resize((384, 384)),
-        ToTensor(),
-        Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ])
-    img_pil = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-    return transform(img_pil).unsqueeze(0)
-
-def estimate_depth(model, img):
-    if isinstance(img, np.ndarray):
-        img_pil = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-    else:
-        img_pil = img
-
-    predictions = model(img_pil)
-    depth_map = predictions["depth"]
-    depth_map_np = np.array(depth_map).squeeze()
-    depth_map_resized = cv2.resize(depth_map_np, (img_pil.size[0], img_pil.size[1]))
-    
-    return depth_map_resized
-
-def extract_edges_and_contour(image_color):
-    image_gray = cv2.cvtColor(image_color, cv2.COLOR_BGR2GRAY)
-    edges = cv2.Canny(image_gray, 100, 200)
-    kernel = np.ones((5, 5), np.uint8)
-    dilated_edges = cv2.dilate(edges, kernel, iterations=1)
-    contours, _ = cv2.findContours(dilated_edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    largest_contour = max(contours, key=cv2.contourArea) if contours else None
-    mask = np.zeros(image_gray.shape, dtype=np.uint8)
-
-    if largest_contour is not None:
-        cv2.drawContours(mask, [largest_contour], -1, 255, thickness=cv2.FILLED)
-        mask_blurred = cv2.GaussianBlur(mask, (1, 1), 0)
-        output_image = np.zeros_like(image_color)
-        output_image[mask_blurred > 0] = image_color[mask_blurred > 0]
-        return output_image, edges, mask_blurred
-    return None, edges, mask
-
-def find_depth_for_edges(model, image, mask):
-    if isinstance(image, np.ndarray):
-        input_batch = transform_image(image)
-    else:
-        raise ValueError("Input image should be a numpy array.")
-
-    depth_map = estimate_depth(model, image)
-    mask_resized = cv2.resize(mask, (depth_map.shape[1], depth_map.shape[0]))
-    mask_contour = mask_resized > 0
-    
-    depth_edges = np.zeros_like(depth_map)
-    depth_edges[mask_contour] = depth_map[mask_contour]
-    depth_edges_smoothed = cv2.GaussianBlur(depth_edges, (5, 5), 0)
-
-    return depth_edges_smoothed
-
-def plot_3d(output_image, depth_map, depth_threshold=0.75):
-    """Creates a 3D visualization of an image using depth information."""
-    output_rgb = cv2.cvtColor(output_image, cv2.COLOR_BGR2RGB)
-    height, width, _ = output_image.shape
-    depth_map_resized = cv2.resize(depth_map, (width, height))
-    
-    # Normalize depth values
-    depth_norm = (depth_map_resized - depth_map_resized.min()) / (depth_map_resized.max() - depth_map_resized.min())
-    depth_norm[depth_norm < depth_threshold] = 0
-
-    # Create coordinate grids
-    x_coords, y_coords = np.meshgrid(np.arange(width), np.arange(height))
-    
-    # Flatten arrays and convert to lists
-    x_coords_flat = x_coords.ravel().tolist()
-    y_coords_flat = y_coords.ravel().tolist()
-    z_coords_flat = depth_norm.ravel().tolist()
-    colors_flat = output_rgb.reshape(-1, 3).tolist()
-
-    # Create mask for valid points
-    mask = []
-    for z, color in zip(z_coords_flat, colors_flat):
-        is_valid = (z > 0) and not (color[0] == 0 and color[1] == 0 and color[2] == 0)
-        mask.append(is_valid)
-
-    # Filter coordinates and colors
-    x_filtered = [x for x, m in zip(x_coords_flat, mask) if m]
-    y_filtered = [y for y, m in zip(y_coords_flat, mask) if m]
-    z_filtered = [z for z, m in zip(z_coords_flat, mask) if m]
-    colors_filtered = [c for c, m in zip(colors_flat, mask) if m]
-
-    # Create mirrored points
-    z_filtered_adjusted = [z - depth_threshold for z in z_filtered]
-    x_mirrored = x_filtered
-    y_mirrored = y_filtered
-    z_mirrored = [-z + depth_threshold for z in z_filtered]
-
-    # Combine original and mirrored points
-    x_combined = x_filtered + x_mirrored
-    y_combined = y_filtered + y_mirrored
-    z_combined = z_filtered_adjusted + z_mirrored
-    colors_combined = colors_filtered + colors_filtered
-
-    # Convert RGB colors to hex format
-    colors_hex = [f'rgb({r}, {g}, {b})' for r, g, b in colors_combined]
-
-    # Create the Plotly figure
-    fig = go.Figure(data=[go.Scatter3d(
-        x=x_combined,
-        y=y_combined,
-        z=z_combined,
-        mode='markers',
-        marker=dict(
-            size=2,
-            color=colors_hex,
-            opacity=1
-        )
-    )])
-
-    fig.update_layout(
-        scene=dict(
-            xaxis=dict(nticks=10, range=[0, width]),
-            yaxis=dict(nticks=10, range=[0, height]),
-            zaxis=dict(nticks=10, range=[-depth_threshold, depth_threshold]),
-        ),
-        margin=dict(l=0, r=0, b=0, t=0)
-    )
-
-    return fig.to_dict()
-
-def process_image(image_path):
-    """Original single-view processing function for backward compatibility"""
-    image = cv2.imread(image_path)
-    if image is None:
-        return None
-
-    model = load_model()
-    output_image, edges, mask = extract_edges_and_contour(image)
-
-    if output_image is None:
-        return None
-
-    depth_edges = find_depth_for_edges(model, image, mask)
-    depth_norm = (depth_edges - depth_edges.min()) / (depth_edges.max() - depth_edges.min())
-    threshold = 0.75
-    fig = plot_3d(output_image, depth_norm, threshold)
-    
-    return fig
-
-class OrthogonalViewProcessor:
-    """New class for processing multiple orthogonal views"""
-    def __init__(self):
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.model = load_model()  # Reuse existing model loading function
-        
-    def normalize_coordinates(self, points, width, height):
-        """Normalize coordinates to [-1, 1] range"""
-        x = (2 * points[:, 0] / width) - 1
-        y = (2 * points[:, 1] / height) - 1
-        z = points[:, 2]
-        return np.stack([x, y, z], axis=1)
-
-    def estimate_depth(self, image):
-        """Estimate depth from single view"""
-        return estimate_depth(self.model, image)  # Reuse existing depth estimation
-
-    def generate_point_cloud(self, depth_map, view_type='front'):
-        """Generate point cloud from depth map for specific view"""
-        height, width = depth_map.shape
-        x, y = np.meshgrid(np.arange(width), np.arange(height))
-        
-        if view_type == 'front':
-            points = np.stack([x, y, depth_map * width], axis=-1)
-        elif view_type == 'back':
-            points = np.stack([x, y, -depth_map * width], axis=-1)
-        elif view_type == 'top':
-            points = np.stack([x, depth_map * height, y], axis=-1)
-            
-        return self.normalize_coordinates(points.reshape(-1, 3), width, height)
-
-    def compute_consistency(self, point, front_depth, back_depth, top_depth):
-        """Compute consistency score for a 3D point across all views"""
-        x, y, z = point
-        
-        # Get interpolated depth values
-        f_depth = front_depth[int(y), int(x)] if 0 <= y < front_depth.shape[0] and 0 <= x < front_depth.shape[1] else 0
-        b_depth = back_depth[int(y), int(x)] if 0 <= y < back_depth.shape[0] and 0 <= x < back_depth.shape[1] else 0
-        t_depth = top_depth[int(x), int(z)] if 0 <= x < top_depth.shape[0] and 0 <= z < top_depth.shape[1] else 0
-        
-        # Compute consistency metrics
-        front_consistency = np.abs(z - f_depth)
-        back_consistency = np.abs(z + b_depth)
-        top_consistency = np.abs(y - t_depth)
-        
-        weights = [0.4, 0.4, 0.2]  # front, back, top weights
-        return weights[0] * front_consistency + weights[1] * back_consistency + weights[2] * top_consistency
-
-    def integrate_views(self, front_img, back_img, top_img):
-        """Integrate three orthogonal views into a single 3D model"""
-        # Generate depth maps
-        front_depth = self.estimate_depth(front_img)
-        back_depth = self.estimate_depth(back_img)
-        top_depth = self.estimate_depth(top_img)
-        
-        # Generate initial point clouds
-        front_points = self.generate_point_cloud(front_depth, 'front')
-        back_points = self.generate_point_cloud(back_depth, 'back')
-        top_points = self.generate_point_cloud(top_depth, 'top')
-        
-        # Combine points and filter based on consistency
-        all_points = np.vstack([front_points, back_points, top_points])
-        consistencies = np.array([
-            self.compute_consistency(p, front_depth, back_depth, top_depth)
-            for p in all_points
-        ])
-        
-        # Filter points based on consistency threshold
-        consistency_threshold = 0.5
-        valid_points = all_points[consistencies < consistency_threshold]
-        
-        return valid_points
-
-def preprocess_images(front_img, back_img, top_img):
+def load_and_normalize_images(image_paths):
     """
-    Preprocess images to ensure consistent sizes and formats.
-    
-    This function performs several important steps:
-    1. Validates input images are not None
-    2. Determines target size based on the smallest image dimension
-    3. Resizes all images to the same dimensions while maintaining aspect ratio
-    4. Applies padding if necessary to ensure perfect squares
-    5. Normalizes pixel values
-    
-    Returns:
-        tuple: (processed_front, processed_back, processed_top, target_size)
+    Load and normalize all images to the same size while maintaining aspect ratios.
+    We first determine the target size based on the smallest image dimension,
+    then resize all images accordingly with proper padding.
     """
-    print("\nDEBUG: Starting image preprocessing")
+    print("\nLoading and normalizing images...")
     
-    # First validate all images are loaded
-    if any(img is None for img in [front_img, back_img, top_img]):
-        raise ValueError("One or more input images are None")
-    
-    # Log original dimensions
-    print(f"DEBUG: Original dimensions:")
-    print(f"Front: {front_img.shape}")
-    print(f"Back: {back_img.shape}")
-    print(f"Top: {top_img.shape}")
+    # First, load all images and get their dimensions
+    images = {}
+    dimensions = []
+    for view_type, path in image_paths.items():
+        img = cv2.imread(path)
+        if img is None:
+            raise ValueError(f"Failed to load image: {path}")
+        images[view_type] = img
+        dimensions.append(img.shape[:2])
+        print(f"{view_type.capitalize()} view original size: {img.shape[1]}x{img.shape[0]}")
     
     # Find the smallest dimension across all images
-    min_dim = min(
-        min(front_img.shape[:2]),
-        min(back_img.shape[:2]),
-        min(top_img.shape[:2])
-    )
-    
+    min_dim = min(min(dim) for dim in dimensions)
     # Round to nearest multiple of 32 (common requirement for deep learning models)
     target_size = ((min_dim // 32) * 32)
-    print(f"DEBUG: Selected target size: {target_size}x{target_size}")
+    print(f"\nTarget size determined: {target_size}x{target_size}")
     
-    def process_single_image(img, name):
-        """Helper function to process a single image"""
-        # Convert to float32 for better precision during transformations
-        img = img.astype(np.float32)
-        
-        # Calculate aspect ratio
+    normalized_images = {}
+    for view_type, img in images.items():
+        # Calculate aspect ratio preserving dimensions
         h, w = img.shape[:2]
         aspect = w / h
         
-        # Determine new dimensions maintaining aspect ratio
         if aspect > 1:
             new_w = target_size
             new_h = int(target_size / aspect)
@@ -287,102 +48,307 @@ def preprocess_images(front_img, back_img, top_img):
         # Resize image
         resized = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_AREA)
         
-        # Create square canvas
-        square = np.zeros((target_size, target_size, 3), dtype=np.float32)
+        # Create square canvas with padding
+        square_img = np.zeros((target_size, target_size, 3), dtype=np.uint8)
         
-        # Calculate padding
+        # Calculate padding to center the image
         pad_y = (target_size - new_h) // 2
         pad_x = (target_size - new_w) // 2
         
         # Place resized image in center
-        square[pad_y:pad_y+new_h, pad_x:pad_x+new_w] = resized
+        square_img[pad_y:pad_y+new_h, pad_x:pad_x+new_w] = resized
         
-        # Normalize to [0, 1]
-        square = square / 255.0
-        
-        print(f"DEBUG: {name} processed - Final shape: {square.shape}")
-        return square
+        normalized_images[view_type] = square_img
+        print(f"{view_type.capitalize()} view normalized size: {square_img.shape[1]}x{square_img.shape[0]}")
     
-    # Process each image
-    processed_front = process_single_image(front_img, "Front")
-    processed_back = process_single_image(back_img, "Back")
-    processed_top = process_single_image(top_img, "Top")
-    
-    return processed_front, processed_back, processed_top, target_size
+    return normalized_images, target_size
 
-def process_orthogonal_views(front_path, back_path=None, top_path=None):
-    """Process multiple orthogonal views to create 3D visualization"""
-    print("\nDEBUG: Starting orthogonal view processing")
-    print(f"DEBUG: Front path: {front_path}")
-    print(f"DEBUG: Back path: {back_path}")
-    print(f"DEBUG: Top path: {top_path}")
+def create_object_mesh(image_input, depth_threshold=0.75):
+    """
+    Creates a 3D mesh from either an image path or a numpy array.
     
-    # Validate input paths
-    if not all([front_path, back_path, top_path]):
-        print("DEBUG: Not all views provided, falling back to single view")
-        return process_image(front_path)
+    Args:
+        image_input: Can be either a file path (str) or a pre-loaded image (numpy array)
+        depth_threshold: Threshold for depth filtering (0.0 to 1.0)
+    """
+    # Handle input flexibly - either load from file or use provided array
+    if isinstance(image_input, str):
+        image = cv2.imread(image_input)
+        if image is None:
+            raise ValueError(f"Failed to load image from path: {image_input}")
+    else:
+        image = image_input  # Already a numpy array
         
-    try:
-        # Load images
-        print("DEBUG: Loading images...")
-        front_img = cv2.imread(front_path)
-        back_img = cv2.imread(back_path)
-        top_img = cv2.imread(top_path)
+    # Continue with edge detection and processing as before
+    image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    edges = cv2.Canny(image_gray, 100, 200)
+    kernel = np.ones((5, 5), np.uint8)
+    dilated_edges = cv2.dilate(edges, kernel, iterations=1)
+    contours, _ = cv2.findContours(dilated_edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    if not contours:
+        return None
         
-        print(f"DEBUG: Front image shape: {front_img.shape if front_img is not None else 'None'}")
-        print(f"DEBUG: Back image shape: {back_img.shape if back_img is not None else 'None'}")
-        print(f"DEBUG: Top image shape: {top_img.shape if top_img is not None else 'None'}")
-        
-        if any(img is None for img in [front_img, back_img, top_img]):
-            print("DEBUG: Failed to load one or more images")
-            raise ValueError("Failed to load one or more images")
-            
-        # Preprocess images to ensure consistent sizes
-        front_proc, back_proc, top_proc, target_size = preprocess_images(front_img, back_img, top_img)
-        
-        # Initialize processor
-        print("DEBUG: Initializing OrthogonalViewProcessor")
-        processor = OrthogonalViewProcessor()
-        
-        # Process views and generate 3D model using preprocessed images
-        print("DEBUG: Starting view integration")
-        points = processor.integrate_views(
-            (front_proc * 255).astype(np.uint8),
-            (back_proc * 255).astype(np.uint8),
-            (top_proc * 255).astype(np.uint8)
+    largest_contour = max(contours, key=cv2.contourArea)
+    mask = np.zeros(image_gray.shape, dtype=np.uint8)
+    cv2.drawContours(mask, [largest_contour], -1, 255, thickness=cv2.FILLED)
+    mask_blurred = cv2.GaussianBlur(mask, (1, 1), 0)
+    
+    output_image = np.zeros_like(image)
+    output_image[mask_blurred > 0] = image[mask_blurred > 0]
+    
+    # Get depth map using Depth Anything model
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    depth_model = pipeline("depth-estimation", model="depth-anything/Depth-Anything-V2-base-hf", device=device)
+    
+    # Convert to PIL Image for depth estimation
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    image_pil = Image.fromarray(image_rgb)
+    depth_predictions = depth_model(image_pil)
+    depth_map = np.array(depth_predictions["depth"])
+    
+    # Process depth map
+    height, width, _ = output_image.shape
+    depth_map_resized = cv2.resize(depth_map, (width, height))
+    
+    # Apply mask to depth map
+    mask_resized = cv2.resize(mask, (depth_map_resized.shape[1], depth_map_resized.shape[0]))
+    mask_contour = mask_resized > 0
+    depth_edges = np.zeros_like(depth_map_resized)
+    depth_edges[mask_contour] = depth_map_resized[mask_contour]
+    depth_edges_smoothed = cv2.GaussianBlur(depth_edges, (5, 5), 0)
+    
+    # Normalize depth values
+    depth_norm = (depth_edges_smoothed - depth_edges_smoothed.min()) / (depth_edges_smoothed.max() - depth_edges_smoothed.min())
+    
+    # Convert to RGB for visualization
+    output_rgb = cv2.cvtColor(output_image, cv2.COLOR_BGR2RGB)
+    
+    # Create coordinate grids
+    x_coords, y_coords = np.meshgrid(np.arange(width), np.arange(height))
+    
+    # Flatten arrays
+    x_coords_flat = x_coords.ravel().tolist()
+    y_coords_flat = y_coords.ravel().tolist()
+    z_coords_flat = depth_norm.ravel().tolist()
+    colors_flat = output_rgb.reshape(-1, 3).tolist()
+    
+    # Apply depth threshold and create mask for valid points
+    mask = []
+    for z, color in zip(z_coords_flat, colors_flat):
+        is_valid = (z > depth_threshold) and not (color[0] == 0 and color[1] == 0 and color[2] == 0)
+        mask.append(is_valid)
+    
+    # Filter points based on mask
+    x_filtered = [x for x, m in zip(x_coords_flat, mask) if m]
+    y_filtered = [y for y, m in zip(y_coords_flat, mask) if m]
+    z_filtered = [z for z, m in zip(z_coords_flat, mask) if m]
+    colors_filtered = [c for c, m in zip(colors_flat, mask) if m]
+    
+    # Create the Plotly figure
+    fig = go.Figure(data=[go.Scatter3d(
+        x=x_filtered,
+        y=y_filtered,
+        z=z_filtered,
+        mode='markers',
+        marker=dict(
+            size=2,
+            color=[f'rgb({r}, {g}, {b})' for r, g, b in colors_filtered],
+            opacity=1
         )
-        print(f"DEBUG: Generated {len(points)} valid points")
+    )])
+    
+    # Update layout
+    fig.update_layout(
+        scene=dict(
+            xaxis=dict(nticks=10, range=[0, width]),
+            yaxis=dict(nticks=10, range=[0, height]),
+            zaxis=dict(nticks=10, range=[0, max(z_filtered)]),
+        ),
+        margin=dict(l=0, r=0, b=0, t=30)
+    )
+    
+    return fig
+
+
+def combine_front_back_meshes(front_fig, back_fig, depth_threshold=0.25, sampling_rate=0.5):
+    """
+    Creates an optimized 3D visualization combining front and back mesh views.
+    
+    Args:
+        front_fig: Plotly figure of front mesh
+        back_fig: Plotly figure of back mesh
+        depth_threshold: Depth threshold value
+        sampling_rate: Fraction of points to keep (0.0 to 1.0)
+    """
+    def extract_points(fig):
+        if fig is None or not fig.data:
+            return [], [], [], []
+        trace = fig.data[0]
+        return (
+            np.array(trace.x), 
+            np.array(trace.y), 
+            np.array(trace.z), 
+            [c.strip('rgb()').split(',') for c in trace.marker.color]
+        )
+    
+    def sample_points(x, y, z, colors, rate):
+        """Efficiently sample points using numpy"""
+        n_points = len(x)
+        n_sample = int(n_points * rate)
+        if n_sample >= n_points:
+            return x, y, z, colors
         
-        # Create visualization
-        print("DEBUG: Creating 3D visualization")
-        fig = go.Figure(data=[go.Scatter3d(
-            x=points[:, 0].tolist(),
-            y=points[:, 1].tolist(),
-            z=points[:, 2].tolist(),
-            mode='markers',
-            marker=dict(
-                size=2,
-                color=['rgb(0, 0, 255)'] * len(points),
-                opacity=0.8
-            )
-        )])
+        # Use numpy's random choice for efficient sampling
+        indices = np.random.choice(n_points, n_sample, replace=False)
+        indices.sort()  # Sort for better memory access patterns
         
-        fig.update_layout(
-            scene=dict(
-                aspectmode='data',
-                xaxis_title='X',
-                yaxis_title='Y',
-                zaxis_title='Z'
+        return (x[indices], y[indices], z[indices],
+                [colors[i] for i in indices])
+    
+    # Extract points and convert to numpy arrays for faster processing
+    front_x, front_y, front_z, front_colors = extract_points(front_fig)
+    back_x, back_y, back_z, back_colors = extract_points(back_fig)
+    
+    # Sample points if needed
+    front_x, front_y, front_z, front_colors = sample_points(
+        front_x, front_y, front_z, front_colors, sampling_rate)
+    back_x, back_y, back_z, back_colors = sample_points(
+        back_x, back_y, back_z, back_colors, sampling_rate)
+    
+    # Calculate dimensions using numpy operations
+    original_width = max(np.max(front_x), np.max(back_x))
+    original_height = max(np.max(front_y), np.max(back_y))
+    aspect_ratio = original_width / original_height
+    
+    # Center views using vectorized operations
+    front_width = np.max(front_x) - np.min(front_x)
+    back_width = np.max(back_x) - np.min(back_x)
+    
+    front_x_centered = front_x - np.min(front_x) - front_width/2
+    back_x_centered = -(back_x - np.min(back_x) - back_width/2)
+    
+    # Normalize z-coordinates using vectorized operations
+    front_z_norm = 0.5 + (front_z - np.min(front_z)) * depth_threshold / (np.max(front_z) - np.min(front_z))
+    back_z_norm = 0.5 - (back_z - np.min(back_z)) * depth_threshold / (np.max(back_z) - np.min(back_z))
+    
+    # Convert colors to RGB strings efficiently
+    def process_colors(colors):
+        return [f'rgb({",".join(c)})' for c in colors]
+    
+    front_colors_processed = process_colors(front_colors)
+    back_colors_processed = process_colors(back_colors)
+    
+    # Combine points using numpy concatenation
+    combined_x = np.concatenate([front_x_centered, back_x_centered])
+    combined_y = np.concatenate([front_y, back_y])
+    combined_z = np.concatenate([front_z_norm, back_z_norm])
+    combined_colors = front_colors_processed + back_colors_processed
+    
+    # Create the figure
+    combined_fig = go.Figure(data=[go.Scatter3d(
+        x=combined_x,
+        y=combined_y,
+        z=combined_z,
+        mode='markers',
+        marker=dict(
+            size=2,
+            color=combined_colors,
+            opacity=1
+        ),
+        showlegend=False
+    )])
+    
+    # Update layout with minimal settings
+    combined_fig.update_layout(
+        scene=dict(
+            aspectratio=dict(x=1, y=1/aspect_ratio, z=0.5),
+            aspectmode='manual',
+            camera=dict(
+                eye=dict(x=1.25, y=-0.25, z=1.25),
+                up=dict(x=0, y=0, z=0),
+                center=dict(x=0, y=0, z=0)
             ),
-            margin=dict(l=0, r=0, b=0, t=0)
-        )
-        
-        print("DEBUG: Successfully created visualization")
-        return fig.to_dict()
-        
+            xaxis=dict(
+                range=[-original_width/2, original_width/2],
+                showticklabels=False, showgrid=False,
+                zeroline=False, showline=False, showbackground=False
+            ),
+            yaxis=dict(
+                range=[0, original_height],
+                showticklabels=False, showgrid=False,
+                zeroline=False, showline=False, showbackground=False
+            ),
+            zaxis=dict(
+                range=[0, 1],
+                showticklabels=False, showgrid=False,
+                zeroline=False, showline=False, showbackground=False
+            )
+        ),
+        uirevision='true',
+        showlegend=False,
+        margin=dict(l=0, r=0, t=0, b=0, pad=0),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
+    )
+    
+    return combined_fig
+
+
+
+def process_orthogonal_views(front, back=None, top=None, depth_threshold=0.25, sampling_rate=1.0):
+    # Process all three views
+    image_paths = {
+        'front': f"{front}",
+        'back': f"{back}",
+        'top': f"{top}"
+    }
+
+    # First normalize all images
+    try:
+        normalized_images, target_size = load_and_normalize_images(image_paths)
+        print("\nAll images successfully normalized to size:", target_size)
+
+        # First, let's get our three normalized meshes individually
+        front_fig = create_object_mesh(normalized_images['front'], depth_threshold=depth_threshold)
+        back_fig = create_object_mesh(normalized_images['back'], depth_threshold=depth_threshold)
+        top_fig = create_object_mesh(normalized_images['top'], depth_threshold=depth_threshold)
+
+         # For maximum quality (but slower)
+        combined_mesh = combine_front_back_meshes(front_fig, back_fig, sampling_rate=sampling_rate)
+        return combined_mesh.to_dict()
+    
     except Exception as e:
-        print(f"DEBUG: Error in process_orthogonal_views: {str(e)}")
-        import traceback
-        print("DEBUG: Full traceback:")
-        print(traceback.format_exc())
-        raise
+        print(f"Error during image normalization: {str(e)}")
+        return None
+
+
+
+# for single image
+def process_image(image_path, depth_threshold=0.5):
+    # First normalize all images
+    image_paths = {
+        'front': f"{image_path}"
+    }
+    try:
+        normalized_images, target_size = load_and_normalize_images(image_paths)
+        print("\nAll images successfully normalized to size:", target_size)
+
+        # First, let's get our three normalized meshes individually
+        front_fig = create_object_mesh(normalized_images['front'], depth_threshold=depth_threshold)
+
+        if front_fig is not None:
+            front_fig.update_layout(
+                title=dict(
+                    text=f"3D Mesh - front View (Size: {target_size}x{target_size})",
+                    y=0.95
+                )
+            )
+            # front_fig.show()
+        else:
+            print(f"Failed to create mesh for front view")
+    except Exception as e:
+        print(f"Error during image normalization: {str(e)}")
+
+    # Convert the Plotly figure to JSON-serializable format
+    return front_fig.to_dict()  # This converts the Plotly figure to a dictionary
