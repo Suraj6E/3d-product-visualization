@@ -5,19 +5,126 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify, s
 from models.vision_processing import process_image, process_orthogonal_views
 import plotly.utils
 
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
+from flask_login import LoginManager, current_user, login_required, login_user, logout_user
+from urllib.parse import urlparse
+
+# Import our MongoDB managers and models
+from db.manager import user_manager, survey_manager, feedback_manager
+from db.models import User
+from models.vision_processing import process_image, process_orthogonal_views
+
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your-secret-key-here'  # Change this to a secure secret key
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
 
-# Ensure upload directory exists
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
+# Initialize Flask-Login with the correct login view
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'  # Changed from 'auth.login' to just 'login'
+login_manager.login_message = 'Please log in to access this feature.'
 
+def is_safe_url(target):
+    """
+    Validates if a URL is safe to redirect to by checking if it's relative
+    and doesn't contain a scheme or network location.
+    """
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(target)
+    return (not test_url.scheme and not test_url.netloc) or \
+           (test_url.scheme == ref_url.scheme and test_url.netloc == ref_url.netloc)
+
+@login_manager.user_loader
+def load_user(user_id):
+    """Loads user from MongoDB for Flask-Login"""
+    user_doc = user_manager.get_user_by_id(user_id)
+    if user_doc:
+        return User(user_doc)
+    return None
+
+# Authentication routes
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    """Handle user login with secure redirect handling"""
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        remember = bool(request.form.get('remember'))
+
+        user_doc = user_manager.get_user_by_email(email)
+        
+        if user_doc and user_manager.verify_password(user_doc, password):
+            user = User(user_doc)
+            login_user(user, remember=remember)
+            
+            # Safely handle the next parameter
+            next_page = request.args.get('next')
+            if next_page and is_safe_url(next_page):
+                return redirect(next_page)
+            
+            print(f"User {email} logged in successfully")
+            return redirect(url_for('index'))
+        
+        flash('Invalid email or password')
+        print(f"Failed login attempt for email: {email}")
+
+    return render_template('auth/login.html')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    """Handle user registration"""
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    if request.method == 'POST':
+        email = request.form.get('email')
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        # Check if user already exists
+        if user_manager.get_user_by_email(email):
+            flash('Email already registered')
+            return redirect(url_for('register'))  # Changed from 'auth.register'
+
+        # Create new user
+        user_doc = user_manager.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
+
+        if user_doc:
+            user = User(user_doc)
+            login_user(user)
+            print(f"New user registered: {email}")
+            return redirect(url_for('index'))
+        else:
+            flash('Registration failed. Please try again.')
+            print(f"Registration failed for email: {email}")
+
+    return render_template('auth/register.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    """Handle user logout"""
+    if current_user.is_authenticated:
+        email = current_user.email
+        logout_user()
+        print(f"User {email} logged out")
+    return redirect(url_for('index'))
+
+# Main application routes
 @app.route('/')
 def index():
     """Home page showing list of folders"""
     folders = [f for f in os.listdir(app.config['UPLOAD_FOLDER']) 
-              if os.path.isdir(os.path.join(app.config['UPLOAD_FOLDER'], f))]
+            if os.path.isdir(os.path.join(app.config['UPLOAD_FOLDER'], f))]
     return render_template('index.html', folders=folders)
+
 
 @app.route('/folder/<folder_name>')
 def view_folder(folder_name):
@@ -192,65 +299,6 @@ def process_folder(folder_name):
         print(traceback.format_exc())
         return jsonify({'success': False, 'message': str(e)})
 
-# @app.route('/upload', methods=['POST'])
-# def upload_files():
-#     """Handle file uploads to a folder"""
-#     if 'files[]' not in request.files:
-#         return jsonify({'success': False, 'message': 'No files provided'})
-
-#     folder_name = request.form.get('folder_name', 'Untitled')
-#     folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder_name)
-
-#     # Create folder if it doesn't exist
-#     if not os.path.exists(folder_path):
-#         os.makedirs(folder_path)
-
-#     files = request.files.getlist('files[]')
-#     uploaded_files = []
-    
-#     for file in files:
-#         if file and file.filename:
-#             filename = secure_filename(file.filename)
-#             file_path = os.path.join(folder_path, filename)
-#             file.save(file_path)
-#             uploaded_files.append(filename)
-
-#     return jsonify({'success': True, 
-#                    'message': 'Files uploaded successfully',
-#                    'redirect': url_for('view_folder', folder_name=folder_name)})
-
-# @app.route('/process/<folder_name>')
-# def process_folder(folder_name):
-#     """Process images in a folder and generate 3D visualization"""
-#     folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder_name)
-    
-#     # Get first image in folder
-#     images = [f for f in os.listdir(folder_path) 
-#              if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
-    
-#     if not images:
-#         return jsonify({'success': False, 'message': 'No images found'})
-
-#     # Process the first image
-#     image_path = os.path.join(folder_path, images[0])
-#     try:
-#         plot_data = process_image(image_path)
-        
-#         if plot_data is None:
-#             return jsonify({'success': False, 'message': 'Failed to process image'})
-            
-#         # Save plot data to folder
-#         plot_file = os.path.join(folder_path, 'plot_data.json')
-#         with open(plot_file, 'w') as f:
-#             json.dump(plot_data, f)
-            
-#         return jsonify({
-#             'success': True, 
-#             'plot': plot_data  # Now this is JSON-serializable
-#         })
-#     except Exception as e:
-#         print(f"Processing error: {str(e)}")  # Add logging for debugging
-#         return jsonify({'success': False, 'message': str(e)})
 
 @app.route('/get_feedback/<folder_name>')
 def get_feedback(folder_name):
