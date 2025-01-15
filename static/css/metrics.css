@@ -1,0 +1,40 @@
+.metrics-container {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.metric-card {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.metric-card h4 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.metric-card p {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.performance-chart {
+    margin-top: 1rem;
+    height: 200px;
+    width: 100%;
+}

@@ -1,0 +1,92 @@
+/* Add to your CSS file */
+
+.performance-recommendations {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.performance-recommendations h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #212529;
+}
+
+.performance-recommendations ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.recommendation {
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+    border-left: 4px solid;
+}
+
+.recommendation.high {
+    background-color: #fff3f3;
+    border-left-color: #dc3545;
+}
+
+.recommendation.medium {
+    background-color: #fff8e6;
+    border-left-color: #ffc107;
+}
+
+.recommendation.low {
+    background-color: #f0f9ff;
+    border-left-color: #0dcaf0;
+}
+
+.recommendation strong {
+    color: #495057;
+    margin-right: 0.5rem;
+}
+
+/* Performance Monitoring Status */
+.monitoring-status {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.monitoring-status.pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.monitoring-status.active {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.monitoring-status.completed {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+/* Performance Score Display */
+.optimization-score {
+    text-align: center;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.score-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #0d6efd;
+}
+
+.score-label {
+    display: block;
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}

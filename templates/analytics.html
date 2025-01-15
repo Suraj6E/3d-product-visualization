@@ -1,0 +1,219 @@
+<!-- templates/analytics.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - 3D Product Visualization</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/analytics.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="dashboard-header">
+            <h1>Analytics Dashboard</h1>
+            <div class="date-range-picker">
+                <label for="start-date">From:</label>
+                <input type="date" id="start-date" value="{{ time_range.start }}">
+                <label for="end-date">To:</label>
+                <input type="date" id="end-date" value="{{ time_range.end }}">
+                <button id="update-range" class="primary-btn">Update</button>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+            <!-- Performance Overview -->
+            <section class="metrics-section">
+                <h2>Performance Overview</h2>
+                <div class="metrics-grid">
+                    {% for metric in performance_metrics %}
+                    <div class="metric-card">
+                        <h3>{{ metric._id }}</h3>
+                        <div class="metric-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Avg Duration</span>
+                                <span class="stat-value">{{ "%.2f"|format(metric.avg_duration/1000) }}s</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Interactions</span>
+                                <span class="stat-value">{{ metric.total_interactions }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div id="performance-chart" class="chart-container"></div>
+            </section>
+
+            <!-- Resource Usage Analysis -->
+            <section class="metrics-section">
+                <h2>Resource Usage & Trade-offs</h2>
+                <div class="resource-grid">
+                    {% for metric in resource_metrics %}
+                    <div class="resource-card">
+                        <h3>{{ metric._id }}</h3>
+                        <div class="resource-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">CPU Usage</span>
+                                <span class="stat-value">{{ "%.1f"|format(metric.avg_cpu) }}%</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Memory</span>
+                                <span class="stat-value">{{ "%.1f"|format(metric.avg_memory) }}MB</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Processing Time</span>
+                                <span class="stat-value">{{ "%.2f"|format(metric.avg_processing_time/1000) }}s</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div id="resource-chart" class="chart-container"></div>
+            </section>
+
+            <!-- Platform Compatibility -->
+            <section class="metrics-section">
+                <h2>Platform Compatibility</h2>
+                <div class="platform-stats">
+                    <table class="platform-table">
+                        <thead>
+                            <tr>
+                                <th>Platform</th>
+                                <th>Resolution</th>
+                                <th>Avg Duration</th>
+                                <th>Success Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for metric in platform_metrics %}
+                            <tr>
+                                <td>{{ metric._id.userAgent }}</td>
+                                <td>{{ metric._id.screenResolution }}</td>
+                                <td>{{ "%.2f"|format(metric.avg_duration/1000) }}s</td>
+                                <td>{{ "%.1f"|format(metric.success_rate * 100) }}%</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- User Engagement -->
+            <section class="metrics-section">
+                <h2>User Engagement</h2>
+                <div class="engagement-grid">
+                    {% for stat in engagement_stats %}
+                    <div class="engagement-card">
+                        <h3>{{ stat.folder_name }}</h3>
+                        <div class="engagement-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Total Users</span>
+                                <span class="stat-value">{{ stat.unique_users }}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Avg Quality</span>
+                                <span class="stat-value">{{ "%.1f"|format(stat.avg_quality) }}/10</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Interactions</span>
+                                <span class="stat-value">{{ stat.total_interactions }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div id="engagement-chart" class="chart-container"></div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Analytics Dashboard JavaScript
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize charts
+            createPerformanceChart();
+            createResourceChart();
+            createEngagementChart();
+            
+            // Handle date range updates
+            document.getElementById('update-range').addEventListener('click', updateDateRange);
+        });
+
+        function createPerformanceChart() {
+            const data = {{ performance_metrics|tojson }};
+            const trace = {
+                x: data.map(d => d._id),
+                y: data.map(d => d.avg_duration/1000),
+                type: 'bar',
+                name: 'Average Duration (s)'
+            };
+
+            const layout = {
+                title: 'Performance by Product',
+                xaxis: { title: 'Product' },
+                yaxis: { title: 'Average Duration (seconds)' }
+            };
+
+            Plotly.newPlot('performance-chart', [trace], layout);
+        }
+
+        function createResourceChart() {
+            const data = {{ resource_metrics|tojson }};
+            const traces = [{
+                x: data.map(d => d._id),
+                y: data.map(d => d.avg_cpu),
+                name: 'CPU Usage (%)',
+                type: 'bar'
+            }, {
+                x: data.map(d => d._id),
+                y: data.map(d => d.avg_memory),
+                name: 'Memory Usage (MB)',
+                type: 'bar'
+            }];
+
+            const layout = {
+                title: 'Resource Usage by Product',
+                barmode: 'group',
+                xaxis: { title: 'Product' },
+                yaxis: { title: 'Usage' }
+            };
+
+            Plotly.newPlot('resource-chart', traces, layout);
+        }
+
+        function createEngagementChart() {
+            const data = {{ engagement_stats|tojson }};
+            const trace = {
+                x: data.map(d => d.folder_name),
+                y: data.map(d => d.avg_quality),
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Average Quality Score'
+            };
+
+            const layout = {
+                title: 'User Engagement Quality',
+                xaxis: { title: 'Product' },
+                yaxis: { title: 'Average Quality Score' }
+            };
+
+            Plotly.newPlot('engagement-chart', [trace], layout);
+        }
+
+        async function updateDateRange() {
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            
+            try {
+                const response = await fetch(`/analytics?start=${startDate}&end=${endDate}`);
+                if (response.ok) {
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.error('Failed to update date range:', error);
+            }
+        }
+    </script>
+</body>
+</html>
