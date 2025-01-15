@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Visualization Analytics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="dashboard-nav">
+            <div class="nav-header">
+                <h1>Analytics Dashboard</h1>
+                <span class="user-info">{{ current_user.username }}</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('dashboard.overview') }}" class="nav-link">Overview</a></li>
+                <li><a href="{{ url_for('dashboard.feedback_analysis') }}" class="nav-link">Feedback Analysis</a></li>
+                <li><a href="{{ url_for('dashboard.get_performance_data') }}" class="nav-link">Performance Metrics</a></li>
+            </ul>
+        </nav>
+
+        <main class="dashboard-content">
+            <!-- Performance Overview -->
+            <section class="metrics-grid">
+                <div class="metric-card">
+                    <h3>Average Load Time</h3>
+                    <div class="metric-value">{{ avg_load_time }}ms</div>
+                    <div class="metric-trend">
+                        <span class="trend-indicator">↑</span>
+                        <span class="trend-value">5%</span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <h3>User Satisfaction</h3>
+                    <div class="metric-value">{{ avg_rating }}/10</div>
+                    <div class="metric-trend">
+                        <span class="trend-indicator">↑</span>
+                        <span class="trend-value">8%</span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <h3>Visual Quality Score</h3>
+                    <div class="metric-value">{{ avg_visual_quality }}/10</div>
+                    <div class="metric-trend">
+                        <span class="trend-indicator">→</span>
+                        <span class="trend-value">0%</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Visualization Performance -->
+            <section class="performance-section">
+                <h2>Visualization Performance</h2>
+                <div class="chart-container">
+                    <div id="performance-chart"></div>
+                </div>
+            </section>
+
+            <!-- Platform Distribution -->
+            <section class="platform-section">
+                <h2>Platform Distribution</h2>
+                <div class="chart-container">
+                    <div id="platform-chart"></div>
+                </div>
+            </section>
+
+            <!-- Recent Feedback -->
+            <section class="feedback-section">
+                <h2>Recent Feedback</h2>
+                <div class="feedback-list">
+                    {% for feedback in recent_feedback %}
+                    <div class="feedback-item">
+                        <div class="feedback-header">
+                            <span class="product-name">{{ feedback.product_id }}</span>
+                            <span class="feedback-rating">{{ feedback.rating }}/10</span>
+                        </div>
+                        <p class="feedback-comment">{{ feedback.comment }}</p>
+                        <div class="feedback-metrics">
+                            <span>Load Time: {{ feedback.metrics.load_time }}ms</span>
+                            <span>Platform: {{ feedback.metrics.platform }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            const platformData = JSON.parse(document.getElementById('platform-data').textContent);
+            const performanceData = JSON.parse(document.getElementById('performance-data').textContent);
+            
+            console.log('Platform Data:', platformData);  // Debug log
+            console.log('Performance Data:', performanceData);  // Debug log
+
+            if (platformData && platformData.labels && platformData.labels.length > 0) {
+                // Platform Distribution Chart
+                const platformChart = {
+                    values: platformData.values,
+                    labels: platformData.labels,
+                    type: 'pie'
+                };
+
+                Plotly.newPlot('platform-chart', [platformChart], {
+                    title: 'User Platform Distribution'
+                });
+            } else {
+                console.log('No platform data available');
+                document.getElementById('platform-chart').innerHTML = 'No platform distribution data available';
+            }
+
+            if (performanceData && performanceData.dates && performanceData.dates.length > 0) {
+                // Performance Chart
+                const performanceChart = {
+                    x: performanceData.dates,
+                    y: performanceData.load_times,
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    name: 'Load Time'
+                };
+
+                Plotly.newPlot('performance-chart', [performanceChart], {
+                    title: 'Load Time Trends',
+                    xaxis: { title: 'Date' },
+                    yaxis: { title: 'Load Time (ms)' }
+                });
+            } else {
+                console.log('No performance data available');
+                document.getElementById('performance-chart').innerHTML = 'No performance data available';
+            }
+        } catch (error) {
+            console.error('Error initializing charts:', error);
+        }
+    });
+    </script>
+     <!-- Hidden elements to store our data -->
+     <script id="platform-data" type="application/json">
+        {{ platform_data | tojson | safe }}
+    </script>
+    <script id="performance-data" type="application/json">
+        {{ performance_data | tojson | safe }}
+    </script>
+</body>
+</html>

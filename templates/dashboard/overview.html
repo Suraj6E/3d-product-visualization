@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Overview</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="dashboard-nav">
+            <div class="nav-header">
+                <h1>Dashboard Overview</h1>
+                <span class="user-info">{{ current_user.username }}</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('dashboard.overview') }}" class="nav-link">Overview</a></li>
+                <li><a href="{{ url_for('dashboard.feedback_analysis') }}" class="nav-link">Feedback Analysis</a></li>
+                <li><a href="{{ url_for('dashboard.get_performance_data') }}" class="nav-link">Performance Metrics</a></li>
+            </ul>
+        </nav>
+
+        <main class="dashboard-content">
+            <section class="overview-summary">
+                <h2>System Overview</h2>
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <h3>Total Products</h3>
+                        <p class="summary-value">{{ analytics.total_products }}</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Total Users</h3>
+                        <p class="summary-value">{{ analytics.total_users }}</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Total Feedback</h3>
+                        <p class="summary-value">{{ analytics.total_feedback }}</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="recent-activity">
+                <h2>Recent Activity</h2>
+                <div class="activity-list">
+                    {% for activity in analytics.recent_activity %}
+                    <div class="activity-item">
+                        <span class="activity-time">{{ activity.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
+                        <span class="activity-type">{{ activity.type }}</span>
+                        <span class="activity-details">{{ activity.details }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

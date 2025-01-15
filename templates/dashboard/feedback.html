@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="dashboard-nav">
+            <div class="nav-header">
+                <h1>Feedback Analysis</h1>
+                <span class="user-info">{{ current_user.username }}</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('dashboard.overview') }}" class="nav-link">Overview</a></li>
+                <li><a href="{{ url_for('dashboard.feedback_analysis') }}" class="nav-link">Feedback Analysis</a></li>
+                <li><a href="{{ url_for('dashboard.get_performance_data') }}" class="nav-link">Performance Metrics</a></li>
+            </ul>
+        </nav>
+
+        <main class="dashboard-content">
+            <section class="feedback-filters">
+                <h2>Filter Feedback</h2>
+                <div class="filter-controls">
+                    <select id="time-filter" class="filter-select">
+                        <option value="7">Last 7 days</option>
+                        <option value="30">Last 30 days</option>
+                        <option value="90">Last 90 days</option>
+                    </select>
+                    <select id="rating-filter" class="filter-select">
+                        <option value="all">All Ratings</option>
+                        <option value="high">High (8-10)</option>
+                        <option value="medium">Medium (4-7)</option>
+                        <option value="low">Low (1-3)</option>
+                    </select>
+                </div>
+            </section>
+
+            <section class="feedback-analysis">
+                <div class="analysis-charts">
+                    <div class="chart-container">
+                        <div id="ratings-distribution"></div>
+                    </div>
+                    <div class="chart-container">
+                        <div id="feedback-trends"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="detailed-feedback">
+                <h2>Detailed Feedback</h2>
+                <div class="feedback-list">
+                    {% for feedback in feedback_list %}
+                    <div class="feedback-item">
+                        <div class="feedback-header">
+                            <span class="feedback-product">{{ feedback.product_name }}</span>
+                            <span class="feedback-rating">Rating: {{ feedback.rating }}/10</span>
+                            <span class="feedback-date">{{ feedback.timestamp.strftime('%Y-%m-%d') }}</span>
+                        </div>
+                        <p class="feedback-comment">{{ feedback.comment }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const feedbackData = JSON.parse(document.getElementById('feedback-data').textContent);
+            
+            // Create ratings distribution chart
+            const ratingsChart = {
+                values: feedbackData.ratings_distribution.values,
+                labels: feedbackData.ratings_distribution.labels,
+                type: 'pie'
+            };
+
+            Plotly.newPlot('ratings-distribution', [ratingsChart], {
+                title: 'Ratings Distribution'
+            });
+
+            // Create feedback trends chart
+            const trendsChart = {
+                x: feedbackData.trends.dates,
+                y: feedbackData.trends.ratings,
+                type: 'scatter',
+                mode: 'lines+markers'
+            };
+
+            Plotly.newPlot('feedback-trends', [trendsChart], {
+                title: 'Feedback Trends Over Time',
+                xaxis: { title: 'Date' },
+                yaxis: { title: 'Average Rating' }
+            });
+        });
+    </script>
+
+    <!-- Hidden data elements -->
+    <script id="feedback-data" type="application/json">
+        {{ feedback_data | tojson | safe }}
+    </script>
+</body>
+</html>

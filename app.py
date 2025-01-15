@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import numpy as np
 from flask import Flask, render_template, request, redirect, url_for, jsonify, send_from_directory
@@ -14,6 +15,8 @@ from db.manager import user_manager, survey_manager, feedback_manager
 from db.models import User
 from models.vision_processing import process_image, process_orthogonal_views
 
+from routes.dashboard import dashboard
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here'  # Change this to a secure secret key
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
@@ -23,6 +26,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'  # Changed from 'auth.login' to just 'login'
 login_manager.login_message = 'Please log in to access this feature.'
+
+app.register_blueprint(dashboard)
 
 def is_safe_url(target):
     """
@@ -340,6 +345,16 @@ def save_feedback(folder_name):
         return jsonify({'success': True})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
+    
+# Add this temporarily to populate test data
+@app.route('/init-test-data')
+def init_test_data():
+    feedback_manager.insert_test_data()
+    return 'Test data inserted'
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    try:
+        app.run(debug=True)
+    except KeyboardInterrupt:
+        print('Shutting down gracefully...')
+        sys.exit(0)
