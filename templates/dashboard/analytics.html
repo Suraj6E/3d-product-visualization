@@ -16,9 +16,18 @@
             </div>
             <ul class="nav-links">
                 <li><a href="{{ url_for('dashboard.overview') }}" class="nav-link">Overview</a></li>
-                <li><a href="{{ url_for('dashboard.feedback_analysis') }}" class="nav-link">Feedback Analysis</a></li>
-                <li><a href="{{ url_for('dashboard.get_performance_data') }}" class="nav-link">Performance Metrics</a></li>
+                <li><a href="{{ url_for('dashboard.analytics') }}" class="nav-link active">Analytics</a></li>
+                <li><a href="{{ url_for('dashboard.feedback_analysis') }}" class="nav-link">Feedback</a></li>
+                <li><a href="{{ url_for('dashboard.performance') }}" class="nav-link">Performance</a></li>
             </ul>
+            <!-- <button class="nav-toggle" onclick="document.querySelector('.dashboard-nav').classList.toggle('active')">
+                <ul class="nav-links">
+                    <li><a href="{{ url_for('dashboard.overview') }}" class="nav-link">Overview</a></li>
+                    <li><a href="{{ url_for('dashboard.analytics') }}" class="nav-link active">Analytics</a></li>
+                    <li><a href="{{ url_for('dashboard.feedback_analysis') }}" class="nav-link">Feedback</a></li>
+                    <li><a href="{{ url_for('dashboard.performance') }}" class="nav-link">Performance</a></li>
+                </ul>
+            </button> -->
         </nav>
 
         <main class="dashboard-content">

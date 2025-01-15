@@ -8,43 +8,52 @@ dashboard = Blueprint('dashboard', __name__)
 @dashboard.route('/dashboard')
 @login_required
 def overview():
-    """Main dashboard overview"""
+    """Main dashboard overview showing key metrics"""
     try:
-        # Get analytics data
         analytics = feedback_manager.get_overall_analytics()
+        return render_template('dashboard/overview.html',
+                             analytics=analytics)
+    except Exception as e:
+        print(f"Error loading overview: {str(e)}")
+        return render_template('dashboard/overview.html',
+                             analytics={
+                                 'total_products': 0,
+                                 'total_users': 0,
+                                 'total_feedback': 0,
+                                 'recent_activity': []
+                             })
+
+@dashboard.route('/dashboard/analytics')
+@login_required
+def analytics():
+    """Detailed analytics dashboard with charts and metrics"""
+    try:
         platform_data = feedback_manager.get_platform_distribution()
         performance_data = feedback_manager.get_performance_metrics()
         
         return render_template('dashboard/analytics.html',
-                             analytics=analytics,
                              platform_data=platform_data,
                              performance_data=performance_data)
     except Exception as e:
-        print(f"Error loading dashboard: {str(e)}")
+        print(f"Error loading analytics: {str(e)}")
         return render_template('dashboard/analytics.html',
-                             analytics={
-                                 'avg_rating': 0,
-                                 'total_reviews': 0,
-                                 'avg_load_time': 0,
-                                 'avg_visual_quality': 0,
-                                 'recent_feedback': []
-                             },
                              platform_data={'labels': [], 'values': []},
                              performance_data={'dates': [], 'load_times': []})
 
 @dashboard.route('/dashboard/feedback')
 @login_required
 def feedback_analysis():
-    """Detailed feedback analysis view"""
+    """Feedback analysis dashboard"""
     try:
         feedback_data = {
             'ratings_distribution': feedback_manager.get_ratings_distribution(),
             'trends': feedback_manager.get_feedback_trends(),
             'feedback_list': feedback_manager.get_recent_feedback(limit=10)
         }
-        return render_template('dashboard/feedback.html', feedback_data=feedback_data)
+        return render_template('dashboard/feedback.html', 
+                             feedback_data=feedback_data)
     except Exception as e:
-        print(f"Error loading feedback analysis: {str(e)}")
+        print(f"Error loading feedback: {str(e)}")
         return render_template('dashboard/feedback.html', 
                              feedback_data={
                                  'ratings_distribution': {'labels': [], 'values': []},
@@ -52,10 +61,32 @@ def feedback_analysis():
                                  'feedback_list': []
                              })
 
+@dashboard.route('/dashboard/performance')
+@login_required
+def performance():
+    """Performance metrics dashboard"""
+    try:
+        performance_trends = feedback_manager.get_performance_trends()
+        return render_template('dashboard/performance.html',
+                             performance_data=performance_trends)
+    except Exception as e:
+        print(f"Error loading performance: {str(e)}")
+        return render_template('dashboard/performance.html',
+                             performance_data={
+                                 'dates': [],
+                                 'metrics': {
+                                     'load_times': [],
+                                     'visual_quality': [],
+                                     'interaction_times': [],
+                                     'daily_interactions': []
+                                 }
+                             })
+
+# API endpoints for dynamic updates
 @dashboard.route('/api/dashboard/performance')
 @login_required
 def get_performance_data():
-    """API endpoint for performance metrics"""
+    """API endpoint for performance metrics updates"""
     try:
         performance_trends = feedback_manager.get_performance_trends()
         return jsonify({'success': True, 'data': performance_trends})

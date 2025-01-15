@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Overview</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
+
 <body>
     <div class="dashboard-container">
         <nav class="dashboard-nav">
@@ -14,44 +17,342 @@
                 <span class="user-info">{{ current_user.username }}</span>
             </div>
             <ul class="nav-links">
-                <li><a href="{{ url_for('dashboard.overview') }}" class="nav-link">Overview</a></li>
-                <li><a href="{{ url_for('dashboard.feedback_analysis') }}" class="nav-link">Feedback Analysis</a></li>
-                <li><a href="{{ url_for('dashboard.get_performance_data') }}" class="nav-link">Performance Metrics</a></li>
+                <li><a href="{{ url_for('dashboard.overview') }}" class="nav-link active">Overview</a></li>
+                <li><a href="{{ url_for('dashboard.analytics') }}" class="nav-link">Analytics</a></li>
+                <li><a href="{{ url_for('dashboard.feedback_analysis') }}" class="nav-link">Feedback</a></li>
+                <li><a href="{{ url_for('dashboard.performance') }}" class="nav-link">Performance</a></li>
             </ul>
         </nav>
 
         <main class="dashboard-content">
-            <section class="overview-summary">
-                <h2>System Overview</h2>
-                <div class="summary-cards">
-                    <div class="summary-card">
+            <!-- Quick Stats Section -->
+            <section class="quick-stats">
+                <h2>Key Metrics</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
                         <h3>Total Products</h3>
-                        <p class="summary-value">{{ analytics.total_products }}</p>
+                        <div class="metric-value">{{ analytics.total_products }}</div>
+                        <div class="metric-trend">
+                            <span
+                                class="trend-indicator {% if analytics.product_growth > 0 %}trend-up{% else %}trend-down{% endif %}">
+                                {% if analytics.product_growth > 0 %}↑{% else %}↓{% endif %}
+                            </span>
+                            <span class="trend-value">{{ analytics.product_growth }}% this month</span>
+                        </div>
                     </div>
-                    <div class="summary-card">
-                        <h3>Total Users</h3>
-                        <p class="summary-value">{{ analytics.total_users }}</p>
+
+                    <div class="metric-card">
+                        <h3>Active Users</h3>
+                        <div class="metric-value">{{ analytics.active_users }}</div>
+                        <div class="metric-trend">
+                            <span
+                                class="trend-indicator {% if analytics.user_growth > 0 %}trend-up{% else %}trend-down{% endif %}">
+                                {% if analytics.user_growth > 0 %}↑{% else %}↓{% endif %}
+                            </span>
+                            <span class="trend-value">{{ analytics.user_growth }}% this month</span>
+                        </div>
                     </div>
-                    <div class="summary-card">
-                        <h3>Total Feedback</h3>
-                        <p class="summary-value">{{ analytics.total_feedback }}</p>
+
+                    <div class="metric-card">
+                        <h3>Processing Time</h3>
+                        <div class="metric-value">{{ analytics.avg_processing_time }}ms</div>
+                        <div class="metric-trend">
+                            <span
+                                class="trend-indicator {% if analytics.processing_improvement > 0 %}trend-up{% else %}trend-down{% endif %}">
+                                {% if analytics.processing_improvement > 0 %}↑{% else %}↓{% endif %}
+                            </span>
+                            <span class="trend-value">{{ analytics.processing_improvement }}% faster</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <h3>User Satisfaction</h3>
+                        <div class="metric-value">{{ analytics.satisfaction_score }}/10</div>
+                        <div class="metric-trend">
+                            <span
+                                class="trend-indicator {% if analytics.satisfaction_change > 0 %}trend-up{% else %}trend-down{% endif %}">
+                                {% if analytics.satisfaction_change > 0 %}↑{% else %}↓{% endif %}
+                            </span>
+                            <span class="trend-value">{{ analytics.satisfaction_change }}% change</span>
+                        </div>
                     </div>
                 </div>
             </section>
 
+            <!-- User Interaction Analysis -->
+            <section class="interaction-analysis">
+                <div class="section-header">
+                    <h2>User Interaction Analysis</h2>
+                    <div class="time-filter">
+                        <select id="timeRange" class="filter-select">
+                            <option value="7">Last 7 days</option>
+                            <option value="30">Last 30 days</option>
+                            <option value="90">Last 90 days</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="metrics-grid">
+                    <!-- User Session Metrics -->
+                    <div class="metric-card">
+                        <h3>Session Analytics</h3>
+                        <div class="metric-content">
+                            <div class="metric-item">
+                                <span class="metric-label">Avg. Session Duration</span>
+                                <span class="metric-value" data-value="session-duration"></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Interaction Frequency</span>
+                                <span class="metric-value" data-value="interaction-freq"></span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-label">Completion Rate</span>
+                                <span class="metric-value" data-value="completion-rate"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feature Usage Analysis -->
+                    <div class="metric-card">
+                        <h3>Feature Usage</h3>
+                        <div class="feature-usage-chart" id="featureUsageChart"></div>
+                        <div class="feature-insights">
+                            <p>Most Used: <span data-value="most-used-feature"></span></p>
+                            <p>Underutilized: <span data-value="least-used-feature"></span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trade-offs Analysis -->
+                <div class="trade-offs-section">
+                    <h3>Performance Trade-offs</h3>
+                    <div class="trade-offs-grid">
+                        <!-- Quality vs Speed -->
+                        <div class="trade-off-card">
+                            <h4>Quality vs Load Time</h4>
+                            <div class="trade-off-chart" id="qualitySpeedChart"></div>
+                            <div class="optimization-suggestions">
+                                <h5>Optimization Suggestions</h5>
+                                <ul id="optimizationList"></ul>
+                            </div>
+                        </div>
+
+                        <!-- Resource Usage -->
+                        <div class="trade-off-card">
+                            <h4>Resource Utilization</h4>
+                            <div class="resource-usage-chart" id="resourceChart"></div>
+                            <div class="resource-metrics">
+                                <div class="resource-item">
+                                    <span>CPU Usage</span>
+                                    <div class="progress-bar">
+                                        <div class="progress" data-resource="cpu"></div>
+                                    </div>
+                                </div>
+                                <div class="resource-item">
+                                    <span>Memory Usage</span>
+                                    <div class="progress-bar">
+                                        <div class="progress" data-resource="memory"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- E-commerce Integration Metrics -->
+                <div class="ecommerce-metrics">
+                    <h3>E-commerce Performance</h3>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <h4>Conversion Impact</h4>
+                            <div class="conversion-chart" id="conversionChart"></div>
+                            <div class="conversion-stats">
+                                <div class="stat-item">
+                                    <span>View to Purchase Rate</span>
+                                    <span class="stat-value" data-stat="conversion-rate"></span>
+                                </div>
+                                <div class="stat-item">
+                                    <span>Avg. Time to Purchase</span>
+                                    <span class="stat-value" data-stat="purchase-time"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="metric-card">
+                            <h4>User Experience Impact</h4>
+                            <div class="ux-metrics">
+                                <div class="ux-chart" id="uxChart"></div>
+                                <div class="ux-insights">
+                                    <h5>Key Findings</h5>
+                                    <ul id="uxInsightsList"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Usage Insights Section -->
+            <section class="insights-section">
+                <div class="grid-2-columns">
+                    <!-- User Activity Chart -->
+                    <div class="chart-card">
+                        <h3>User Activity</h3>
+                        <div class="chart-container" id="activity-chart"></div>
+                        <div class="insight-summary">
+                            <p>Peak usage times: <strong>{{ analytics.peak_usage_times }}</strong></p>
+                            <p>Most active platforms: <strong>{{ analytics.top_platforms }}</strong></p>
+                        </div>
+                    </div>
+
+                    <!-- Product Performance -->
+                    <div class="chart-card">
+                        <h3>Product Performance</h3>
+                        <div class="chart-container" id="performance-chart"></div>
+                        <div class="insight-summary">
+                            <p>Top performing product: <strong>{{ analytics.top_product }}</strong></p>
+                            <p>Areas for improvement: <strong>{{ analytics.improvement_areas }}</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Activity -->
             <section class="recent-activity">
                 <h2>Recent Activity</h2>
-                <div class="activity-list">
+                <div class="activity-timeline">
                     {% for activity in analytics.recent_activity %}
-                    <div class="activity-item">
-                        <span class="activity-time">{{ activity.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
-                        <span class="activity-type">{{ activity.type }}</span>
-                        <span class="activity-details">{{ activity.details }}</span>
+                    <div class="timeline-item">
+                        <div class="timeline-icon {{ activity.type }}">
+                            {% if activity.type == 'upload' %}📤
+                            {% elif activity.type == 'process' %}⚙️
+                            {% elif activity.type == 'feedback' %}💬
+                            {% else %}📊
+                            {% endif %}
+                        </div>
+                        <div class="timeline-content">
+                            <h4>{{ activity.title }}</h4>
+                            <p>{{ activity.description }}</p>
+                            <span class="timeline-time">{{ activity.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
+                        </div>
                     </div>
                     {% endfor %}
                 </div>
             </section>
+
+            <!-- System Health -->
+            <section class="system-health">
+                <h2>System Health</h2>
+                <div class="health-grid">
+                    <div class="health-card">
+                        <h3>Storage Usage</h3>
+                        <div class="progress-bar">
+                            <div class="progress" data-usage="{{ analytics.storage_usage }}"></div>
+                        </div>
+                        <p>{{ analytics.storage_usage }}% of {{ analytics.storage_total }}GB used</p>
+                    </div>
+
+                    <div class="health-card">
+                        <h3>Processing Queue</h3>
+                        <div class="queue-status">
+                            <span
+                                class="status-indicator {{ 'healthy' if analytics.queue_status == 'normal' else 'warning' }}"></span>
+                            {{ analytics.queue_length }} items in queue
+                        </div>
+                        <p>Average wait time: {{ analytics.avg_queue_time }}s</p>
+                    </div>
+
+                    <div class="health-card">
+                        <h3>Error Rate</h3>
+                        <div class="error-rate {{ 'healthy' if analytics.error_rate < 1 else 'warning' }}">
+                            {{ analytics.error_rate }}%
+                        </div>
+                        <p>{{ analytics.total_errors }} errors in last 24h</p>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the analytics data safely using a hidden element
+            const analyticsData = JSON.parse(document.getElementById('analytics-data').textContent);
+
+            // Handle progress bars
+            const progressBars = document.querySelectorAll('.progress');
+            progressBars.forEach(bar => {
+                const usage = bar.dataset.usage;
+                if (usage) {
+                    bar.style.width = `${usage}%`;
+                }
+            });
+
+            // Create charts using the safely parsed data
+            const activityTrace = {
+                x: analyticsData.activity_data.dates,
+                y: analyticsData.activity_data.counts,
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Daily Active Users',
+                line: {
+                    color: 'rgb(0, 123, 255)',
+                    width: 2
+                }
+            };
+
+            const activityLayout = {
+                title: 'Daily Active Users',
+                height: 300,
+                margin: { t: 30, b: 40, l: 40, r: 20 },
+                xaxis: {
+                    showgrid: false
+                },
+                yaxis: {
+                    showgrid: true,
+                    gridcolor: 'rgb(240, 240, 240)'
+                }
+            };
+
+            Plotly.newPlot('activity-chart', [activityTrace], activityLayout, {
+                responsive: true,
+                displayModeBar: false
+            });
+
+            // Performance Chart
+            const performanceTrace = {
+                x: analyticsData.performance_data.products,
+                y: analyticsData.performance_data.scores,
+                type: 'bar',
+                marker: {
+                    color: 'rgb(0, 123, 255)'
+                }
+            };
+
+            const performanceLayout = {
+                title: 'Product Performance Scores',
+                height: 300,
+                margin: { t: 30, b: 40, l: 40, r: 20 },
+                xaxis: {
+                    showgrid: false
+                },
+                yaxis: {
+                    showgrid: true,
+                    gridcolor: 'rgb(240, 240, 240)'
+                }
+            };
+
+            Plotly.newPlot('performance-chart', [performanceTrace], performanceLayout, {
+                responsive: true,
+                displayModeBar: false
+            });
+        });
+    </script>
+
+    <!-- Hidden data elements -->
+    <script id="analytics-data" type="application/json">
+        {{ analytics | tojson | safe }}
+    </script>
 </body>
+
 </html>

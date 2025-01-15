@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Metrics Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="dashboard-nav">
+            <div class="nav-header">
+                <h1>Performance Metrics</h1>
+                <span class="user-info">{{ current_user.username }}</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('dashboard.overview') }}" class="nav-link">Overview</a></li>
+                <li><a href="{{ url_for('dashboard.analytics') }}" class="nav-link">Analytics</a></li>
+                <li><a href="{{ url_for('dashboard.feedback_analysis') }}" class="nav-link">Feedback</a></li>
+                <li><a href="{{ url_for('dashboard.performance') }}" class="nav-link active">Performance</a></li>
+            </ul>
+        </nav>
+
+        <main class="dashboard-content">
+            <section class="performance-metrics">
+                <h2>System Performance</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <h3>Average Load Time</h3>
+                        <div id="avg-load-time" class="metric-value">Calculating...</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Visual Quality Score</h3>
+                        <div id="avg-visual-quality" class="metric-value">Calculating...</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Daily Interactions</h3>
+                        <div id="daily-interactions" class="metric-value">Calculating...</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="performance-charts">
+                <div class="chart-container">
+                    <h3>Load Time Trends</h3>
+                    <div id="load-time-chart"></div>
+                </div>
+                <div class="chart-container">
+                    <h3>Visual Quality Trends</h3>
+                    <div id="quality-chart"></div>
+                </div>
+                <div class="chart-container">
+                    <h3>Interaction Time Trends</h3>
+                    <div id="interaction-chart"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const performanceData = JSON.parse(document.getElementById('performance-data').textContent);
+            
+            // Update metrics
+            if (performanceData.metrics.load_times.length > 0) {
+                const avgLoadTime = performanceData.metrics.load_times.reduce((a, b) => a + b) / performanceData.metrics.load_times.length;
+                document.getElementById('avg-load-time').textContent = `${avgLoadTime.toFixed(2)}ms`;
+            }
+
+            if (performanceData.metrics.visual_quality.length > 0) {
+                const avgQuality = performanceData.metrics.visual_quality.reduce((a, b) => a + b) / performanceData.metrics.visual_quality.length;
+                document.getElementById('avg-visual-quality').textContent = `${avgQuality.toFixed(2)}/10`;
+            }
+
+            if (performanceData.metrics.daily_interactions.length > 0) {
+                const totalInteractions = performanceData.metrics.daily_interactions.reduce((a, b) => a + b);
+                document.getElementById('daily-interactions').textContent = totalInteractions;
+            }
+
+            // Create charts
+            const createTimeSeriesChart = (elementId, yData, title, yAxisTitle) => {
+                const trace = {
+                    x: performanceData.dates,
+                    y: yData,
+                    type: 'scatter',
+                    mode: 'lines+markers'
+                };
+
+                const layout = {
+                    title: title,
+                    xaxis: { title: 'Date' },
+                    yaxis: { title: yAxisTitle }
+                };
+
+                Plotly.newPlot(elementId, [trace], layout);
+            };
+
+            // Create individual charts
+            createTimeSeriesChart('load-time-chart', 
+                                performanceData.metrics.load_times, 
+                                'Load Time Trends', 
+                                'Load Time (ms)');
+
+            createTimeSeriesChart('quality-chart', 
+                                performanceData.metrics.visual_quality, 
+                                'Visual Quality Trends', 
+                                'Quality Score');
+
+            createTimeSeriesChart('interaction-chart', 
+                                performanceData.metrics.interaction_times, 
+                                'Interaction Time Trends', 
+                                'Interaction Time (s)');
+        });
+    </script>
+
+    <!-- Hidden data elements -->
+    <script id="performance-data" type="application/json">
+        {{ performance_data | tojson | safe }}
+    </script>
+</body>
+</html>
