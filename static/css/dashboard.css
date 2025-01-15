@@ -35,6 +35,11 @@
     --transition-speed: 0.3s;
 }
 
+body{
+    margin:0;
+    padding:0;
+}
+
 /* Base Layout Styles */
 .dashboard-container {
     display: flex;
@@ -709,3 +714,22 @@
         opacity: 1;
     }
  }
+
+
+ /* error state styles */
+
+ /* Add to your dashboard.css */
+.error-text {
+    color: var(--danger-color);
+    font-size: var(--font-size-sm);
+    font-style: italic;
+}
+
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.metric-value.error {
+    background-color: rgba(220, 53, 69, 0.1);
+}

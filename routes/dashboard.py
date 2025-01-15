@@ -1,5 +1,5 @@
 # routes/dashboard.py
-from flask import Blueprint, render_template, jsonify
+from flask import Blueprint, render_template, jsonify, request
 from flask_login import login_required, current_user
 from db.manager import feedback_manager
 
@@ -90,5 +90,22 @@ def get_performance_data():
     try:
         performance_trends = feedback_manager.get_performance_trends()
         return jsonify({'success': True, 'data': performance_trends})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+    
+@dashboard.route('/dashboard/metrics')
+@login_required
+def get_dashboard_metrics():
+    """API endpoint for dashboard metrics"""
+    try:
+        days = request.args.get('days', default=30, type=int)
+        
+        metrics = {
+            'interaction': feedback_manager.get_interaction_analytics(days),
+            'resources': feedback_manager.get_resource_usage(),
+            'ecommerce': feedback_manager.get_ecommerce_metrics(days)
+        }
+        
+        return jsonify({'success': True, 'data': metrics})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})

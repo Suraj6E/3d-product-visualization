@@ -276,8 +276,26 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const timeFilter = document.getElementById('timeRange');
             // Get the analytics data safely using a hidden element
             const analyticsData = JSON.parse(document.getElementById('analytics-data').textContent);
+
+            async function loadDashboardMetrics(days = 30) {
+                try {
+                    const response = await fetch(`/dashboard/metrics?days=${days}`);
+                    const data = await response.json();
+
+                    if (data.success) {
+                        updateMetrics(data.data);
+                    } else {
+                        console.error('Error loading metrics:', data.error);
+                        showErrorState();
+                    }
+                } catch (error) {
+                    console.error('Failed to load metrics:', error);
+                    showErrorState();
+                }
+            }
 
             // Handle progress bars
             const progressBars = document.querySelectorAll('.progress');
@@ -346,6 +364,57 @@
                 responsive: true,
                 displayModeBar: false
             });
+
+            function updateMetrics(data) {
+                // Update interaction metrics
+                updateInteractionMetrics(data.interaction);
+                updateResourceMetrics(data.resources);
+                updateEcommerceMetrics(data.ecommerce);
+            }
+
+            function updateInteractionMetrics(data) {
+                // Safe update with fallback values
+                document.querySelector('[data-value="session-duration"]').textContent =
+                    `${data?.session_duration || 0}s`;
+                document.querySelector('[data-value="interaction-freq"]').textContent =
+                    `${data?.interaction_frequency || 0}/day`;
+                document.querySelector('[data-value="completion-rate"]').textContent =
+                    `${data?.completion_rate || 0}%`;
+            }
+
+            function updateResourceMetrics(data) {
+                // Update progress bars
+                const cpuBar = document.querySelector('[data-resource="cpu"]');
+                const memoryBar = document.querySelector('[data-resource="memory"]');
+
+                if (cpuBar) cpuBar.style.width = `${data?.cpu_usage || 0}%`;
+                if (memoryBar) memoryBar.style.width = `${data?.memory_usage || 0}%`;
+            }
+
+            function updateEcommerceMetrics(data) {
+                document.querySelector('[data-stat="conversion-rate"]').textContent =
+                    `${data?.conversion_rate || 0}%`;
+                document.querySelector('[data-stat="purchase-time"]').textContent =
+                    `${data?.avg_purchase_time || 0}s`;
+            }
+
+            function showErrorState() {
+                // Show error state for metrics
+                document.querySelectorAll('.metric-value').forEach(el => {
+                    el.innerHTML = '<span class="error-text">Data unavailable</span>';
+                });
+            }
+
+            // Initial load
+            loadDashboardMetrics();
+
+            // Handle time filter changes
+            timeFilter.addEventListener('change', (e) => {
+                loadDashboardMetrics(e.target.value);
+            });
+
+            // Refresh data periodically (every 5 minutes)
+            setInterval(() => loadDashboardMetrics(timeFilter.value), 300000);
         });
     </script>
 

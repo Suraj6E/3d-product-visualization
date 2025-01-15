@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import numpy as np
-from flask import Flask, render_template, request, redirect, url_for, jsonify, send_from_directory
+
 from models.vision_processing import process_image, process_orthogonal_views
 import plotly.utils
 

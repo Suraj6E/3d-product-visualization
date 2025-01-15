@@ -2,7 +2,7 @@
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 from bson.objectid import ObjectId
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Initialize MongoDB connection
 client = MongoClient('mongodb+srv://3dvis:.7yt_QtvB6fU68J@3dvisualization.eevq2.mongodb.net/')
@@ -634,6 +634,158 @@ class ProductFeedbackManager:
                 'conversion_path': []
             }
         }
+    
+    def get_interaction_analytics(self, days=30):
+        """Get user interaction analytics with fallback for missing data"""
+        try:
+            end_date = datetime.utcnow()
+            start_date = end_date - timedelta(days=days)
+            
+            pipeline = [
+                {
+                    '$match': {
+                        'timestamp': {
+                            '$gte': start_date,
+                            '$lte': end_date
+                        }
+                    }
+                },
+                {
+                    '$group': {
+                        '_id': None,
+                        'avg_session_duration': {'$avg': '$metrics.interaction_time'},
+                        'total_interactions': {'$sum': 1},
+                        'completed_sessions': {
+                            '$sum': {
+                                '$cond': [{'$gt': ['$metrics.interaction_time', 0]}, 1, 0]
+                            }
+                        }
+                    }
+                }
+            ]
+            
+            results = list(self.feedback.aggregate(pipeline))
+            
+            if results:
+                data = results[0]
+                completion_rate = (data['completed_sessions'] / data['total_interactions'] * 100 
+                                if data['total_interactions'] > 0 else 0)
+                
+                return {
+                    'session_duration': round(data['avg_session_duration'] or 0, 2),
+                    'interaction_frequency': round(data['total_interactions'] / days, 2),
+                    'completion_rate': round(completion_rate, 2)
+                }
+            
+            return self._get_default_interaction_metrics()
+            
+        except Exception as e:
+            print(f"Error getting interaction analytics: {str(e)}")
+            return self._get_default_interaction_metrics()
+    
+    def get_resource_usage(self):
+        """Get system resource usage metrics"""
+        try:
+            pipeline = [
+                {
+                    '$group': {
+                        '_id': None,
+                        'avg_cpu_usage': {'$avg': '$metrics.cpu_usage'},
+                        'avg_memory_usage': {'$avg': '$metrics.memory_usage'},
+                        'processing_times': {'$push': '$metrics.load_time'}
+                    }
+                }
+            ]
+            
+            results = list(self.feedback.aggregate(pipeline))
+            
+            if results:
+                data = results[0]
+                return {
+                    'cpu_usage': round(data['avg_cpu_usage'] or 0, 2),
+                    'memory_usage': round(data['avg_memory_usage'] or 0, 2),
+                    'processing_times': data['processing_times'] or []
+                }
+            
+            return self._get_default_resource_metrics()
+            
+        except Exception as e:
+            print(f"Error getting resource usage: {str(e)}")
+            return self._get_default_resource_metrics()
+
+    def get_ecommerce_metrics(self, days=30):
+        """Get e-commerce related metrics"""
+        try:
+            end_date = datetime.utcnow()
+            start_date = end_date - timedelta(days=days)
+            
+            pipeline = [
+                {
+                    '$match': {
+                        'timestamp': {
+                            '$gte': start_date,
+                            '$lte': end_date
+                        }
+                    }
+                },
+                {
+                    '$group': {
+                        '_id': None,
+                        'total_views': {'$sum': 1},
+                        'purchases': {
+                            '$sum': {
+                                '$cond': [{'$eq': ['$interaction_type', 'purchase']}, 1, 0]
+                            }
+                        },
+                        'avg_time_to_purchase': {'$avg': '$metrics.time_to_purchase'}
+                    }
+                }
+            ]
+            
+            results = list(self.feedback.aggregate(pipeline))
+            
+            if results:
+                data = results[0]
+                conversion_rate = (data['purchases'] / data['total_views'] * 100 
+                                if data['total_views'] > 0 else 0)
+                
+                return {
+                    'conversion_rate': round(conversion_rate, 2),
+                    'avg_purchase_time': round(data['avg_time_to_purchase'] or 0, 2),
+                    'total_views': data['total_views'],
+                    'total_purchases': data['purchases']
+                }
+            
+            return self._get_default_ecommerce_metrics()
+            
+        except Exception as e:
+            print(f"Error getting e-commerce metrics: {str(e)}")
+            return self._get_default_ecommerce_metrics()
+
+    # Default metric methods
+    def _get_default_interaction_metrics(self):
+        return {
+            'session_duration': 0,
+            'interaction_frequency': 0,
+            'completion_rate': 0
+        }
+
+    def _get_default_resource_metrics(self):
+        return {
+            'cpu_usage': 0,
+            'memory_usage': 0,
+            'processing_times': []
+        }
+
+    def _get_default_ecommerce_metrics(self):
+        return {
+            'conversion_rate': 0,
+            'avg_purchase_time': 0,
+            'total_views': 0,
+            'total_purchases': 0
+        }
+        
+
 
 
 # Create global instances of our managers
