@@ -82,144 +82,15 @@
     </div>
 
     <script>
-        
-        // Performance and metrics tracking
-        class MetricsTracker {
-            constructor(folderName) {
-                this.folderName = folderName;
-                this.startTime = performance.now();
-                this.interactions = [];
-                this.setupEventListeners();
-            }
-
-            setupEventListeners() {
-                // Track 3D model interaction time
-                document.getElementById('plot-container').addEventListener('mouseenter', () => {
-                    this.startInteraction('3d_model');
-                });
-
-                document.getElementById('plot-container').addEventListener('mouseleave', () => {
-                    this.endInteraction('3d_model');
-                });
-
-                // Track image viewing time
-                document.querySelectorAll('.product-view').forEach(img => {
-                    img.addEventListener('mouseenter', () => {
-                        this.startInteraction('image_view');
-                    });
-                    img.addEventListener('mouseleave', () => {
-                        this.endInteraction('image_view');
-                    });
-                });
-            }
-
-            startInteraction(type) {
-                this.interactions.push({
-                    type: type,
-                    startTime: performance.now()
-                });
-            }
-
-            async endInteraction(type) {
-                const interaction = this.interactions.find(i => i.type === type && !i.endTime);
-                if (interaction) {
-                    interaction.endTime = performance.now();
-                    const duration = interaction.endTime - interaction.startTime;
-
-                    await this.recordInteraction(type, duration);
-                }
-            }
-
-            async recordInteraction(type, duration) {
-                try {
-                    const platformInfo = {
-                        userAgent: navigator.userAgent,
-                        screenResolution: `${window.screen.width}x${window.screen.height}`,
-                        devicePixelRatio: window.devicePixelRatio
-                    };
-
-                    await fetch('/api/metrics/interaction', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            folder_name: this.folderName,
-                            type: type,
-                            duration: duration,
-                            platform_info: platformInfo
-                        })
-                    });
-                } catch (error) {
-                    console.error('Failed to record interaction:', error);
-                }
-            }
-
-            async recordResourceUsage(metrics) {
-                try {
-                    await fetch('/api/metrics/resource-usage', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            folder_name: this.folderName,
-                            ...metrics
-                        })
-                    });
-                } catch (error) {
-                    console.error('Failed to record resource usage:', error);
-                }
-            }
-        }
-
-        // Initialize metrics tracking
-        const metricsTracker = new MetricsTracker('{{ folder_name }}');
-
-        // Add metrics visualization
-        async function displayMetrics() {
-            try {
-                const response = await fetch(`/api/metrics/performance/${folderName}`);
-                const metrics = await response.json();
-
-                const metricsContainer = document.createElement('div');
-                metricsContainer.className = 'metrics-container';
-                metricsContainer.innerHTML = `
-                    <h3>Performance Metrics</h3>
-                    <div class="metrics-grid">
-                        <div class="metric-card">
-                            <h4>Average Load Time</h4>
-                            <p>${(metrics.performance.avg_duration / 1000).toFixed(2)}s</p>
-                        </div>
-                        <div class="metric-card">
-                            <h4>User Rating</h4>
-                            <p>${metrics.user_engagement.avg_rating.toFixed(1)}/10</p>
-                        </div>
-                        <div class="metric-card">
-                            <h4>Processing Efficiency</h4>
-                            <p>${(metrics.tradeoffs.avg_processing_time / 1000).toFixed(2)}s</p>
-                        </div>
-                    </div>
-                `;
-
-                document.querySelector('.visualization-section').appendChild(metricsContainer);
-            } catch (error) {
-                console.error('Failed to load metrics:', error);
-            }
-        }
         document.addEventListener('DOMContentLoaded', async () => {
-
-            
             const processBtn = document.getElementById('process-btn');
             const plotContainer = document.getElementById('plot-container');
             const statusMessage = document.getElementById('processing-status');
             const submitFeedbackBtn = document.getElementById('submit-feedback');
             const folderName = '{{ folder_name }}';
 
-
             // Function to load and display plot data
             async function loadPlotData(isReprocessing = false) {
-                const startTime = performance.now();
                 try {
                     statusMessage.textContent = isReprocessing ? 'Reprocessing images...' : 'Loading visualization...';
                     if (isReprocessing) {
@@ -255,16 +126,6 @@
                     } else if (isReprocessing) {
                         statusMessage.textContent = data.message || 'Processing failed';
                     }
-                    
-                    // Record resource usage after processing
-                    const endTime = performance.now();
-                    await metricsTracker.recordResourceUsage({
-                        processing_time: endTime - startTime,
-                        cpu_usage: isReprocessing ? 80 : 20, // Example metrics
-                        memory_usage: isReprocessing ? 500 : 100,
-                        model_complexity: plotData.data.length * plotData.data[0].x.length
-                    });
-
                 } catch (error) {
                     console.error('Processing error:', error);
                     statusMessage.textContent = isReprocessing ? 
@@ -278,8 +139,6 @@
 
             // Try to load existing plot data when page loads
             await loadPlotData(false);
-            await displayMetrics();
-            
             
             // Handle reprocessing button click
             processBtn.addEventListener('click', () => loadPlotData(true));

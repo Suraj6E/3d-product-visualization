@@ -1,6 +1,5 @@
 import os
 import json
-from datetime import timedelta, datetime
 import numpy as np
 from flask import Flask, render_template, request, redirect, url_for, jsonify, send_from_directory
 from models.vision_processing import process_image, process_orthogonal_views
@@ -11,8 +10,7 @@ from flask_login import LoginManager, current_user, login_required, login_user, 
 from urllib.parse import urlparse
 
 # Import our MongoDB managers and models
-from db.manager import user_manager, survey_manager, feedback_manager, tradeoff_analyzer, metrics_manager
-from PerformanceMonitor import performance_monitor
+from db.manager import user_manager, survey_manager, feedback_manager
 from db.models import User
 from models.vision_processing import process_image, process_orthogonal_views
 
@@ -343,148 +341,5 @@ def save_feedback(folder_name):
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
-
-##analystics
-
-@app.route('/api/metrics/interaction', methods=['POST'])
-@login_required
-def record_interaction():
-    """Records user interaction metrics"""
-    data = request.json
-    try:
-        metrics_manager.record_interaction(
-            user_id=current_user.get_id(),
-            folder_name=data.get('folder_name'),
-            interaction_type=data.get('type'),
-            duration=data.get('duration'),
-            quality_score=data.get('quality_score'),
-            platform_info=data.get('platform_info')
-        )
-        return jsonify({'success': True})
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)})
-
-@app.route('/api/metrics/performance/<folder_name>')
-@login_required
-def get_performance_metrics(folder_name):
-    """Retrieves performance metrics for a specific folder"""
-    try:
-        # Get basic performance metrics
-        perf_metrics = metrics_manager.get_performance_metrics(folder_name)
-        
-        # Get resource usage and trade-offs
-        tradeoff_metrics = tradeoff_analyzer.analyze_tradeoffs(folder_name)
-        
-        # Combine metrics
-        combined_metrics = {
-            'performance': perf_metrics[0] if perf_metrics else {},
-            'tradeoffs': tradeoff_metrics[0] if tradeoff_metrics else {},
-            'user_engagement': {
-                'total_views': len(feedback_manager.get_folder_feedback(folder_name)),
-                'avg_rating': calculate_average_rating(folder_name)
-            }
-        }
-        
-        return jsonify(combined_metrics)
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)})
-
-def calculate_average_rating(folder_name):
-    """Helper function to calculate average rating for a folder"""
-    feedback = feedback_manager.get_folder_feedback(folder_name)
-    if not feedback:
-        return 0
-    return sum(f.get('rating', 0) for f in feedback) / len(feedback)
-
-@app.route('/api/metrics/resource-usage', methods=['POST'])
-@login_required
-def record_resource_usage():
-    """Records resource usage metrics"""
-    data = request.json
-    try:
-        tradeoff_analyzer.record_resource_usage(
-            folder_name=data.get('folder_name'),
-            metrics={
-                'cpu_usage': data.get('cpu_usage'),
-                'memory_usage': data.get('memory_usage'),
-                'processing_time': data.get('processing_time'),
-                'model_complexity': data.get('model_complexity')
-            }
-        )
-        return jsonify({'success': True})
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)})
-
-@app.route('/analytics')
-@login_required
-def analytics_dashboard():
-    """Renders the analytics dashboard with comprehensive metrics"""
-    
-    # Get time range for analysis (default to last 30 days)
-    end_date = datetime.utcnow()
-    start_date = end_date - timedelta(days=30)
-    
-    # Gather metrics across all folders
-    all_metrics = metrics_manager.get_performance_metrics(
-        time_range={'start': start_date, 'end': end_date}
-    )
-    
-    # Get resource usage patterns
-    resource_metrics = tradeoff_analyzer.analyze_tradeoffs()
-    
-    # Calculate platform compatibility metrics
-    platform_metrics = metrics_manager.get_platform_metrics(
-        start_date=start_date,
-        end_date=end_date
-    )
-    
-    # Get user engagement statistics
-    engagement_stats = calculate_engagement_metrics(start_date, end_date)
-    
-    return render_template(
-        'analytics.html',
-        performance_metrics=all_metrics,
-        resource_metrics=resource_metrics,
-        platform_metrics=platform_metrics,
-        engagement_stats=engagement_stats,
-        time_range={
-            'start': start_date.strftime('%Y-%m-%d'),
-            'end': end_date.strftime('%Y-%m-%d')
-        }
-    )
-
-def calculate_engagement_metrics(start_date, end_date):
-    """Calculates detailed user engagement metrics"""
-    pipeline = [
-        {
-            '$match': {
-                'timestamp': {
-                    '$gte': start_date,
-                    '$lte': end_date
-                }
-            }
-        },
-        {
-            '$group': {
-                '_id': '$folder_name',
-                'total_interactions': {'$sum': 1},
-                'avg_duration': {'$avg': '$duration_ms'},
-                'unique_users': {'$addToSet': '$user_id'},
-                'quality_scores': {'$push': '$quality_score'}
-            }
-        },
-        {
-            '$project': {
-                'folder_name': '$_id',
-                'total_interactions': 1,
-                'avg_duration': 1,
-                'unique_users': {'$size': '$unique_users'},
-                'avg_quality': {'$avg': '$quality_scores'}
-            }
-        }
-    ]
-    
-    return list(metrics_manager.metrics.aggregate(pipeline))
-    
 if __name__ == '__main__':
     app.run(debug=True)
