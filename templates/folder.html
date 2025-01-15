@@ -83,13 +83,21 @@
     </div>
 
     <script>
+        // Global tracking variables
         let sessionStartTime = Date.now();
+        let modelInteractionStartTime = null;
+        let lastInteractionTime = null;
+        let totalModelInteractionTime = 0;
+        let isInteractingWithModel = false;
+        
         let interactionCounts = {
             rotation: 0,
             zoom: 0,
-            pan: 0
+            pan: 0,
+            pageVisits: 1  // Initialize with current visit
         };
-        // Function to collect performance metrics
+    
+        // Utility Functions
         function collectPerformanceMetrics() {
             const perfData = window.performance.timing;
             return {
@@ -97,49 +105,90 @@
                 processing_time: perfData.domComplete - perfData.domLoading
             };
         }
-
-        // Function to collect system metrics
+    
         function collectSystemMetrics() {
             return {
                 browser_info: navigator.userAgent,
                 platform: navigator.platform,
                 screen_resolution: `${window.screen.width}x${window.screen.height}`,
                 memory_usage: window.performance.memory?.usedJSHeapSize || 0,
-                cpu_usage: 0 // This will need to be estimated based on processing time
+                cpu_usage: 0
             };
         }
-
-        // Track 3D model interactions
-        function trackModelInteractions(plotContainer) {
-            // Attach events after plot is created
-            plotContainer.addEventListener('plotly_relayout', () => {
-                interactionCounts.rotation++;
-                console.log('Rotation detected:', interactionCounts.rotation);
-            });
-
-            plotContainer.addEventListener('plotly_zoom', () => {
-                interactionCounts.zoom++;
-                console.log('Zoom detected:', interactionCounts.zoom);
-            });
-
-            plotContainer.addEventListener('plotly_pan', () => {
-                interactionCounts.pan++;
-                console.log('Pan detected:', interactionCounts.pan);
-            });
+    
+        // Function to save interaction data independently
+        async function saveInteractionData(folderName, includesFeedback = false) {
+            const currentTime = Date.now();
+            const sessionDuration = (currentTime - sessionStartTime) / 1000; // in seconds
+            
+            const interactionData = {
+                timestamp: new Date().toISOString(),
+                session_start: new Date(sessionStartTime).toISOString(),
+                session_end: new Date(currentTime).toISOString(),
+                session_duration: sessionDuration,
+                model_interaction_time: totalModelInteractionTime / 1000, // Convert to seconds
+                includes_feedback: includesFeedback,
+                
+                // Metrics
+                ...collectPerformanceMetrics(),
+                ...collectSystemMetrics(),
+                
+                // Interaction counts
+                interaction_counts: interactionCounts,
+            };
+    
+            try {
+                const response = await fetch(`/track-interaction/${folderName}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(interactionData)
+                });
+    
+                const data = await response.json();
+                console.log('Interaction tracking result:', data);
+                return data.success;
+            } catch (error) {
+                console.error('Error saving interaction data:', error);
+                return false;
+            }
         }
+    
+        // Setup periodic saving of interaction data (every 30 seconds)
+        setInterval(() => {
+            const path = window.location.pathname;
+            const folderName = path.split('/').filter(Boolean).pop();
+            saveInteractionData(folderName, false);
+        }, 30000);
+    
         document.addEventListener('DOMContentLoaded', async () => {
-
             const processBtn = document.getElementById('process-btn');
             const plotContainer = document.getElementById('plot-container');
             const statusMessage = document.getElementById('processing-status');
             const submitFeedbackBtn = document.getElementById('submit-feedback');
-            // Get the full URL path
             const path = window.location.pathname;
-
-            // Split the path by '/' and get the last segment
             const folderName = path.split('/').filter(Boolean).pop();
-
-            // Function to load and display plot data
+    
+            // Track model interaction time
+            function startModelInteraction() {
+                if (!isInteractingWithModel) {
+                    isInteractingWithModel = true;
+                    modelInteractionStartTime = Date.now();
+                    console.log('Started model interaction');
+                }
+            }
+    
+            function stopModelInteraction() {
+                if (isInteractingWithModel) {
+                    const interactionDuration = Date.now() - modelInteractionStartTime;
+                    totalModelInteractionTime += interactionDuration;
+                    isInteractingWithModel = false;
+                    modelInteractionStartTime = null;
+                    console.log('Model interaction time:', totalModelInteractionTime / 1000, 'seconds');
+                }
+            }
+    
             // Initialize plot and track interactions
             async function loadPlotData(isReprocessing = false) {
                 try {
@@ -147,20 +196,20 @@
                     if (isReprocessing) {
                         processBtn.disabled = true;
                     }
-
+    
                     const endpoint = isReprocessing ?
                         `/process/${folderName}` :
                         `/static/uploads/${folderName}/plot_data.json`;
-
+    
                     const response = await fetch(endpoint);
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
                     const data = await response.json();
-
+    
                     if (isReprocessing ? data.success : true) {
                         const plotData = isReprocessing ? data.plot : data;
-
+    
                         const plot = await Plotly.newPlot('plot-container',
                             plotData.data,
                             plotData.layout,
@@ -170,27 +219,29 @@
                                 displaylogo: false
                             }
                         );
-
-                        // Set up interaction tracking after plot is created
-                        const plotContainer = document.getElementById('plot-container');
-                        if (plotContainer) {
-                            // Track interactions using Plotly's events
-                            plotContainer.on('plotly_relayout', () => {
-                                interactionCounts.rotation++;
-                                console.log('Rotation:', interactionCounts.rotation);
-                            });
-
-                            plotContainer.on('plotly_zoom', () => {
-                                interactionCounts.zoom++;
-                                console.log('Zoom:', interactionCounts.zoom);
-                            });
-
-                            plotContainer.on('plotly_pan', () => {
-                                interactionCounts.pan++;
-                                console.log('Pan:', interactionCounts.pan);
-                            });
-                        }
-
+    
+                        // Setup interaction tracking
+                        plotContainer.addEventListener('mousedown', startModelInteraction);
+                        plotContainer.addEventListener('touchstart', startModelInteraction);
+                        document.addEventListener('mouseup', stopModelInteraction);
+                        document.addEventListener('touchend', stopModelInteraction);
+    
+                        // Track specific interactions
+                        plotContainer.on('plotly_relayout', () => {
+                            interactionCounts.rotation++;
+                            console.log('Rotation count:', interactionCounts.rotation);
+                        });
+    
+                        plotContainer.on('plotly_zoom', () => {
+                            interactionCounts.zoom++;
+                            console.log('Zoom count:', interactionCounts.zoom);
+                        });
+    
+                        plotContainer.on('plotly_pan', () => {
+                            interactionCounts.pan++;
+                            console.log('Pan count:', interactionCounts.pan);
+                        });
+    
                         statusMessage.textContent = isReprocessing ?
                             'Successfully reprocessed visualization' :
                             'Visualization loaded';
@@ -207,25 +258,28 @@
                     processBtn.disabled = false;
                 }
             }
-
-            // Remove the separate trackModelInteractions call
+    
+            // Initialize visualization
             await loadPlotData(false);
-
-            // Handle reprocessing button click
+    
+            // Save initial page visit
+            await saveInteractionData(folderName, false);
+    
+            // Handle reprocessing
             processBtn.addEventListener('click', () => loadPlotData(true));
-
+    
             // Load initial feedback
             loadFolderFeedback();
-
-            // Function to load folder feedback
+    
             async function loadFolderFeedback() {
                 try {
                     const response = await fetch(`/get_feedback/${folderName}`);
                     const data = await response.json();
-
+                    console.log('Feedback data:', data); // Debug log
+    
                     const feedbackList = document.getElementById('feedback-list');
                     feedbackList.innerHTML = '';
-
+    
                     if (data.feedback && data.feedback.length > 0) {
                         data.feedback.forEach(item => {
                             const feedbackItem = document.createElement('div');
@@ -250,45 +304,36 @@
                         '<p>Error loading feedback. Please try again later.</p>';
                 }
             }
-
+    
             // Handle feedback submission
             submitFeedbackBtn.addEventListener('click', async () => {
                 const selectedRating = document.querySelector('.rating-btn.selected');
                 const comment = document.getElementById('feedback-comment').value;
-
+    
                 if (!selectedRating || !comment.trim()) {
                     alert('Please provide both rating and comment');
                     return;
                 }
-
-                const sessionDuration = (Date.now() - sessionStartTime) / 1000; // in seconds
-
+    
+                const sessionDuration = (Date.now() - sessionStartTime) / 1000;
+    
                 const feedback = {
                     rating: parseInt(selectedRating.dataset.rating),
                     comment: comment,
                     timestamp: new Date().toISOString(),
-
-                    // Add collected metrics
-                    ...collectPerformanceMetrics(),
-                    ...collectSystemMetrics(),
-
-                    // Session data
                     session_start: new Date(sessionStartTime).toISOString(),
                     session_end: new Date().toISOString(),
                     session_duration: sessionDuration,
-
-                    // Interaction data
+                    model_interaction_time: totalModelInteractionTime / 1000,
                     rotation_count: interactionCounts.rotation,
                     zoom_count: interactionCounts.zoom,
                     pan_count: interactionCounts.pan,
-
-                    // Visual quality metrics
-                    visual_quality_score: selectedRating.dataset.rating,
-
-                    // Process information
-                    processed_views: [] // Default empty array instead of undefined processedViews
+                    visual_quality_score: parseInt(selectedRating.dataset.rating),
+                    ...collectPerformanceMetrics(),
+                    ...collectSystemMetrics(),
+                    processed_views: []
                 };
-
+    
                 try {
                     const response = await fetch(`/feedback/${folderName}`, {
                         method: 'POST',
@@ -297,20 +342,25 @@
                         },
                         body: JSON.stringify(feedback)
                     });
-
+    
                     const data = await response.json();
-
+                    console.log('Feedback submission response:', data); // Debug log
+    
                     if (data.success) {
+                        // Save interaction data with feedback flag
+                        await saveInteractionData(folderName, true);
+    
                         // Clear form and reload feedback
                         document.querySelectorAll('.rating-btn').forEach(btn =>
                             btn.classList.remove('selected'));
                         document.getElementById('feedback-comment').value = '';
                         loadFolderFeedback();
-
-                        // Reset interaction counts
-                        interactionCounts = { rotation: 0, zoom: 0, pan: 0 };
+    
+                        // Reset counters
+                        interactionCounts = { rotation: 0, zoom: 0, pan: 0, pageVisits: 1 };
                         sessionStartTime = Date.now();
-
+                        totalModelInteractionTime = 0;
+    
                         alert('Feedback saved successfully');
                     } else {
                         alert(data.error || 'Failed to save feedback');
@@ -320,7 +370,7 @@
                     alert('Failed to save feedback. Please try again.');
                 }
             });
-
+    
             // Rating button handlers
             document.querySelectorAll('.rating-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -328,6 +378,11 @@
                         b.classList.remove('selected'));
                     btn.classList.add('selected');
                 });
+            });
+    
+            // Save interaction data when leaving the page
+            window.addEventListener('beforeunload', () => {
+                saveInteractionData(folderName, false);
             });
         });
     </script>

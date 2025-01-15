@@ -167,6 +167,7 @@ def view_folder(folder_name):
 
 
 @app.route('/upload', methods=['POST'])
+@login_required
 def upload_files():
     """Handle file uploads to a folder with automatic view type naming"""
     try:
@@ -250,6 +251,24 @@ def upload_files():
         print(f"Debug: Upload error: {str(e)}")
         traceback.print_exc()
         return jsonify({'success': False, 'message': str(e)})
+
+@app.route('/track-interaction/<folder_name>', methods=['POST'])
+@login_required
+def track_interaction(folder_name):
+    try:
+        interaction_data = request.json
+        feedback_manager.create_feedback(
+            user_id=current_user.get_id(),
+            product_id=folder_name,
+            feedback_data={
+                'interaction_type': 'page_interaction',
+                **interaction_data
+            }
+        )
+        return jsonify({'success': True})
+    except Exception as e:
+        print(f"Error tracking interaction: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)})
     
     
 
