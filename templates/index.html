@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -14,11 +16,11 @@
                 <h1>3D Product Visualization</h1>
                 <div class="nav-controls">
                     {% if current_user.is_authenticated %}
-                        <span class="user-welcome">Welcome, {{ current_user.username }}</span>
-                        <a href="{{ url_for('logout') }}" class="nav-btn">Logout</a>
+                    <span class="user-welcome">Welcome, {{ current_user.username }}</span>
+                    <a href="{{ url_for('logout') }}" class="nav-btn">Logout</a>
                     {% else %}
-                        <a href="{{ url_for('login') }}" class="nav-btn">Login</a>
-                        <a href="{{ url_for('register') }}" class="nav-btn primary">Register</a>
+                    <a href="{{ url_for('login') }}" class="nav-btn">Login</a>
+                    <a href="{{ url_for('register') }}" class="nav-btn primary">Register</a>
                     {% endif %}
                 </div>
             </nav>
@@ -83,8 +85,8 @@
                 </div>
             </section>
             {% else %}
-             <!-- Welcome Section for Non-authenticated Users -->
-             <section class="welcome-section">
+            <!-- Welcome Section for Non-authenticated Users -->
+            <section class="welcome-section">
                 <div class="welcome-content">
                     <h2>Welcome to 3D Product Visualization</h2>
                     <p>Create stunning 3D visualizations of your products with our advanced tools.</p>
@@ -99,22 +101,46 @@
     </div>
 
     <script>
-        // Add to index.html inside the existing script
-async function trackUploadMetrics(formData, startTime) {
-    const uploadDuration = Date.now() - startTime;
-    const systemMetrics = {
-        ...collectSystemMetrics(), // Same function as in folder.html
-        upload_duration: uploadDuration,
-        file_sizes: Array.from(formData.getAll('files[]')).map(file => file.size)
-    };
-    
-    // Add metrics to formData
-    Object.entries(systemMetrics).forEach(([key, value]) => {
-        formData.append(`metrics[${key}]`, JSON.stringify(value));
-    });
-    
-    return formData;
-}
+        // Add these utility functions at the start of your script in index.html
+        function collectSystemMetrics() {
+            return {
+                browser_info: navigator.userAgent,
+                platform: navigator.platform,
+                screen_resolution: `${window.screen.width}x${window.screen.height}`,
+                // Memory usage is only available in Chrome
+                memory_usage: window.performance?.memory?.usedJSHeapSize || 0,
+                // Basic performance metrics
+                connection_type: navigator.connection?.effectiveType || 'unknown',
+                // Device type detection
+                device_type: /Mobile|iP(hone|od|ad)|Android|BlackBerry|IEMobile/.test(navigator.userAgent) ? 'mobile' : 'desktop',
+                // Viewport size
+                viewport_size: `${window.innerWidth}x${window.innerHeight}`
+            };
+        }
+
+        // Performance metrics collection
+        function collectPerformanceMetrics(startTime) {
+            const endTime = Date.now();
+            return {
+                total_duration: endTime - startTime,
+                navigation_timing: window.performance.timing.domComplete - window.performance.timing.navigationStart,
+                processing_time: window.performance.timing.domComplete - window.performance.timing.domLoading
+            };
+        }
+
+        // File metrics collection
+        function collectFileMetrics(files) {
+            return {
+                total_files: files.length,
+                file_sizes: Array.from(files).map(file => ({
+                    name: file.name,
+                    size: file.size,
+                    type: file.type
+                })),
+                total_size: Array.from(files).reduce((sum, file) => sum + file.size, 0)
+            };
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             // Setup file upload preview functionality for each view
             ['front', 'back', 'top'].forEach(view => {
@@ -176,13 +202,24 @@ async function trackUploadMetrics(formData, startTime) {
 
                 formData.append('folder_name', folderName);
 
+                // Collect all metrics
+                const metrics = {
+                    system: collectSystemMetrics(),
+                    performance: collectPerformanceMetrics(startTime),
+                    files: collectFileMetrics(fileInputs)
+                };
+
+                // Add metrics to formData
+                formData.append('metrics', JSON.stringify(metrics));
+
                 try {
-                      // Add metrics to form data
-        const formDataWithMetrics = await trackUploadMetrics(formData, startTime);
-        
+                    // Show loading state
+                    uploadBtn.disabled = true;
+                    uploadBtn.textContent = 'Uploading...';
+
                     const response = await fetch('/upload', {
                         method: 'POST',
-                        body: formDataWithMetrics
+                        body: formData
                     });
 
                     const data = await response.json();
@@ -195,9 +232,14 @@ async function trackUploadMetrics(formData, startTime) {
                 } catch (error) {
                     console.error('Upload error:', error);
                     alert('Upload failed. Please try again.');
+                } finally {
+                    // Reset button state
+                    uploadBtn.disabled = false;
+                    uploadBtn.textContent = 'Upload Product Images';
                 }
             });
         });
     </script>
 </body>
+
 </html>

@@ -89,7 +89,7 @@ class ProductFeedbackManager:
         self.feedback = db.product_feedback
         self.setup_indexes()
 
-    
+
     def create_feedback(self, user_id, product_id, feedback_data):
         """Creates new product feedback with comprehensive metrics"""
         try:
@@ -359,40 +359,40 @@ class ProductFeedbackManager:
             }
         }
     
-    # Add this to your ProductFeedbackManager class
-    def insert_test_data(self):
-        """
-        Inserts sample data for testing the dashboard
-        """
-        import random
-        from datetime import datetime, timedelta
+    # # Add this to your ProductFeedbackManager class
+    # def insert_test_data(self):
+    #     """
+    #     Inserts sample data for testing the dashboard
+    #     """
+    #     import random
+    #     from datetime import datetime, timedelta
         
-        platforms = ['Windows', 'MacOS', 'Linux', 'iOS', 'Android']
+    #     platforms = ['Windows', 'MacOS', 'Linux', 'iOS', 'Android']
         
-        # Generate 30 days of test data
-        for i in range(30):
-            date = datetime.utcnow() - timedelta(days=i)
+    #     # Generate 30 days of test data
+    #     for i in range(30):
+    #         date = datetime.utcnow() - timedelta(days=i)
             
-            # Create 5 feedback entries per day
-            for _ in range(5):
-                feedback_doc = {
-                    'user_id': ObjectId(),  # Random ObjectId for testing
-                    'product_id': 'test_product',
-                    'rating': random.randint(1, 10),
-                    'comment': f'Test feedback comment {i}',
-                    'timestamp': date,
-                    'metrics': {
-                        'load_time': random.uniform(100, 2000),  # 100ms to 2000ms
-                        'visual_quality_score': random.uniform(5, 10),
-                        'interaction_time': random.uniform(10, 300),  # 10s to 300s
-                        'browser_info': 'Chrome',
-                        'platform': random.choice(platforms),
-                        'screen_resolution': '1920x1080'
-                    },
-                    'visualization_type': '3D',
-                    'processed_views': ['front', 'back', 'top']
-                }
-                self.feedback.insert_one(feedback_doc)
+    #         # Create 5 feedback entries per day
+    #         for _ in range(5):
+    #             feedback_doc = {
+    #                 'user_id': ObjectId(),  # Random ObjectId for testing
+    #                 'product_id': 'test_product',
+    #                 'rating': random.randint(1, 10),
+    #                 'comment': f'Test feedback comment {i}',
+    #                 'timestamp': date,
+    #                 'metrics': {
+    #                     'load_time': random.uniform(100, 2000),  # 100ms to 2000ms
+    #                     'visual_quality_score': random.uniform(5, 10),
+    #                     'interaction_time': random.uniform(10, 300),  # 10s to 300s
+    #                     'browser_info': 'Chrome',
+    #                     'platform': random.choice(platforms),
+    #                     'screen_resolution': '1920x1080'
+    #                 },
+    #                 'visualization_type': '3D',
+    #                 'processed_views': ['front', 'back', 'top']
+    #             }
+    #             self.feedback.insert_one(feedback_doc)
     def get_overall_analytics(self):
         """Gets comprehensive analytics for the overview dashboard"""
         try:

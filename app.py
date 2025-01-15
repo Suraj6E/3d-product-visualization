@@ -202,7 +202,7 @@ def upload_files():
 
         print(f"DEBUG: Successfully uploaded files: {uploaded_files}")
 
-        
+
         # Process metrics
         metrics = {}
         for key in request.form.keys():
@@ -377,11 +377,11 @@ def save_feedback(folder_name):
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
     
-# Add this temporarily to populate test data
-@app.route('/init-test-data')
-def init_test_data():
-    feedback_manager.insert_test_data()
-    return 'Test data inserted'
+# # Add this temporarily to populate test data
+# @app.route('/init-test-data')
+# def init_test_data():
+#     feedback_manager.insert_test_data()
+#     return 'Test data inserted'
 
 if __name__ == '__main__':
     try:
