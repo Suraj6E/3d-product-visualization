@@ -12,6 +12,7 @@ from urllib.parse import urlparse
 
 # Import our MongoDB managers and models
 from db.manager import user_manager, survey_manager, feedback_manager, tradeoff_analyzer, metrics_manager
+from PerformanceMonitor import performance_monitor
 from db.models import User
 from models.vision_processing import process_image, process_orthogonal_views
 
@@ -484,102 +485,6 @@ def calculate_engagement_metrics(start_date, end_date):
     ]
     
     return list(metrics_manager.metrics.aggregate(pipeline))
-
-# Add to app.py
-
-@app.route('/api/metrics/performance', methods=['POST'])
-@login_required
-def record_performance_metrics():
-    """
-    Endpoint to record detailed performance metrics from the frontend
-    This includes rendering performance, user interactions, and resource usage
-    """
-    data = request.json
-    try:
-        # Record basic metrics
-        metrics_manager.record_interaction(
-            user_id=current_user.get_id(),
-            folder_name=data['folder_name'],
-            interaction_type='performance_measurement',
-            duration=data['metrics'].get('render_time'),
-            quality_score=calculate_quality_score(data['metrics']),
-            platform_info=request.headers.get('User-Agent')
-        )
-
-        # Record detailed performance metrics
-        performance_monitor.record_render_performance(
-            folder_name=data['folder_name'],
-            metrics=data['metrics']
-        )
-
-        # Analyze performance and generate recommendations
-        analysis = performance_monitor.analyze_performance_trends(
-            folder_name=data['folder_name'],
-            days=7  # Look at the last week of data
-        )
-
-        # Calculate optimization score
-        optimization_score = performance_monitor.get_optimization_score(
-            data['folder_name']
-        )
-
-        response_data = {
-            'success': True,
-            'optimization_score': optimization_score,
-            'recommendations': analysis['recommendations'],
-            'trends': analysis['trends']
-        }
-
-        # If performance is below thresholds, add to monitoring queue
-        if optimization_score and optimization_score < 70:
-            add_to_monitoring_queue(data['folder_name'])
-
-        return jsonify(response_data)
-
-    except Exception as e:
-        print(f"Error recording performance metrics: {str(e)}")
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
-
-def calculate_quality_score(metrics):
-    """
-    Calculate a quality score based on performance metrics
-    Returns a score from 0-100
-    """
-    weights = {
-        'frame_rate': 0.4,
-        'render_time': 0.3,
-        'memory_usage': 0.3
-    }
-    
-    scores = {
-        'frame_rate': min(100, (metrics.get('frame_rate', 0) / 60) * 100),
-        'render_time': max(0, 100 - (metrics.get('render_time', 0) / 100)),
-        'memory_usage': max(0, 100 - (metrics.get('memory_usage', 0) / 1000))
-    }
-    
-    final_score = sum(scores[metric] * weight 
-                     for metric, weight in weights.items())
-    
-    return round(final_score, 2)
-
-def add_to_monitoring_queue(folder_name):
-    """
-    Add a folder to the performance monitoring queue for further analysis
-    """
-    monitoring_queue = db.monitoring_queue
-    
-    # Check if already in queue
-    existing = monitoring_queue.find_one({'folder_name': folder_name})
-    if not existing:
-        monitoring_queue.insert_one({
-            'folder_name': folder_name,
-            'added_at': datetime.utcnow(),
-            'status': 'pending',
-            'priority': 'high'
-        })
     
 if __name__ == '__main__':
     app.run(debug=True)

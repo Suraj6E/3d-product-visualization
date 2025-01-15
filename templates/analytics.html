@@ -7,6 +7,7 @@
     <title>Analytics Dashboard - 3D Product Visualization</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/analytics.css') }}">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="{{ url_for('static', filename='js/analytics-dashboard.js') }}"></script>
 </head>
 <body>
     <div class="container">
@@ -127,93 +128,5 @@
             </section>
         </main>
     </div>
-
-    <script>
-        // Analytics Dashboard JavaScript
-        document.addEventListener('DOMContentLoaded', () => {
-            // Initialize charts
-            createPerformanceChart();
-            createResourceChart();
-            createEngagementChart();
-            
-            // Handle date range updates
-            document.getElementById('update-range').addEventListener('click', updateDateRange);
-        });
-
-        function createPerformanceChart() {
-            const data = {{ performance_metrics|tojson }};
-            const trace = {
-                x: data.map(d => d._id),
-                y: data.map(d => d.avg_duration/1000),
-                type: 'bar',
-                name: 'Average Duration (s)'
-            };
-
-            const layout = {
-                title: 'Performance by Product',
-                xaxis: { title: 'Product' },
-                yaxis: { title: 'Average Duration (seconds)' }
-            };
-
-            Plotly.newPlot('performance-chart', [trace], layout);
-        }
-
-        function createResourceChart() {
-            const data = {{ resource_metrics|tojson }};
-            const traces = [{
-                x: data.map(d => d._id),
-                y: data.map(d => d.avg_cpu),
-                name: 'CPU Usage (%)',
-                type: 'bar'
-            }, {
-                x: data.map(d => d._id),
-                y: data.map(d => d.avg_memory),
-                name: 'Memory Usage (MB)',
-                type: 'bar'
-            }];
-
-            const layout = {
-                title: 'Resource Usage by Product',
-                barmode: 'group',
-                xaxis: { title: 'Product' },
-                yaxis: { title: 'Usage' }
-            };
-
-            Plotly.newPlot('resource-chart', traces, layout);
-        }
-
-        function createEngagementChart() {
-            const data = {{ engagement_stats|tojson }};
-            const trace = {
-                x: data.map(d => d.folder_name),
-                y: data.map(d => d.avg_quality),
-                type: 'scatter',
-                mode: 'lines+markers',
-                name: 'Average Quality Score'
-            };
-
-            const layout = {
-                title: 'User Engagement Quality',
-                xaxis: { title: 'Product' },
-                yaxis: { title: 'Average Quality Score' }
-            };
-
-            Plotly.newPlot('engagement-chart', [trace], layout);
-        }
-
-        async function updateDateRange() {
-            const startDate = document.getElementById('start-date').value;
-            const endDate = document.getElementById('end-date').value;
-            
-            try {
-                const response = await fetch(`/analytics?start=${startDate}&end=${endDate}`);
-                if (response.ok) {
-                    window.location.reload();
-                }
-            } catch (error) {
-                console.error('Failed to update date range:', error);
-            }
-        }
-    </script>
 </body>
 </html>
