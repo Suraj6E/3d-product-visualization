@@ -2,7 +2,7 @@
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 from bson.objectid import ObjectId
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 # Initialize MongoDB connection
 client = MongoClient('mongodb+srv://3dvis:.7yt_QtvB6fU68J@3dvisualization.eevq2.mongodb.net/')
@@ -93,45 +93,97 @@ class ProductFeedbackManager:
     def create_feedback(self, user_id, product_id, feedback_data):
         """Creates new product feedback with comprehensive metrics"""
         try:
+            # Get metrics from feedback_data
+            metrics_data = feedback_data.get('metrics', {})
+            
             feedback_doc = {
                 'user_id': ObjectId(user_id),
                 'product_id': product_id,
-                'rating': feedback_data.get('rating'),
-                'comment': feedback_data.get('comment'),
-                'timestamp': datetime.utcnow(),
+                'timestamp': datetime.now(timezone.utc),  # Use timezone-aware datetime
+                'interaction_type': feedback_data.get('interaction_type', 'feedback'),
                 'metrics': {
-                    # Load time and performance metrics
-                    'load_time': feedback_data.get('load_time'),
-                    'processing_time': feedback_data.get('processing_time'),
-                    'visual_quality_score': feedback_data.get('visual_quality_score'),
-                    'interaction_time': feedback_data.get('interaction_time'),
-                    
                     # System metrics
-                    'browser_info': feedback_data.get('browser_info'),
-                    'platform': feedback_data.get('platform'),
-                    'screen_resolution': feedback_data.get('screen_resolution'),
-                    'memory_usage': feedback_data.get('memory_usage'),
-                    'cpu_usage': feedback_data.get('cpu_usage'),
+                    'browser_info': metrics_data.get('system', {}).get('browser_info'),
+                    'platform': metrics_data.get('system', {}).get('platform'),
+                    'screen_resolution': metrics_data.get('system', {}).get('screen_resolution'),
+                    'memory_usage': metrics_data.get('system', {}).get('memory_usage'),
+                    'connection_type': metrics_data.get('system', {}).get('connection_type'),
+                    'device_type': metrics_data.get('system', {}).get('device_type'),
+                    'viewport_size': metrics_data.get('system', {}).get('viewport_size'),
                     
-                    # Interaction metrics
-                    'feature_usage': {
-                        'rotation': feedback_data.get('rotation_count', 0),
-                        'zoom': feedback_data.get('zoom_count', 0),
-                        'pan': feedback_data.get('pan_count', 0)
-                    }
+                    # Performance metrics
+                    'load_time': metrics_data.get('performance', {}).get('total_duration'),
+                    'navigation_timing': metrics_data.get('performance', {}).get('navigation_timing'),
+                    'processing_time': metrics_data.get('performance', {}).get('processing_time'),
+                    
+                    # File metrics if present
+                    'file_metrics': metrics_data.get('files', {})
                 },
                 'visualization_type': feedback_data.get('visualization_type', '3D'),
-                'processed_views': feedback_data.get('processed_views', []),
-                'session_data': {
-                    'start_time': feedback_data.get('session_start'),
-                    'end_time': feedback_data.get('session_end'),
-                    'total_duration': feedback_data.get('session_duration')
-                }
+                'processed_views': feedback_data.get('processed_views', [])
             }
-            return self.feedback.insert_one(feedback_doc)
+
+            # Remove None values from metrics
+            feedback_doc['metrics'] = {k: v for k, v in feedback_doc['metrics'].items() if v is not None}
+
+            result = self.feedback.insert_one(feedback_doc)
+            print(f"Debug: Inserted feedback document with id: {result.inserted_id}")
+            return result
+
         except Exception as e:
             print(f"Error creating feedback: {str(e)}")
             return None
+
+    def _calculate_processing_improvement(self, start_date, end_date):
+        """Calculates processing time improvement between two dates"""
+        try:
+            pipeline = [
+                {
+                    '$match': {
+                        'timestamp': {
+                            '$gte': start_date,
+                            '$lt': end_date
+                        }
+                    }
+                },
+                {
+                    '$group': {
+                        '_id': None,
+                        'avg_processing_time': {'$avg': '$metrics.processing_time'}
+                    }
+                }
+            ]
+            
+            results = list(self.feedback.aggregate(pipeline))
+            if not results:
+                return 0
+                
+            return results[0].get('avg_processing_time', 0)
+        except Exception as e:
+            print(f"Error calculating processing improvement: {str(e)}")
+            return 0
+
+    def _get_recent_activity(self, limit=10):
+        """Gets recent activity for the dashboard"""
+        try:
+            pipeline = [
+                {'$sort': {'timestamp': -1}},
+                {'$limit': limit},
+                {
+                    '$project': {
+                        'type': '$interaction_type',
+                        'timestamp': 1,
+                        'product_id': 1,
+                        'metrics': 1
+                    }
+                }
+            ]
+            
+            activities = list(self.feedback.aggregate(pipeline))
+            return activities
+        except Exception as e:
+            print(f"Error getting recent activity: {str(e)}")
+            return []
 
     def get_folder_feedback(self, folder_name):
         """Retrieves all feedback for a specific folder"""
@@ -268,27 +320,6 @@ class ProductFeedbackManager:
         self.feedback.create_index([('user_id', 1), ('product_id', 1)])
         self.feedback.create_index('timestamp')
         self.feedback.create_index('rating')
-
-    def create_feedback(self, user_id, product_id, feedback_data):
-        """Creates new product feedback with detailed metrics"""
-        feedback_doc = {
-            'user_id': ObjectId(user_id),
-            'product_id': product_id,
-            'rating': feedback_data.get('rating'),
-            'comment': feedback_data.get('comment'),
-            'timestamp': datetime.utcnow(),
-            'metrics': {
-                'load_time': feedback_data.get('load_time'),
-                'visual_quality_score': feedback_data.get('visual_quality_score'),
-                'interaction_time': feedback_data.get('interaction_time'),
-                'browser_info': feedback_data.get('browser_info'),
-                'platform': feedback_data.get('platform'),
-                'screen_resolution': feedback_data.get('screen_resolution')
-            },
-            'visualization_type': feedback_data.get('visualization_type', '3D'),
-            'processed_views': feedback_data.get('processed_views', [])
-        }
-        return self.feedback.insert_one(feedback_doc)
 
     def get_product_analytics(self, product_id):
         """Gets aggregated analytics for a product"""
@@ -809,6 +840,87 @@ class ProductFeedbackManager:
             'total_views': 0,
             'total_purchases': 0
         }
+    def get_overall_analytics(self):
+        """Gets comprehensive analytics for the dashboard"""
+        try:
+            end_date = datetime.now(timezone.utc)
+            start_date = end_date - timedelta(days=30)
+            
+            basic_metrics = {
+                'total_products': self._count_unique_products(),
+                'total_interactions': self._count_total_interactions(),
+                'avg_processing_time': self._get_avg_processing_time(),
+                'recent_activity': self._get_recent_activity()
+            }
+            
+            # Add performance trends
+            performance_trends = {
+                'processing_times': self._get_processing_time_trend(),
+                'interaction_counts': self._get_interaction_counts(),
+                'platform_distribution': self._get_platform_distribution()
+            }
+            
+            return {**basic_metrics, **performance_trends}
+        except Exception as e:
+            print(f"Error getting overall analytics: {str(e)}")
+            return self._get_default_analytics()
+
+    def _count_unique_products(self):
+        """Counts unique products in the system"""
+        try:
+            return len(self.feedback.distinct('product_id'))
+        except Exception as e:
+            print(f"Error counting products: {str(e)}")
+            return 0
+
+    def _count_total_interactions(self):
+        """Counts total interactions"""
+        try:
+            return self.feedback.count_documents({})
+        except Exception as e:
+            print(f"Error counting interactions: {str(e)}")
+            return 0
+
+    def _get_avg_processing_time(self):
+        """Gets average processing time"""
+        try:
+            pipeline = [
+                {
+                    '$group': {
+                        '_id': None,
+                        'avg_time': {'$avg': '$metrics.processing_time'}
+                    }
+                }
+            ]
+            results = list(self.feedback.aggregate(pipeline))
+            return results[0]['avg_time'] if results else 0
+        except Exception as e:
+            print(f"Error getting average processing time: {str(e)}")
+            return 0
+
+    def _get_processing_time_trend(self):
+        """Gets processing time trend over time"""
+        try:
+            pipeline = [
+                {
+                    '$group': {
+                        '_id': {
+                            '$dateToString': {
+                                'format': '%Y-%m-%d',
+                                'date': '$timestamp'
+                            }
+                        },
+                        'avg_time': {'$avg': '$metrics.processing_time'}
+                    }
+                },
+                {'$sort': {'_id': 1}},
+                {'$limit': 30}
+            ]
+            results = list(self.feedback.aggregate(pipeline))
+            return results
+        except Exception as e:
+            print(f"Error getting processing time trend: {str(e)}")
+            return []
         
 
 

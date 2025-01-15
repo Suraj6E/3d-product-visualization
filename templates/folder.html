@@ -111,16 +111,20 @@
 
         // Track 3D model interactions
         function trackModelInteractions(plotContainer) {
-            plotContainer.on('plotly_relayout', () => {
+            // Attach events after plot is created
+            plotContainer.addEventListener('plotly_relayout', () => {
                 interactionCounts.rotation++;
+                console.log('Rotation detected:', interactionCounts.rotation);
             });
 
-            plotContainer.on('plotly_zoom', () => {
+            plotContainer.addEventListener('plotly_zoom', () => {
                 interactionCounts.zoom++;
+                console.log('Zoom detected:', interactionCounts.zoom);
             });
 
-            plotContainer.on('plotly_pan', () => {
+            plotContainer.addEventListener('plotly_pan', () => {
                 interactionCounts.pan++;
+                console.log('Pan detected:', interactionCounts.pan);
             });
         }
         document.addEventListener('DOMContentLoaded', async () => {
@@ -135,11 +139,8 @@
             // Split the path by '/' and get the last segment
             const folderName = path.split('/').filter(Boolean).pop();
 
-            if (plotContainer) {
-                trackModelInteractions(plotContainer);
-            }
-
             // Function to load and display plot data
+            // Initialize plot and track interactions
             async function loadPlotData(isReprocessing = false) {
                 try {
                     statusMessage.textContent = isReprocessing ? 'Reprocessing images...' : 'Loading visualization...';
@@ -160,7 +161,7 @@
                     if (isReprocessing ? data.success : true) {
                         const plotData = isReprocessing ? data.plot : data;
 
-                        await Plotly.newPlot('plot-container',
+                        const plot = await Plotly.newPlot('plot-container',
                             plotData.data,
                             plotData.layout,
                             {
@@ -169,6 +170,26 @@
                                 displaylogo: false
                             }
                         );
+
+                        // Set up interaction tracking after plot is created
+                        const plotContainer = document.getElementById('plot-container');
+                        if (plotContainer) {
+                            // Track interactions using Plotly's events
+                            plotContainer.on('plotly_relayout', () => {
+                                interactionCounts.rotation++;
+                                console.log('Rotation:', interactionCounts.rotation);
+                            });
+
+                            plotContainer.on('plotly_zoom', () => {
+                                interactionCounts.zoom++;
+                                console.log('Zoom:', interactionCounts.zoom);
+                            });
+
+                            plotContainer.on('plotly_pan', () => {
+                                interactionCounts.pan++;
+                                console.log('Pan:', interactionCounts.pan);
+                            });
+                        }
 
                         statusMessage.textContent = isReprocessing ?
                             'Successfully reprocessed visualization' :
@@ -187,7 +208,7 @@
                 }
             }
 
-            // Try to load existing plot data when page loads
+            // Remove the separate trackModelInteractions call
             await loadPlotData(false);
 
             // Handle reprocessing button click
@@ -265,7 +286,7 @@
                     visual_quality_score: selectedRating.dataset.rating,
 
                     // Process information
-                    processed_views: processedViews // This should be set when processing images
+                    processed_views: [] // Default empty array instead of undefined processedViews
                 };
 
                 try {

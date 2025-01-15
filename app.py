@@ -2,6 +2,9 @@ import os
 import sys
 import json
 import numpy as np
+from datetime import datetime
+import traceback
+
 
 from models.vision_processing import process_image, process_orthogonal_views
 import plotly.utils
@@ -20,6 +23,9 @@ from routes.dashboard import dashboard
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here'  # Change this to a secure secret key
 app.config['UPLOAD_FOLDER'] = 'static/uploads/'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB max file size
+
 
 # Initialize Flask-Login with the correct login view
 login_manager = LoginManager()
@@ -163,7 +169,6 @@ def view_folder(folder_name):
 @app.route('/upload', methods=['POST'])
 def upload_files():
     """Handle file uploads to a folder with automatic view type naming"""
-
     try:
         if 'files[]' not in request.files:
             print("DEBUG: No files provided in request")
@@ -178,15 +183,21 @@ def upload_files():
             os.makedirs(folder_path)
             print(f"DEBUG: Created new folder: {folder_path}")
 
+        # Process files
         files = request.files.getlist('files[]')
         uploaded_files = []
-        
-        # Define view types in order of upload
+        processed_views = []
         view_types = ['front', 'back', 'top']
         
         # Process each file and assign view type based on order
         for i, file in enumerate(files):
             if file and file.filename:
+                if not allowed_file(file.filename):
+                    return jsonify({
+                        'success': False, 
+                        'message': f'File {file.filename} has an invalid format. Allowed formats: {", ".join(ALLOWED_EXTENSIONS)}'
+                    })
+                
                 # Get file extension
                 ext = os.path.splitext(file.filename)[1].lower()
                 
@@ -196,35 +207,38 @@ def upload_files():
                     file_path = os.path.join(folder_path, new_filename)
                     file.save(file_path)
                     uploaded_files.append(new_filename)
+                    processed_views.append(view_types[i])
                     print(f"DEBUG: Saved file as {new_filename}")
                 else:
                     print(f"DEBUG: Skipping extra file {file.filename}, maximum 3 views supported")
 
         print(f"DEBUG: Successfully uploaded files: {uploaded_files}")
 
-
         # Process metrics
-        metrics = {}
-        for key in request.form.keys():
-            if key.startswith('metrics['):
-                metric_name = key[8:-1]  # Remove 'metrics[' and ']'
-                metrics[metric_name] = json.loads(request.form[key])
+        # Process metrics
+        try:
+            metrics_data = json.loads(request.form.get('metrics', '{}'))
+            print(f"Debug: metrics_data: {metrics_data}")
+
+            feedback_data = {
+                'interaction_type': 'upload',
+                'metrics': metrics_data,  # Pass the entire metrics object
+                'processed_views': processed_views,
+                'visualization_type': '3D'
+            }
+
+            if current_user.is_authenticated:
+                result = feedback_manager.create_feedback(
+                    user_id=current_user.get_id(),
+                    product_id=folder_name,
+                    feedback_data=feedback_data
+                )
+                print(f"Debug: Feedback saved with result: {result}")
         
-        # Save upload metrics to feedback
-        feedback_data = {
-            'interaction_type': 'upload',
-            'load_time': metrics.get('upload_duration'),
-            'platform': metrics.get('platform'),
-            'browser_info': metrics.get('browser_info'),
-            'screen_resolution': metrics.get('screen_resolution'),
-        }
-        
-        feedback_manager.create_feedback(
-            user_id=current_user.get_id(),
-            product_id=folder_name,
-            feedback_data=feedback_data
-        )
-        
+        except Exception as metrics_error:
+            print(f"Debug: Error processing metrics: {str(metrics_error)}")
+            traceback.print_exc()  # Print full traceback for debugging
+
         return jsonify({
             'success': True,
             'message': 'Files uploaded successfully',
@@ -233,6 +247,8 @@ def upload_files():
         })
         
     except Exception as e:
+        print(f"Debug: Upload error: {str(e)}")
+        traceback.print_exc()
         return jsonify({'success': False, 'message': str(e)})
     
     
@@ -377,11 +393,10 @@ def save_feedback(folder_name):
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
     
-# # Add this temporarily to populate test data
-# @app.route('/init-test-data')
-# def init_test_data():
-#     feedback_manager.insert_test_data()
-#     return 'Test data inserted'
+# Add at the top of app.py
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 if __name__ == '__main__':
     try:

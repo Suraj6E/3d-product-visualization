@@ -129,15 +129,23 @@
         }
 
         // File metrics collection
-        function collectFileMetrics(files) {
+        function collectFileMetrics(fileInputs) {
+            const files = [];
+            // Gather files from all inputs
+            Object.values(fileInputs).forEach(input => {
+                if (input.files[0]) {
+                    files.push(input.files[0]);
+                }
+            });
+
             return {
                 total_files: files.length,
-                file_sizes: Array.from(files).map(file => ({
+                file_sizes: files.map(file => ({
                     name: file.name,
                     size: file.size,
                     type: file.type
                 })),
-                total_size: Array.from(files).reduce((sum, file) => sum + file.size, 0)
+                total_size: files.reduce((sum, file) => sum + file.size, 0)
             };
         }
 
