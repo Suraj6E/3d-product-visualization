@@ -81,24 +81,57 @@ class SurveyManager:
         }
         return self.surveys.insert_one(survey_doc)
 
+
+    
+    
 class ProductFeedbackManager:
-    """Handles all product feedback-related database operations"""
     def __init__(self):
         self.feedback = db.product_feedback
+        self.setup_indexes()
 
-    def create_feedback(self, user_id, folder_name, feedback_data):
-        """Creates new product feedback"""
-        feedback_doc = {
-            'user_id': user_id,
-            'folder_name': folder_name,
-            'rating': feedback_data.get('rating'),
-            'comment': feedback_data.get('comment'),
-            'timestamp': datetime.utcnow(),
-            'load_time': feedback_data.get('load_time'),
-            'visual_quality_score': feedback_data.get('visual_quality_score'),
-            'platform_info': feedback_data.get('platform_info')
-        }
-        return self.feedback.insert_one(feedback_doc)
+    
+    def create_feedback(self, user_id, product_id, feedback_data):
+        """Creates new product feedback with comprehensive metrics"""
+        try:
+            feedback_doc = {
+                'user_id': ObjectId(user_id),
+                'product_id': product_id,
+                'rating': feedback_data.get('rating'),
+                'comment': feedback_data.get('comment'),
+                'timestamp': datetime.utcnow(),
+                'metrics': {
+                    # Load time and performance metrics
+                    'load_time': feedback_data.get('load_time'),
+                    'processing_time': feedback_data.get('processing_time'),
+                    'visual_quality_score': feedback_data.get('visual_quality_score'),
+                    'interaction_time': feedback_data.get('interaction_time'),
+                    
+                    # System metrics
+                    'browser_info': feedback_data.get('browser_info'),
+                    'platform': feedback_data.get('platform'),
+                    'screen_resolution': feedback_data.get('screen_resolution'),
+                    'memory_usage': feedback_data.get('memory_usage'),
+                    'cpu_usage': feedback_data.get('cpu_usage'),
+                    
+                    # Interaction metrics
+                    'feature_usage': {
+                        'rotation': feedback_data.get('rotation_count', 0),
+                        'zoom': feedback_data.get('zoom_count', 0),
+                        'pan': feedback_data.get('pan_count', 0)
+                    }
+                },
+                'visualization_type': feedback_data.get('visualization_type', '3D'),
+                'processed_views': feedback_data.get('processed_views', []),
+                'session_data': {
+                    'start_time': feedback_data.get('session_start'),
+                    'end_time': feedback_data.get('session_end'),
+                    'total_duration': feedback_data.get('session_duration')
+                }
+            }
+            return self.feedback.insert_one(feedback_doc)
+        except Exception as e:
+            print(f"Error creating feedback: {str(e)}")
+            return None
 
     def get_folder_feedback(self, folder_name):
         """Retrieves all feedback for a specific folder"""
@@ -229,14 +262,6 @@ class ProductFeedbackManager:
                 'daily_reviews': [r['total_reviews'] for r in results]
             }
         }
-    
-
-# manager.py additions
-
-class ProductFeedbackManager:
-    def __init__(self):
-        self.feedback = db.product_feedback
-        self.setup_indexes()
 
     def setup_indexes(self):
         """Creates necessary indexes for feedback collection"""

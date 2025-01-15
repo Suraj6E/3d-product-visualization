@@ -99,6 +99,22 @@
     </div>
 
     <script>
+        // Add to index.html inside the existing script
+async function trackUploadMetrics(formData, startTime) {
+    const uploadDuration = Date.now() - startTime;
+    const systemMetrics = {
+        ...collectSystemMetrics(), // Same function as in folder.html
+        upload_duration: uploadDuration,
+        file_sizes: Array.from(formData.getAll('files[]')).map(file => file.size)
+    };
+    
+    // Add metrics to formData
+    Object.entries(systemMetrics).forEach(([key, value]) => {
+        formData.append(`metrics[${key}]`, JSON.stringify(value));
+    });
+    
+    return formData;
+}
         document.addEventListener('DOMContentLoaded', () => {
             // Setup file upload preview functionality for each view
             ['front', 'back', 'top'].forEach(view => {
@@ -128,6 +144,7 @@
             const folderInput = document.getElementById('folder-name');
 
             uploadBtn.addEventListener('click', async () => {
+                const startTime = Date.now();
                 const folderName = folderInput.value.trim();
                 const formData = new FormData();
 
@@ -160,9 +177,12 @@
                 formData.append('folder_name', folderName);
 
                 try {
+                      // Add metrics to form data
+        const formDataWithMetrics = await trackUploadMetrics(formData, startTime);
+        
                     const response = await fetch('/upload', {
                         method: 'POST',
-                        body: formData
+                        body: formDataWithMetrics
                     });
 
                     const data = await response.json();

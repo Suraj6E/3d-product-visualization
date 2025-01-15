@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/folder.css') }}">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
+
 <body>
     <div class="container">
         <header class="folder-header">
@@ -21,18 +23,17 @@
                 <div class="images-grid">
                     {% for image in images %}
                     <div class="image-card">
-                        <img src="{{ url_for('static', filename='uploads/' + folder_name + '/' + image) }}" 
-                             alt="{{ image }}" 
-                             class="product-view">
+                        <img src="{{ url_for('static', filename='uploads/' + folder_name + '/' + image) }}"
+                            alt="{{ image }}" class="product-view">
                         <div class="image-info">
                             {% if 'front' in image.lower() %}
-                                <span class="view-type">Front View</span>
+                            <span class="view-type">Front View</span>
                             {% elif 'back' in image.lower() %}
-                                <span class="view-type">Back View</span>
+                            <span class="view-type">Back View</span>
                             {% elif 'top' in image.lower() %}
-                                <span class="view-type">Top View</span>
+                            <span class="view-type">Top View</span>
                             {% else %}
-                                <span class="view-type">Additional View</span>
+                            <span class="view-type">Additional View</span>
                             {% endif %}
                         </div>
                     </div>
@@ -68,8 +69,8 @@
                     </div>
                     <div class="comment-container">
                         <label for="feedback-comment">Your Analysis:</label>
-                        <textarea id="feedback-comment" rows="4" 
-                                placeholder="Share your thoughts about this product's analysis..."></textarea>
+                        <textarea id="feedback-comment" rows="4"
+                            placeholder="Share your thoughts about this product's analysis..."></textarea>
                     </div>
                     <button id="submit-feedback" class="primary-btn">Submit Feedback</button>
                 </div>
@@ -82,12 +83,61 @@
     </div>
 
     <script>
+        let sessionStartTime = Date.now();
+        let interactionCounts = {
+            rotation: 0,
+            zoom: 0,
+            pan: 0
+        };
+        // Function to collect performance metrics
+        function collectPerformanceMetrics() {
+            const perfData = window.performance.timing;
+            return {
+                load_time: perfData.loadEventEnd - perfData.navigationStart,
+                processing_time: perfData.domComplete - perfData.domLoading
+            };
+        }
+
+        // Function to collect system metrics
+        function collectSystemMetrics() {
+            return {
+                browser_info: navigator.userAgent,
+                platform: navigator.platform,
+                screen_resolution: `${window.screen.width}x${window.screen.height}`,
+                memory_usage: window.performance.memory?.usedJSHeapSize || 0,
+                cpu_usage: 0 // This will need to be estimated based on processing time
+            };
+        }
+
+        // Track 3D model interactions
+        function trackModelInteractions(plotContainer) {
+            plotContainer.on('plotly_relayout', () => {
+                interactionCounts.rotation++;
+            });
+
+            plotContainer.on('plotly_zoom', () => {
+                interactionCounts.zoom++;
+            });
+
+            plotContainer.on('plotly_pan', () => {
+                interactionCounts.pan++;
+            });
+        }
         document.addEventListener('DOMContentLoaded', async () => {
+
             const processBtn = document.getElementById('process-btn');
             const plotContainer = document.getElementById('plot-container');
             const statusMessage = document.getElementById('processing-status');
             const submitFeedbackBtn = document.getElementById('submit-feedback');
-            const folderName = '{{ folder_name }}';
+            // Get the full URL path
+            const path = window.location.pathname;
+
+            // Split the path by '/' and get the last segment
+            const folderName = path.split('/').filter(Boolean).pop();
+
+            if (plotContainer) {
+                trackModelInteractions(plotContainer);
+            }
 
             // Function to load and display plot data
             async function loadPlotData(isReprocessing = false) {
@@ -96,22 +146,22 @@
                     if (isReprocessing) {
                         processBtn.disabled = true;
                     }
-                    
-                    const endpoint = isReprocessing ? 
-                        `/process/${folderName}` : 
+
+                    const endpoint = isReprocessing ?
+                        `/process/${folderName}` :
                         `/static/uploads/${folderName}/plot_data.json`;
-                    
+
                     const response = await fetch(endpoint);
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
                     const data = await response.json();
-                    
+
                     if (isReprocessing ? data.success : true) {
                         const plotData = isReprocessing ? data.plot : data;
-                        
-                        await Plotly.newPlot('plot-container', 
-                            plotData.data, 
+
+                        await Plotly.newPlot('plot-container',
+                            plotData.data,
                             plotData.layout,
                             {
                                 responsive: true,
@@ -120,16 +170,16 @@
                             }
                         );
 
-                        statusMessage.textContent = isReprocessing ? 
-                            'Successfully reprocessed visualization' : 
+                        statusMessage.textContent = isReprocessing ?
+                            'Successfully reprocessed visualization' :
                             'Visualization loaded';
                     } else if (isReprocessing) {
                         statusMessage.textContent = data.message || 'Processing failed';
                     }
                 } catch (error) {
                     console.error('Processing error:', error);
-                    statusMessage.textContent = isReprocessing ? 
-                        'Error during reprocessing' : 
+                    statusMessage.textContent = isReprocessing ?
+                        'Error during reprocessing' :
                         'Error loading visualization';
                 }
                 if (isReprocessing) {
@@ -139,7 +189,7 @@
 
             // Try to load existing plot data when page loads
             await loadPlotData(false);
-            
+
             // Handle reprocessing button click
             processBtn.addEventListener('click', () => loadPlotData(true));
 
@@ -185,20 +235,37 @@
                 const selectedRating = document.querySelector('.rating-btn.selected');
                 const comment = document.getElementById('feedback-comment').value;
 
-                if (!selectedRating) {
-                    alert('Please select a rating');
+                if (!selectedRating || !comment.trim()) {
+                    alert('Please provide both rating and comment');
                     return;
                 }
 
-                if (!comment.trim()) {
-                    alert('Please provide some analysis comments');
-                    return;
-                }
+                const sessionDuration = (Date.now() - sessionStartTime) / 1000; // in seconds
 
                 const feedback = {
                     rating: parseInt(selectedRating.dataset.rating),
                     comment: comment,
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+
+                    // Add collected metrics
+                    ...collectPerformanceMetrics(),
+                    ...collectSystemMetrics(),
+
+                    // Session data
+                    session_start: new Date(sessionStartTime).toISOString(),
+                    session_end: new Date().toISOString(),
+                    session_duration: sessionDuration,
+
+                    // Interaction data
+                    rotation_count: interactionCounts.rotation,
+                    zoom_count: interactionCounts.zoom,
+                    pan_count: interactionCounts.pan,
+
+                    // Visual quality metrics
+                    visual_quality_score: selectedRating.dataset.rating,
+
+                    // Process information
+                    processed_views: processedViews // This should be set when processing images
                 };
 
                 try {
@@ -213,13 +280,16 @@
                     const data = await response.json();
 
                     if (data.success) {
-                        // Clear form
+                        // Clear form and reload feedback
                         document.querySelectorAll('.rating-btn').forEach(btn =>
                             btn.classList.remove('selected'));
                         document.getElementById('feedback-comment').value = '';
-
-                        // Reload feedback
                         loadFolderFeedback();
+
+                        // Reset interaction counts
+                        interactionCounts = { rotation: 0, zoom: 0, pan: 0 };
+                        sessionStartTime = Date.now();
+
                         alert('Feedback saved successfully');
                     } else {
                         alert(data.error || 'Failed to save feedback');
@@ -241,4 +311,5 @@
         });
     </script>
 </body>
+
 </html>

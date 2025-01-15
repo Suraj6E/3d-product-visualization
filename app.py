@@ -163,48 +163,79 @@ def view_folder(folder_name):
 @app.route('/upload', methods=['POST'])
 def upload_files():
     """Handle file uploads to a folder with automatic view type naming"""
-    if 'files[]' not in request.files:
-        print("DEBUG: No files provided in request")
-        return jsonify({'success': False, 'message': 'No files provided'})
 
-    folder_name = request.form.get('folder_name', 'Untitled')
-    folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder_name)
-    print(f"DEBUG: Processing uploads for folder: {folder_name}")
+    try:
+        if 'files[]' not in request.files:
+            print("DEBUG: No files provided in request")
+            return jsonify({'success': False, 'message': 'No files provided'})
 
-    # Create folder if it doesn't exist
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-        print(f"DEBUG: Created new folder: {folder_path}")
+        folder_name = request.form.get('folder_name', 'Untitled')
+        folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder_name)
+        print(f"DEBUG: Processing uploads for folder: {folder_name}")
 
-    files = request.files.getlist('files[]')
-    uploaded_files = []
+        # Create folder if it doesn't exist
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+            print(f"DEBUG: Created new folder: {folder_path}")
+
+        files = request.files.getlist('files[]')
+        uploaded_files = []
+        
+        # Define view types in order of upload
+        view_types = ['front', 'back', 'top']
+        
+        # Process each file and assign view type based on order
+        for i, file in enumerate(files):
+            if file and file.filename:
+                # Get file extension
+                ext = os.path.splitext(file.filename)[1].lower()
+                
+                # Assign view type based on upload order
+                if i < len(view_types):
+                    new_filename = f"{view_types[i]}{ext}"
+                    file_path = os.path.join(folder_path, new_filename)
+                    file.save(file_path)
+                    uploaded_files.append(new_filename)
+                    print(f"DEBUG: Saved file as {new_filename}")
+                else:
+                    print(f"DEBUG: Skipping extra file {file.filename}, maximum 3 views supported")
+
+        print(f"DEBUG: Successfully uploaded files: {uploaded_files}")
+
+        
+        # Process metrics
+        metrics = {}
+        for key in request.form.keys():
+            if key.startswith('metrics['):
+                metric_name = key[8:-1]  # Remove 'metrics[' and ']'
+                metrics[metric_name] = json.loads(request.form[key])
+        
+        # Save upload metrics to feedback
+        feedback_data = {
+            'interaction_type': 'upload',
+            'load_time': metrics.get('upload_duration'),
+            'platform': metrics.get('platform'),
+            'browser_info': metrics.get('browser_info'),
+            'screen_resolution': metrics.get('screen_resolution'),
+        }
+        
+        feedback_manager.create_feedback(
+            user_id=current_user.get_id(),
+            product_id=folder_name,
+            feedback_data=feedback_data
+        )
+        
+        return jsonify({
+            'success': True,
+            'message': 'Files uploaded successfully',
+            'uploadedFiles': uploaded_files,
+            'redirect': url_for('view_folder', folder_name=folder_name)
+        })
+        
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
     
-    # Define view types in order of upload
-    view_types = ['front', 'back', 'top']
     
-    # Process each file and assign view type based on order
-    for i, file in enumerate(files):
-        if file and file.filename:
-            # Get file extension
-            ext = os.path.splitext(file.filename)[1].lower()
-            
-            # Assign view type based on upload order
-            if i < len(view_types):
-                new_filename = f"{view_types[i]}{ext}"
-                file_path = os.path.join(folder_path, new_filename)
-                file.save(file_path)
-                uploaded_files.append(new_filename)
-                print(f"DEBUG: Saved file as {new_filename}")
-            else:
-                print(f"DEBUG: Skipping extra file {file.filename}, maximum 3 views supported")
-
-    print(f"DEBUG: Successfully uploaded files: {uploaded_files}")
-    return jsonify({
-        'success': True, 
-        'message': 'Files uploaded successfully',
-        'uploadedFiles': uploaded_files,
-        'redirect': url_for('view_folder', folder_name=folder_name)
-    })
 
 @app.route('/process/<folder_name>')
 def process_folder(folder_name):
