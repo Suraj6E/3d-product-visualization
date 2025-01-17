@@ -55,25 +55,60 @@
                 </div>
             </section>
 
-            <!-- Feedback Section -->
+            <!-- Enhanced Feedback Section -->
             <section class="feedback-section">
                 <h2>Product Feedback</h2>
                 <div class="feedback-form">
+                    <!-- Visual Quality Rating -->
                     <div class="rating-container">
-                        <label>Overall Rating:</label>
-                        <div class="rating-buttons">
+                        <label>Visual Quality:</label>
+                        <div class="rating-buttons" data-type="visual">
                             {% for i in range(1, 11) %}
                             <button class="rating-btn" data-rating="{{ i }}">{{ i }}</button>
                             {% endfor %}
                         </div>
                     </div>
-                    <div class="comment-container">
-                        <label for="feedback-comment">Your Analysis:</label>
-                        <textarea id="feedback-comment" rows="4"
-                            placeholder="Share your thoughts about this product's analysis..."></textarea>
+
+                    <!-- Performance Rating -->
+                    <div class="rating-container">
+                        <label>Performance:</label>
+                        <div class="rating-buttons" data-type="performance">
+                            {% for i in range(1, 11) %}
+                            <button class="rating-btn" data-rating="{{ i }}">{{ i }}</button>
+                            {% endfor %}
+                        </div>
                     </div>
+
+                    <!-- Time Efficiency Rating -->
+                    <div class="rating-container">
+                        <label>Processing Time Satisfaction:</label>
+                        <div class="rating-buttons" data-type="time">
+                            {% for i in range(1, 11) %}
+                            <button class="rating-btn" data-rating="{{ i }}">{{ i }}</button>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Usefulness Rating -->
+                    <div class="rating-container">
+                        <label>Overall Usefulness:</label>
+                        <div class="rating-buttons" data-type="usefulness">
+                            {% for i in range(1, 11) %}
+                            <button class="rating-btn" data-rating="{{ i }}">{{ i }}</button>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Detailed Comment -->
+                    <div class="comment-container">
+                        <label for="feedback-comment">Detailed Feedback:</label>
+                        <textarea id="feedback-comment" rows="4"
+                            placeholder="Please share your detailed thoughts about the product analysis, visualization quality, performance, and overall experience..."></textarea>
+                    </div>
+
                     <button id="submit-feedback" class="primary-btn">Submit Feedback</button>
                 </div>
+
                 <div class="feedback-history">
                     <h3>Previous Analysis</h3>
                     <div id="feedback-list"></div>
@@ -82,216 +117,272 @@
         </main>
     </div>
 
+    <!-- Add this just before closing body tag in folder.html -->
     <script>
-        // Global tracking variables
-        let sessionStartTime = Date.now();
-        let modelInteractionStartTime = null;
-        let lastInteractionTime = null;
-        let totalModelInteractionTime = 0;
-        let isInteractingWithModel = false;
-        
-        let interactionCounts = {
-            rotation: 0,
-            zoom: 0,
-            pan: 0,
-            pageVisits: 1  // Initialize with current visit
-        };
-    
-        // Utility Functions
-        function collectPerformanceMetrics() {
-            const perfData = window.performance.timing;
-            return {
-                load_time: perfData.loadEventEnd - perfData.navigationStart,
-                processing_time: perfData.domComplete - perfData.domLoading
-            };
-        }
-    
-        function collectSystemMetrics() {
-            return {
-                browser_info: navigator.userAgent,
-                platform: navigator.platform,
-                screen_resolution: `${window.screen.width}x${window.screen.height}`,
-                memory_usage: window.performance.memory?.usedJSHeapSize || 0,
-                cpu_usage: 0
-            };
-        }
-    
-        // Function to save interaction data independently
-        async function saveInteractionData(folderName, includesFeedback = false) {
-            const currentTime = Date.now();
-            const sessionDuration = (currentTime - sessionStartTime) / 1000; // in seconds
-            
-            const interactionData = {
-                timestamp: new Date().toISOString(),
-                session_start: new Date(sessionStartTime).toISOString(),
-                session_end: new Date(currentTime).toISOString(),
-                session_duration: sessionDuration,
-                model_interaction_time: totalModelInteractionTime / 1000, // Convert to seconds
-                includes_feedback: includesFeedback,
-                
-                // Metrics
-                ...collectPerformanceMetrics(),
-                ...collectSystemMetrics(),
-                
-                // Interaction counts
-                interaction_counts: interactionCounts,
-            };
-    
-            try {
-                const response = await fetch(`/track-interaction/${folderName}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(interactionData)
-                });
-    
-                const data = await response.json();
-                console.log('Interaction tracking result:', data);
-                return data.success;
-            } catch (error) {
-                console.error('Error saving interaction data:', error);
-                return false;
+        // Initialize our tracking metrics to monitor user interaction and performance
+        let pageMetrics = {
+            pageStartTime: Date.now(),
+            lastInteractionTime: Date.now(),
+            modelGenerationStartTime: null,
+            modelGenerationEndTime: null,
+            modelInteractions: {
+                startTime: null,
+                totalDuration: 0,
+                isInteracting: false,
+                interactionCount: 0,
+                rotations: 0,
+                zooms: 0,
+                pans: 0
+            },
+            performanceMetrics: {
+                loadTime: 0,
+                generationTime: 0,
+                firstInteractionTime: null
             }
-        }
-    
-        // Setup periodic saving of interaction data (every 30 seconds)
-        setInterval(() => {
-            const path = window.location.pathname;
-            const folderName = path.split('/').filter(Boolean).pop();
-            saveInteractionData(folderName, false);
-        }, 30000);
-    
+        };
+
         document.addEventListener('DOMContentLoaded', async () => {
+            // Get all necessary DOM elements
             const processBtn = document.getElementById('process-btn');
             const plotContainer = document.getElementById('plot-container');
             const statusMessage = document.getElementById('processing-status');
             const submitFeedbackBtn = document.getElementById('submit-feedback');
             const path = window.location.pathname;
             const folderName = path.split('/').filter(Boolean).pop();
-    
-            // Track model interaction time
-            function startModelInteraction() {
-                if (!isInteractingWithModel) {
-                    isInteractingWithModel = true;
-                    modelInteractionStartTime = Date.now();
-                    console.log('Started model interaction');
-                }
-            }
-    
-            function stopModelInteraction() {
-                if (isInteractingWithModel) {
-                    const interactionDuration = Date.now() - modelInteractionStartTime;
-                    totalModelInteractionTime += interactionDuration;
-                    isInteractingWithModel = false;
-                    modelInteractionStartTime = null;
-                    console.log('Model interaction time:', totalModelInteractionTime / 1000, 'seconds');
-                }
-            }
-    
-            // Initialize plot and track interactions
+
+            // Core function to load and display 3D visualization
             async function loadPlotData(isReprocessing = false) {
                 try {
+                    // Start timing the model generation
+                    pageMetrics.modelGenerationStartTime = Date.now();
                     statusMessage.textContent = isReprocessing ? 'Reprocessing images...' : 'Loading visualization...';
+
                     if (isReprocessing) {
                         processBtn.disabled = true;
                     }
-    
+
                     const endpoint = isReprocessing ?
                         `/process/${folderName}` :
                         `/static/uploads/${folderName}/plot_data.json`;
-    
+
                     const response = await fetch(endpoint);
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
+
                     const data = await response.json();
-    
+
                     if (isReprocessing ? data.success : true) {
                         const plotData = isReprocessing ? data.plot : data;
-    
-                        const plot = await Plotly.newPlot('plot-container',
+
+                        // Create the interactive 3D visualization
+                        await Plotly.newPlot('plot-container',
                             plotData.data,
                             plotData.layout,
                             {
                                 responsive: true,
                                 displayModeBar: true,
-                                displaylogo: false
+                                displaylogo: false,
+                                modeBarButtonsToAdd: [{
+                                    name: 'Reset View',
+                                    icon: Plotly.Icons.home,
+                                    click: function (gd) {
+                                        Plotly.relayout(gd, {
+                                            'scene.camera': null
+                                        });
+                                    }
+                                }]
                             }
                         );
-    
-                        // Setup interaction tracking
-                        plotContainer.addEventListener('mousedown', startModelInteraction);
-                        plotContainer.addEventListener('touchstart', startModelInteraction);
-                        document.addEventListener('mouseup', stopModelInteraction);
-                        document.addEventListener('touchend', stopModelInteraction);
-    
-                        // Track specific interactions
+
+                        // Record generation completion time
+                        pageMetrics.modelGenerationEndTime = Date.now();
+                        pageMetrics.performanceMetrics.generationTime =
+                            (pageMetrics.modelGenerationEndTime - pageMetrics.modelGenerationStartTime) / 1000;
+
+                        // Set up interaction tracking
                         plotContainer.on('plotly_relayout', () => {
-                            interactionCounts.rotation++;
-                            console.log('Rotation count:', interactionCounts.rotation);
+                            pageMetrics.modelInteractions.rotations++;
+                            pageMetrics.lastInteractionTime = Date.now();
                         });
-    
+
                         plotContainer.on('plotly_zoom', () => {
-                            interactionCounts.zoom++;
-                            console.log('Zoom count:', interactionCounts.zoom);
+                            pageMetrics.modelInteractions.zooms++;
+                            pageMetrics.lastInteractionTime = Date.now();
                         });
-    
+
                         plotContainer.on('plotly_pan', () => {
-                            interactionCounts.pan++;
-                            console.log('Pan count:', interactionCounts.pan);
+                            pageMetrics.modelInteractions.pans++;
+                            pageMetrics.lastInteractionTime = Date.now();
                         });
-    
+
                         statusMessage.textContent = isReprocessing ?
                             'Successfully reprocessed visualization' :
                             'Visualization loaded';
-                    } else if (isReprocessing) {
-                        statusMessage.textContent = data.message || 'Processing failed';
+
+                        // Save initial load metrics
+                        await saveInteractionData(folderName, false);
                     }
                 } catch (error) {
                     console.error('Processing error:', error);
                     statusMessage.textContent = isReprocessing ?
                         'Error during reprocessing' :
                         'Error loading visualization';
+                } finally {
+                    if (isReprocessing) {
+                        processBtn.disabled = false;
+                    }
                 }
-                if (isReprocessing) {
-                    processBtn.disabled = false;
+            }//
+
+            // Track when user starts interacting with the 3D model
+            function startModelInteraction() {
+                if (!pageMetrics.modelInteractions.isInteracting) {
+                    pageMetrics.modelInteractions.isInteracting = true;
+                    pageMetrics.modelInteractions.startTime = Date.now();
+                    pageMetrics.modelInteractions.interactionCount++;
+
+                    if (!pageMetrics.performanceMetrics.firstInteractionTime) {
+                        pageMetrics.performanceMetrics.firstInteractionTime =
+                            Date.now() - pageMetrics.pageStartTime;
+                    }
                 }
             }
-    
-            // Initialize visualization
-            await loadPlotData(false);
-    
-            // Save initial page visit
-            await saveInteractionData(folderName, false);
-    
-            // Handle reprocessing
-            processBtn.addEventListener('click', () => loadPlotData(true));
-    
-            // Load initial feedback
-            loadFolderFeedback();
-    
+
+            // Track when user stops interacting with the 3D model
+            function stopModelInteraction() {
+                if (pageMetrics.modelInteractions.isInteracting) {
+                    const duration = Date.now() - pageMetrics.modelInteractions.startTime;
+                    pageMetrics.modelInteractions.totalDuration += duration;
+                    pageMetrics.modelInteractions.startTime = null;
+                    pageMetrics.modelInteractions.isInteracting = false;
+                }
+            }
+
+            // Collect comprehensive metrics for analysis
+            function collectMetrics() {
+                const currentTime = Date.now();
+                return {
+                    timing: {
+                        total_page_time: (currentTime - pageMetrics.pageStartTime) / 1000,
+                        model_interaction_time: pageMetrics.modelInteractions.totalDuration / 1000,
+                        first_interaction_delay: pageMetrics.performanceMetrics.firstInteractionTime ?
+                            pageMetrics.performanceMetrics.firstInteractionTime / 1000 : null,
+                        model_generation_time: pageMetrics.performanceMetrics.generationTime
+                    },
+                    interactions: {
+                        total_interactions: pageMetrics.modelInteractions.interactionCount,
+                        rotations: pageMetrics.modelInteractions.rotations,
+                        zooms: pageMetrics.modelInteractions.zooms,
+                        pans: pageMetrics.modelInteractions.pans
+                    },
+                    performance: {
+                        load_time: performance.timing.loadEventEnd - performance.timing.navigationStart,
+                        processing_time: performance.timing.domComplete - performance.timing.domLoading
+                    },
+                    system: {
+                        browser_info: navigator.userAgent,
+                        platform: navigator.platform,
+                        screen_resolution: `${window.screen.width}x${window.screen.height}`,
+                        viewport_size: `${window.innerWidth}x${window.innerHeight}`,
+                        connection_type: navigator.connection ? navigator.connection.effectiveType : 'unknown'
+                    }
+                };
+            }
+
+            // Save interaction data to the server
+            async function saveInteractionData(folderName, includesFeedback = false) {
+                try {
+                    const response = await fetch(`/track-interaction/${folderName}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            ...collectMetrics(),
+                            includes_feedback: includesFeedback
+                        })
+                    });
+
+                    return (await response.json()).success;
+                } catch (error) {
+                    console.error('Error saving interaction data:', error);
+                    return false;
+                }
+            }
+
+            // Handle feedback submission
+            async function submitFeedback() {
+                const ratings = {};
+                document.querySelectorAll('.rating-buttons').forEach(container => {
+                    const type = container.dataset.type;
+                    const selectedBtn = container.querySelector('.rating-btn.selected');
+                    if (selectedBtn) {
+                        ratings[type] = parseInt(selectedBtn.dataset.rating);
+                    }
+                });
+
+                const comment = document.getElementById('feedback-comment').value.trim();
+
+                if (!Object.keys(ratings).length || !comment) {
+                    alert('Please provide both a rating and feedback comment');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/feedback/${folderName}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            ...collectMetrics(),
+                            ratings: ratings,
+                            comment: comment
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Clear form
+                        document.querySelectorAll('.rating-btn').forEach(btn =>
+                            btn.classList.remove('selected'));
+                        document.getElementById('feedback-comment').value = '';
+
+                        await loadFolderFeedback();
+                        alert('Thank you! Your feedback has been submitted successfully.');
+                    } else {
+                        alert(result.error || 'Failed to submit feedback');
+                    }
+                } catch (error) {
+                    console.error('Feedback submission error:', error);
+                    alert('Failed to submit feedback. Please try again.');
+                }
+            }
+
+            // Load and display feedback history
             async function loadFolderFeedback() {
                 try {
                     const response = await fetch(`/get_feedback/${folderName}`);
                     const data = await response.json();
-                    console.log('Feedback data:', data); // Debug log
-    
                     const feedbackList = document.getElementById('feedback-list');
+
+                    if (!feedbackList) return;
                     feedbackList.innerHTML = '';
-    
-                    if (data.feedback && data.feedback.length > 0) {
+
+                    if (data.feedback?.length > 0) {
                         data.feedback.forEach(item => {
                             const feedbackItem = document.createElement('div');
                             feedbackItem.className = 'feedback-item';
                             feedbackItem.innerHTML = `
                                 <div class="feedback-header">
-                                    <span class="feedback-rating">Rating: ${item.rating}/10</span>
+                                    <span class="feedback-rating">Rating: ${item.ratings?.overall || 'N/A'}/10</span>
                                     <span class="feedback-time">
                                         ${new Date(item.timestamp).toLocaleString()}
                                     </span>
                                 </div>
-                                <div class="feedback-comment">${item.comment}</div>
+                                <div class="feedback-comment">${item.comment || ''}</div>
                             `;
                             feedbackList.appendChild(feedbackItem);
                         });
@@ -300,90 +391,52 @@
                     }
                 } catch (error) {
                     console.error('Error loading feedback:', error);
-                    document.getElementById('feedback-list').innerHTML =
-                        '<p>Error loading feedback. Please try again later.</p>';
+                    const feedbackList = document.getElementById('feedback-list');
+                    if (feedbackList) {
+                        feedbackList.innerHTML =
+                            '<p>Error loading feedback. Please try again later.</p>';
+                    }
                 }
             }
-    
-            // Handle feedback submission
-            submitFeedbackBtn.addEventListener('click', async () => {
-                const selectedRating = document.querySelector('.rating-btn.selected');
-                const comment = document.getElementById('feedback-comment').value;
-    
-                if (!selectedRating || !comment.trim()) {
-                    alert('Please provide both rating and comment');
-                    return;
-                }
-    
-                const sessionDuration = (Date.now() - sessionStartTime) / 1000;
-    
-                const feedback = {
-                    rating: parseInt(selectedRating.dataset.rating),
-                    comment: comment,
-                    timestamp: new Date().toISOString(),
-                    session_start: new Date(sessionStartTime).toISOString(),
-                    session_end: new Date().toISOString(),
-                    session_duration: sessionDuration,
-                    model_interaction_time: totalModelInteractionTime / 1000,
-                    rotation_count: interactionCounts.rotation,
-                    zoom_count: interactionCounts.zoom,
-                    pan_count: interactionCounts.pan,
-                    visual_quality_score: parseInt(selectedRating.dataset.rating),
-                    ...collectPerformanceMetrics(),
-                    ...collectSystemMetrics(),
-                    processed_views: []
-                };
-    
-                try {
-                    const response = await fetch(`/feedback/${folderName}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(feedback)
-                    });
-    
-                    const data = await response.json();
-                    console.log('Feedback submission response:', data); // Debug log
-    
-                    if (data.success) {
-                        // Save interaction data with feedback flag
-                        await saveInteractionData(folderName, true);
-    
-                        // Clear form and reload feedback
-                        document.querySelectorAll('.rating-btn').forEach(btn =>
-                            btn.classList.remove('selected'));
-                        document.getElementById('feedback-comment').value = '';
-                        loadFolderFeedback();
-    
-                        // Reset counters
-                        interactionCounts = { rotation: 0, zoom: 0, pan: 0, pageVisits: 1 };
-                        sessionStartTime = Date.now();
-                        totalModelInteractionTime = 0;
-    
-                        alert('Feedback saved successfully');
-                    } else {
-                        alert(data.error || 'Failed to save feedback');
-                    }
-                } catch (error) {
-                    console.error('Feedback error:', error);
-                    alert('Failed to save feedback. Please try again.');
-                }
-            });
-    
-            // Rating button handlers
+
+            // Set up all event listeners
+            plotContainer.addEventListener('mousedown', startModelInteraction);
+            plotContainer.addEventListener('touchstart', startModelInteraction);
+            document.addEventListener('mouseup', stopModelInteraction);
+            document.addEventListener('touchend', stopModelInteraction);
+
+            processBtn.addEventListener('click', () => loadPlotData(true));
+            submitFeedbackBtn.addEventListener('click', submitFeedback);
+
             document.querySelectorAll('.rating-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    document.querySelectorAll('.rating-btn').forEach(b =>
+                    const container = btn.closest('.rating-buttons');
+                    container.querySelectorAll('.rating-btn').forEach(b =>
                         b.classList.remove('selected'));
                     btn.classList.add('selected');
                 });
             });
-    
+
+            // Track page visibility changes
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden && pageMetrics.modelInteractions.isInteracting) {
+                    stopModelInteraction();
+                }
+            });
+
+            // Save interaction data periodically (every 30 seconds)
+            setInterval(() => {
+                saveInteractionData(folderName, false);
+            }, 30000);
+
             // Save interaction data when leaving the page
             window.addEventListener('beforeunload', () => {
                 saveInteractionData(folderName, false);
             });
+
+            // Initialize the page
+            await loadPlotData(false);
+            await loadFolderFeedback();
         });
     </script>
 </body>
