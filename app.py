@@ -18,13 +18,17 @@ from db.manager import user_manager, survey_manager, feedback_manager
 from db.models import User
 from models.vision_processing import process_image, process_orthogonal_views
 
+
+from config import Config
+from models.enhanced_visualization import Enhanced3DVisualizer
+from models.model_monitoring import ModelMonitor
+from utils.benchmark_system import BenchmarkSystem
+
 from routes.dashboard import dashboard
+from routes.visualization import visualization
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-here'  # Change this to a secure secret key
-app.config['UPLOAD_FOLDER'] = 'static/uploads/'
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB max file size
+app.config.from_object(Config)
 
 
 # Initialize Flask-Login with the correct login view
@@ -32,6 +36,11 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'  # Changed from 'auth.login' to just 'login'
 login_manager.login_message = 'Please log in to access this feature.'
+
+# Initialize our enhanced visualization system
+visualizer = Enhanced3DVisualizer(log_dir=app.config['LOG_DIR'])
+monitor = ModelMonitor(log_dir=app.config['LOG_DIR'])
+benchmark_system = BenchmarkSystem(output_dir=app.config['BENCHMARK_DIR'])
 
 app.register_blueprint(dashboard)
 
@@ -44,6 +53,14 @@ def is_safe_url(target):
     test_url = urlparse(target)
     return (not test_url.scheme and not test_url.netloc) or \
            (test_url.scheme == ref_url.scheme and test_url.netloc == ref_url.netloc)
+
+
+@app.context_processor
+def utility_processor():
+    """Make monitoring data available to all templates"""
+    def get_model_metrics():
+        return monitor.get_summary_metrics()
+    return dict(get_model_metrics=get_model_metrics)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -132,6 +149,7 @@ def logout():
 @app.route('/')
 def index():
     """Home page showing list of folders"""
+    print("Upload folder: ", app.config['UPLOAD_FOLDER'])
     folders = [f for f in os.listdir(app.config['UPLOAD_FOLDER']) 
             if os.path.isdir(os.path.join(app.config['UPLOAD_FOLDER'], f))]
     return render_template('index.html', folders=folders)
@@ -196,7 +214,7 @@ def upload_files():
                 if not allowed_file(file.filename):
                     return jsonify({
                         'success': False, 
-                        'message': f'File {file.filename} has an invalid format. Allowed formats: {", ".join(ALLOWED_EXTENSIONS)}'
+                        'message': f'File {file.filename} has an invalid format. Allowed formats: {", ".join(app.config['ALLOWED_EXTENSIONS'])}'
                     })
                 
                 # Get file extension
@@ -274,6 +292,7 @@ def track_interaction(folder_name):
 
 @app.route('/process/<folder_name>')
 def process_folder(folder_name):
+    print("Process folder: ", app.config['UPLOAD_FOLDER'])
     """Process images in a folder and generate 3D visualization"""
     folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder_name)
     print(f"DEBUG: Processing folder: {folder_path}")
@@ -415,7 +434,7 @@ def save_feedback(folder_name):
 # Add at the top of app.py
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+           filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 if __name__ == '__main__':
     try:

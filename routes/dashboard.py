@@ -2,6 +2,7 @@
 from flask import Blueprint, render_template, jsonify, request
 from flask_login import login_required, current_user
 from db.manager import feedback_manager
+from utils.benchmark_runner import run_folder_benchmarks
 
 dashboard = Blueprint('dashboard', __name__)
 
@@ -109,3 +110,30 @@ def get_dashboard_metrics():
         return jsonify({'success': True, 'data': metrics})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
+
+
+@dashboard.route('/dashboard/run-benchmarks')
+@login_required
+def run_benchmarks():
+    """
+    Run benchmarks and return results with proper error handling
+    """
+    try:
+        from utils.benchmark_runner import run_folder_benchmarks
+        results = run_folder_benchmarks()
+        
+        # Ensure we always return a valid JSON response
+        response = {
+            'success': True,
+            'data': results if results else {'error': 'No results generated'},
+            'message': 'Benchmarks completed successfully'
+        }
+        
+        return jsonify(response)
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e),
+            'message': 'Error running benchmarks'
+        }), 500

@@ -117,7 +117,6 @@
         </main>
     </div>
 
-    <!-- Add this just before closing body tag in folder.html -->
     <script>
         // Initialize our tracking metrics to monitor user interaction and performance
         let pageMetrics = {
@@ -140,7 +139,7 @@
                 firstInteractionTime: null
             }
         };
-
+    
         document.addEventListener('DOMContentLoaded', async () => {
             // Get all necessary DOM elements
             const processBtn = document.getElementById('process-btn');
@@ -149,35 +148,35 @@
             const submitFeedbackBtn = document.getElementById('submit-feedback');
             const path = window.location.pathname;
             const folderName = path.split('/').filter(Boolean).pop();
-
+    
             // Core function to load and display 3D visualization
             async function loadPlotData(isReprocessing = false) {
                 try {
                     // Start timing the model generation
                     pageMetrics.modelGenerationStartTime = Date.now();
                     statusMessage.textContent = isReprocessing ? 'Reprocessing images...' : 'Loading visualization...';
-
+                    
                     if (isReprocessing) {
                         processBtn.disabled = true;
                     }
-
-                    const endpoint = isReprocessing ?
-                        `/process/${folderName}` :
+    
+                    const endpoint = isReprocessing ? 
+                        `/process/${folderName}` : 
                         `/static/uploads/${folderName}/plot_data.json`;
-
+    
                     const response = await fetch(endpoint);
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
-
+                    
                     const data = await response.json();
-
+                    
                     if (isReprocessing ? data.success : true) {
                         const plotData = isReprocessing ? data.plot : data;
-
+                        
                         // Create the interactive 3D visualization
-                        await Plotly.newPlot('plot-container',
-                            plotData.data,
+                        await Plotly.newPlot('plot-container', 
+                            plotData.data, 
                             plotData.layout,
                             {
                                 responsive: true,
@@ -186,7 +185,7 @@
                                 modeBarButtonsToAdd: [{
                                     name: 'Reset View',
                                     icon: Plotly.Icons.home,
-                                    click: function (gd) {
+                                    click: function(gd) {
                                         Plotly.relayout(gd, {
                                             'scene.camera': null
                                         });
@@ -194,39 +193,39 @@
                                 }]
                             }
                         );
-
+    
                         // Record generation completion time
                         pageMetrics.modelGenerationEndTime = Date.now();
-                        pageMetrics.performanceMetrics.generationTime =
+                        pageMetrics.performanceMetrics.generationTime = 
                             (pageMetrics.modelGenerationEndTime - pageMetrics.modelGenerationStartTime) / 1000;
-
+    
                         // Set up interaction tracking
                         plotContainer.on('plotly_relayout', () => {
                             pageMetrics.modelInteractions.rotations++;
                             pageMetrics.lastInteractionTime = Date.now();
                         });
-
+    
                         plotContainer.on('plotly_zoom', () => {
                             pageMetrics.modelInteractions.zooms++;
                             pageMetrics.lastInteractionTime = Date.now();
                         });
-
+    
                         plotContainer.on('plotly_pan', () => {
                             pageMetrics.modelInteractions.pans++;
                             pageMetrics.lastInteractionTime = Date.now();
                         });
-
-                        statusMessage.textContent = isReprocessing ?
-                            'Successfully reprocessed visualization' :
+    
+                        statusMessage.textContent = isReprocessing ? 
+                            'Successfully reprocessed visualization' : 
                             'Visualization loaded';
-
+    
                         // Save initial load metrics
                         await saveInteractionData(folderName, false);
                     }
                 } catch (error) {
                     console.error('Processing error:', error);
-                    statusMessage.textContent = isReprocessing ?
-                        'Error during reprocessing' :
+                    statusMessage.textContent = isReprocessing ? 
+                        'Error during reprocessing' : 
                         'Error loading visualization';
                 } finally {
                     if (isReprocessing) {
@@ -234,21 +233,21 @@
                     }
                 }
             }
-
+    
             // Track when user starts interacting with the 3D model
             function startModelInteraction() {
                 if (!pageMetrics.modelInteractions.isInteracting) {
                     pageMetrics.modelInteractions.isInteracting = true;
                     pageMetrics.modelInteractions.startTime = Date.now();
                     pageMetrics.modelInteractions.interactionCount++;
-
+                    
                     if (!pageMetrics.performanceMetrics.firstInteractionTime) {
-                        pageMetrics.performanceMetrics.firstInteractionTime =
+                        pageMetrics.performanceMetrics.firstInteractionTime = 
                             Date.now() - pageMetrics.pageStartTime;
                     }
                 }
             }
-
+    
             // Track when user stops interacting with the 3D model
             function stopModelInteraction() {
                 if (pageMetrics.modelInteractions.isInteracting) {
@@ -258,7 +257,7 @@
                     pageMetrics.modelInteractions.isInteracting = false;
                 }
             }
-
+    
             // Collect comprehensive metrics for analysis
             function collectMetrics() {
                 const currentTime = Date.now();
@@ -266,7 +265,7 @@
                     timing: {
                         total_page_time: (currentTime - pageMetrics.pageStartTime) / 1000,
                         model_interaction_time: pageMetrics.modelInteractions.totalDuration / 1000,
-                        first_interaction_delay: pageMetrics.performanceMetrics.firstInteractionTime ?
+                        first_interaction_delay: pageMetrics.performanceMetrics.firstInteractionTime ? 
                             pageMetrics.performanceMetrics.firstInteractionTime / 1000 : null,
                         model_generation_time: pageMetrics.performanceMetrics.generationTime
                     },
@@ -289,7 +288,7 @@
                     }
                 };
             }
-
+    
             // Save interaction data to the server
             async function saveInteractionData(folderName, includesFeedback = false) {
                 try {
@@ -303,14 +302,14 @@
                             includes_feedback: includesFeedback
                         })
                     });
-
+    
                     return (await response.json()).success;
                 } catch (error) {
                     console.error('Error saving interaction data:', error);
                     return false;
                 }
             }
-
+    
             // Handle feedback submission
             async function submitFeedback() {
                 const ratings = {};
@@ -321,14 +320,14 @@
                         ratings[type] = parseInt(selectedBtn.dataset.rating);
                     }
                 });
-
+    
                 const comment = document.getElementById('feedback-comment').value.trim();
-
+    
                 if (!Object.keys(ratings).length || !comment) {
                     alert('Please provide both a rating and feedback comment');
                     return;
                 }
-
+    
                 try {
                     const response = await fetch(`/feedback/${folderName}`, {
                         method: 'POST',
@@ -341,15 +340,15 @@
                             comment: comment
                         })
                     });
-
+    
                     const result = await response.json();
-
+                    
                     if (result.success) {
                         // Clear form
-                        document.querySelectorAll('.rating-btn').forEach(btn =>
+                        document.querySelectorAll('.rating-btn').forEach(btn => 
                             btn.classList.remove('selected'));
                         document.getElementById('feedback-comment').value = '';
-
+                        
                         await loadFolderFeedback();
                         alert('Thank you! Your feedback has been submitted successfully.');
                     } else {
@@ -360,17 +359,17 @@
                     alert('Failed to submit feedback. Please try again.');
                 }
             }
-
+    
             // Load and display feedback history
             async function loadFolderFeedback() {
                 try {
                     const response = await fetch(`/get_feedback/${folderName}`);
                     const data = await response.json();
                     const feedbackList = document.getElementById('feedback-list');
-
+    
                     if (!feedbackList) return;
                     feedbackList.innerHTML = '';
-
+    
                     if (data.feedback?.length > 0) {
                         data.feedback.forEach(item => {
                             const feedbackItem = document.createElement('div');
@@ -393,47 +392,47 @@
                     console.error('Error loading feedback:', error);
                     const feedbackList = document.getElementById('feedback-list');
                     if (feedbackList) {
-                        feedbackList.innerHTML =
+                        feedbackList.innerHTML = 
                             '<p>Error loading feedback. Please try again later.</p>';
                     }
                 }
             }
-
+    
             // Set up all event listeners
             plotContainer.addEventListener('mousedown', startModelInteraction);
             plotContainer.addEventListener('touchstart', startModelInteraction);
             document.addEventListener('mouseup', stopModelInteraction);
             document.addEventListener('touchend', stopModelInteraction);
-
+            
             processBtn.addEventListener('click', () => loadPlotData(true));
             submitFeedbackBtn.addEventListener('click', submitFeedback);
-
+    
             document.querySelectorAll('.rating-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const container = btn.closest('.rating-buttons');
-                    container.querySelectorAll('.rating-btn').forEach(b =>
+                    container.querySelectorAll('.rating-btn').forEach(b => 
                         b.classList.remove('selected'));
                     btn.classList.add('selected');
                 });
             });
-
+    
             // Track page visibility changes
             document.addEventListener('visibilitychange', () => {
                 if (document.hidden && pageMetrics.modelInteractions.isInteracting) {
                     stopModelInteraction();
                 }
             });
-
+    
             // Save interaction data periodically (every 30 seconds)
             setInterval(() => {
                 saveInteractionData(folderName, false);
             }, 30000);
-
+    
             // Save interaction data when leaving the page
             window.addEventListener('beforeunload', () => {
                 saveInteractionData(folderName, false);
             });
-
+    
             // Initialize the page
             await loadPlotData(false);
             await loadFolderFeedback();

@@ -1,0 +1,32 @@
+{
+  "id": "20250121_194916",
+  "timestamp": "2025-01-21T19:49:16.237310",
+  "system_info": {
+    "device": "cuda",
+    "gpu_info": "NVIDIA GeForce GTX 1660 Ti",
+    "python_version": "3.12.1",
+    "torch_version": "2.2.0+cu121",
+    "cpu_count": 12,
+    "memory_total": 16225.7890625
+  },
+  "test_cases": [
+    {
+      "test_id": "Chair",
+      "processing_time": 0.01941847801208496,
+      "success": false,
+      "error": "'Enhanced3DVisualizer' object has no attribute '_normalize_single_image'"
+    },
+    {
+      "test_id": "green-tshirt",
+      "processing_time": 0.010821342468261719,
+      "success": false,
+      "error": "'Enhanced3DVisualizer' object has no attribute '_normalize_single_image'"
+    }
+  ],
+  "summary": {
+    "total_tests": 2,
+    "successful_tests": 0,
+    "success_rate": 0,
+    "average_metrics": null
+  }
+}

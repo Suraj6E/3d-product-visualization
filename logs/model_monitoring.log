@@ -1,0 +1,41 @@
+2025-01-21 19:47:25,300 - werkzeug - WARNING -  * Debugger is active!
+2025-01-21 19:47:25,300 - werkzeug - INFO -  * Debugger PIN: 316-943-606
+2025-01-21 19:47:25,381 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:25] "GET / HTTP/1.1" 200 -
+2025-01-21 19:47:25,483 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:25] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-01-21 19:47:43,200 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:43] "GET /folder/Chair HTTP/1.1" 200 -
+2025-01-21 19:47:43,406 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:43] "[36mGET /static/css/folder.css HTTP/1.1[0m" 304 -
+2025-01-21 19:47:43,546 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:43] "GET /static/uploads/Chair/plot_data.json HTTP/1.1" 200 -
+2025-01-21 19:47:43,546 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:43] "GET /static/uploads/Chair/back.jpg HTTP/1.1" 200 -
+2025-01-21 19:47:43,547 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:43] "GET /static/uploads/Chair/front.jpg HTTP/1.1" 200 -
+2025-01-21 19:47:43,787 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:43] "GET /static/uploads/Chair/top.jpg HTTP/1.1" 200 -
+2025-01-21 19:47:44,499 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:44] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-01-21 19:47:44,814 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:44] "GET /get_feedback/Chair HTTP/1.1" 200 -
+2025-01-21 19:47:47,833 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:47] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-01-21 19:47:48,096 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:48] "GET / HTTP/1.1" 200 -
+2025-01-21 19:47:48,447 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:48] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-01-21 19:48:12,167 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:48:12] "GET /dashboard HTTP/1.1" 200 -
+2025-01-21 19:48:12,514 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:48:12] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-01-21 19:48:12,923 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:48:12] "GET /dashboard/metrics?days=30 HTTP/1.1" 200 -
+2025-01-21 19:49:03,013 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:49:03] "GET /dashboard/metrics HTTP/1.1" 200 -
+2025-01-21 19:49:16,239 - ModelMonitor - INFO - Started processing image: b65eae6e-6ebf-48ca-9ea4-ca8ccb7f4f72
+2025-01-21 19:49:16,241 - ModelMonitor - INFO - Started stage: normalization
+2025-01-21 19:49:16,258 - ModelMonitor - ERROR - Processing error: 'Enhanced3DVisualizer' object has no attribute '_normalize_single_image'
+2025-01-21 19:49:16,258 - ModelMonitor - INFO - Started processing image: a2addc96-1629-4b58-94ca-4411514c6c15
+2025-01-21 19:49:16,259 - ModelMonitor - INFO - Started stage: normalization
+2025-01-21 19:49:16,268 - ModelMonitor - ERROR - Processing error: 'Enhanced3DVisualizer' object has no attribute '_normalize_single_image'
+2025-01-21 19:49:16,277 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:49:16] "[35m[1mGET /dashboard/run-benchmarks HTTP/1.1[0m" 500 -
+2025-01-21 19:49:16,350 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:49:16] "GET /dashboard/run-benchmarks?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
+2025-01-21 19:49:16,645 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:49:16] "GET /dashboard/run-benchmarks?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
+2025-01-21 19:49:16,977 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:49:16] "GET /dashboard/run-benchmarks?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
+2025-01-21 19:49:17,236 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:49:17] "[36mGET /dashboard/run-benchmarks?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+2025-01-21 19:51:27,410 - werkzeug - INFO -  * Detected change in 'C:\\Work\\Masters\\3d-product-visualization\\routes\\dashboard.py', reloading
+2025-01-21 19:51:37,549 - werkzeug - WARNING -  * Debugger is active!
+2025-01-21 19:51:37,549 - werkzeug - INFO -  * Debugger PIN: 316-943-606
+2025-01-21 19:51:39,155 - ModelMonitor - INFO - Started processing image: 0a5aa6ef-b9ca-40e4-a8d0-d049d2debc5e
+2025-01-21 19:51:39,156 - ModelMonitor - INFO - Started stage: normalization
+2025-01-21 19:51:39,160 - ModelMonitor - ERROR - Processing error: 'Enhanced3DVisualizer' object has no attribute '_normalize_single_image'
+2025-01-21 19:51:39,160 - ModelMonitor - INFO - Started processing image: c2451562-1a85-45b5-ac10-2e09b6dba5aa
+2025-01-21 19:51:39,161 - ModelMonitor - INFO - Started stage: normalization
+2025-01-21 19:51:39,168 - ModelMonitor - ERROR - Processing error: 'Enhanced3DVisualizer' object has no attribute '_normalize_single_image'
+2025-01-21 19:51:39,172 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:51:39] "[35m[1mGET /dashboard/run-benchmarks HTTP/1.1[0m" 500 -
+2025-01-21 19:53:44,610 - werkzeug - INFO -  * Detected change in 'C:\\Work\\Masters\\3d-product-visualization\\config.py', reloading
