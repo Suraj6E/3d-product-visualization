@@ -39,3 +39,5 @@
 2025-01-21 19:51:39,168 - ModelMonitor - ERROR - Processing error: 'Enhanced3DVisualizer' object has no attribute '_normalize_single_image'
 2025-01-21 19:51:39,172 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:51:39] "[35m[1mGET /dashboard/run-benchmarks HTTP/1.1[0m" 500 -
 2025-01-21 19:53:44,610 - werkzeug - INFO -  * Detected change in 'C:\\Work\\Masters\\3d-product-visualization\\config.py', reloading
+2025-01-21 19:53:54,357 - werkzeug - WARNING -  * Debugger is active!
+2025-01-21 19:53:54,368 - werkzeug - INFO -  * Debugger PIN: 316-943-606
