@@ -3,13 +3,15 @@ import os
 from pathlib import Path
 from models.enhanced_visualization import Enhanced3DVisualizer
 from utils.benchmark_system import BenchmarkSystem
+from typing import Dict, List
+import datetime
+import json
 
-def run_folder_benchmarks(upload_folder="static/uploads"):
+def run_folder_benchmarks(upload_folder="static/uploads") -> Dict:
     """
     Run benchmarks using existing folders in the uploads directory.
-    This function automatically discovers and tests all product folders.
+    Returns a properly structured result even if some tests fail.
     """
-    # Initialize our systems
     visualizer = Enhanced3DVisualizer()
     benchmark = BenchmarkSystem()
     
@@ -17,15 +19,13 @@ def run_folder_benchmarks(upload_folder="static/uploads"):
     test_data = []
     uploads_path = Path(upload_folder)
     
-    # Scan through all folders in the uploads directory
+    print("\nScanning for test cases...")
     for folder in uploads_path.iterdir():
         if folder.is_dir():
-            # Look for front, back, and top view images
             front_image = next(folder.glob("front.*"), None)
             back_image = next(folder.glob("back.*"), None)
             top_image = next(folder.glob("top.*"), None)
             
-            # If we have at least one view, add it to test data
             if any([front_image, back_image, top_image]):
                 test_case = {
                     'id': folder.name,
@@ -34,43 +34,80 @@ def run_folder_benchmarks(upload_folder="static/uploads"):
                     'top': str(top_image) if top_image else None
                 }
                 test_data.append(test_case)
-                print(f"Added test case from folder: {folder.name}")
+                print(f"Found test case: {folder.name}")
 
     if not test_data:
-        print("No test cases found in uploads folder!")
-        return
+        return {
+            'success': False,
+            'error': 'No test cases found',
+            'summary': get_empty_summary()
+        }
 
-    # Run benchmarks
     print(f"\nRunning benchmarks on {len(test_data)} test cases...")
-    results = benchmark.run_benchmark(visualizer, test_data)
+    try:
+        results = benchmark.run_benchmark(visualizer, test_data)
+        success_rate = calculate_success_rate(results)
+        
+        print("\n=== Benchmark Results ===")
+        print(f"\nOverall Performance:")
+        print(f"Success Rate: {success_rate:.2f}%")
+        
+        if 'stage_analysis' in results.get('summary', {}):
+            print("\nProcessing Stage Analysis:")
+            for stage, metrics in results['summary']['stage_analysis'].items():
+                print(f"\nStage: {stage}")
+                print(f"Average Time: {metrics['time_profile'].get('mean', 0):.2f}s")
+                if metrics.get('quality_profile', {}).get('mean'):
+                    print(f"Quality Score: {metrics['quality_profile']['mean']:.2f}")
+        
+        return results
+        
+    except Exception as e:
+        print(f"\nError running benchmarks: {str(e)}")
+        return {
+            'success': False,
+            'error': str(e),
+            'summary': get_empty_summary()
+        }
 
-    # Print detailed analysis
-    print("\n=== Benchmark Results ===")
-    print(f"\nOverall Performance:")
-    print(f"Success Rate: {results['summary']['overall_performance']['success_rate']:.2f}%")
-    print(f"Total Tests: {results['summary']['overall_performance']['total_tests']}")
-    print(f"Successful Tests: {results['summary']['overall_performance']['successful_tests']}")
-    
-    print("\nProcessing Stage Analysis:")
-    for stage, metrics in results['summary']['stage_analysis'].items():
-        print(f"\nStage: {stage}")
-        print(f"Average Time: {metrics['time_profile']['mean']:.2f}s")
-        print(f"Percentage of Total: {metrics['time_profile']['percentage_of_total']:.2f}%")
-        if metrics['quality_profile']['mean']:
-            print(f"Quality Score: {metrics['quality_profile']['mean']:.2f}")
-    
-    print("\nQuality Analysis:")
-    for metric, stats in results['summary']['quality_analysis'].items():
-        print(f"\n{metric}:")
-        print(f"Mean: {stats['mean']:.2f}")
-        print(f"Consistency: {stats['consistency']:.2f}")
-        print(f"Reliability: {stats['reliability']:.2f}")
-    
-    print("\nResource Usage:")
-    for resource, metrics in results['summary']['resource_usage'].items():
-        print(f"\n{resource}:")
-        print(f"Average Usage: {metrics['average_usage']:.2f}")
-        print(f"Peak Usage: {metrics['peak_usage']:.2f}")
-        print(f"Efficiency Score: {metrics['efficiency_score']:.2f}")
+def get_empty_summary():
+    """
+    Create an empty summary structure for when processing fails
+    """
+    return {
+        'overall_performance': {
+            'success_rate': 0,
+            'total_tests': 0,
+            'successful_tests': 0
+        },
+        'stage_analysis': {},
+        'quality_analysis': {},
+        'resource_usage': {}
+    }
 
-    return results
+def calculate_success_rate(results: Dict) -> float:
+    """
+    Safely calculate success rate from results
+    """
+    if not results or 'summary' not in results:
+        return 0.0
+    
+    summary = results['summary']
+    total = summary.get('total_tests', 0)
+    successful = summary.get('successful_tests', 0)
+    
+    return (successful / total * 100) if total > 0 else 0.0
+
+# Save benchmark results to file
+def save_benchmark_results(results: Dict, output_dir: str = "benchmarks"):
+    """
+    Save benchmark results to a JSON file
+    """
+    os.makedirs(output_dir, exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = os.path.join(output_dir, f"benchmark_results_{timestamp}.json")
+    
+    with open(filename, 'w') as f:
+        json.dump(results, f, indent=2)
+    
+    print(f"\nBenchmark results saved to: {filename}")

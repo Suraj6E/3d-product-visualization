@@ -41,3 +41,23 @@
 2025-01-21 19:53:44,610 - werkzeug - INFO -  * Detected change in 'C:\\Work\\Masters\\3d-product-visualization\\config.py', reloading
 2025-01-21 19:53:54,357 - werkzeug - WARNING -  * Debugger is active!
 2025-01-21 19:53:54,368 - werkzeug - INFO -  * Debugger PIN: 316-943-606
+2025-01-21 19:56:35,469 - ModelMonitor - INFO - Started processing image: 7d2f340b-0df7-47e3-83a4-c56f96e761d9
+2025-01-21 19:56:35,469 - ModelMonitor - INFO - Started stage: normalization
+2025-01-21 19:56:35,469 - ModelMonitor - ERROR - Processing error: 'Enhanced3DVisualizer' object has no attribute '_normalize_single_image'
+2025-01-21 19:56:35,469 - ModelMonitor - INFO - Started processing image: efbb6d9a-13f3-49e4-b81d-b0cfd026fad5
+2025-01-21 19:56:35,478 - ModelMonitor - INFO - Started stage: normalization
+2025-01-21 19:56:35,483 - ModelMonitor - ERROR - Processing error: 'Enhanced3DVisualizer' object has no attribute '_normalize_single_image'
+2025-01-21 19:56:35,487 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:56:35] "[35m[1mGET /dashboard/run-benchmarks HTTP/1.1[0m" 500 -
+2025-01-21 20:55:52,475 - werkzeug - INFO -  * Detected change in 'C:\\Work\\Masters\\3d-product-visualization\\models\\enhanced_visualization.py', reloading
+2025-01-21 20:56:03,015 - werkzeug - WARNING -  * Debugger is active!
+2025-01-21 20:56:03,028 - werkzeug - INFO -  * Debugger PIN: 316-943-606
+2025-01-21 20:57:11,720 - werkzeug - INFO -  * Detected change in 'C:\\Work\\Masters\\3d-product-visualization\\models\\enhanced_visualization.py', reloading
+2025-01-21 20:57:22,198 - werkzeug - WARNING -  * Debugger is active!
+2025-01-21 20:57:22,207 - werkzeug - INFO -  * Debugger PIN: 316-943-606
+2025-01-21 20:58:27,750 - werkzeug - INFO -  * Detected change in 'C:\\Work\\Masters\\3d-product-visualization\\models\\enhanced_visualization.py', reloading
+2025-01-21 20:58:38,586 - werkzeug - WARNING -  * Debugger is active!
+2025-01-21 20:58:38,596 - werkzeug - INFO -  * Debugger PIN: 316-943-606
+2025-01-21 20:59:38,114 - werkzeug - INFO -  * Detected change in 'C:\\Work\\Masters\\3d-product-visualization\\utils\\benchmark_runner.py', reloading
+2025-01-21 20:59:48,912 - werkzeug - WARNING -  * Debugger is active!
+2025-01-21 20:59:48,920 - werkzeug - INFO -  * Debugger PIN: 316-943-606
+2025-01-21 20:59:51,995 - werkzeug - INFO -  * Detected change in 'C:\\Work\\Masters\\3d-product-visualization\\utils\\benchmark_runner.py', reloading

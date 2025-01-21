@@ -13,10 +13,8 @@ from PIL import Image
 
 class Enhanced3DVisualizer:
     def __init__(self, log_dir: str = "logs"):
-        """
-        Initialize the enhanced 3D visualization system with monitoring and quality analysis
-        """
-        # Initialize monitoring and quality analysis
+        self.log_dir = log_dir
+         # Initialize monitoring and quality analysis
         self.monitor = ModelMonitor(log_dir=log_dir)
         self.quality_analyzer = QualityAnalyzer()
         
@@ -26,12 +24,90 @@ class Enhanced3DVisualizer:
                                   model="depth-anything/Depth-Anything-V2-base-hf", 
                                   device=self.device)
 
+
+    def _normalize_single_image(self, image: np.ndarray, target_size: int = None) -> np.ndarray:
+        """
+        Normalize a single image while preserving aspect ratio
+        """
+        h, w = image.shape[:2]
+        aspect = w / h
+
+        if target_size is None:
+            # Round to nearest multiple of 32 if no target size specified
+            target_size = ((min(h, w) // 32) * 32)
+
+        if aspect > 1:
+            new_w = target_size
+            new_h = int(target_size / aspect)
+        else:
+            new_h = target_size
+            new_w = int(target_size * aspect)
+
+        # Resize image
+        resized = cv2.resize(image, (new_w, new_h), interpolation=cv2.INTER_AREA)
+
+        # Create square canvas with padding
+        square_img = np.zeros((target_size, target_size, 3), dtype=np.uint8)
+
+        # Calculate padding to center the image
+        pad_y = (target_size - new_h) // 2
+        pad_x = (target_size - new_w) // 2
+
+        # Place resized image in center
+        square_img[pad_y:pad_y+new_h, pad_x:pad_x+new_w] = resized
+
+        return square_img
+
+    def _normalize_images(self, image_paths: Dict[str, str]) -> Tuple[Dict[str, np.ndarray], int]:
+        """
+        Load and normalize multiple images while maintaining consistent size
+        """
+        # First load all images and get dimensions
+        images = {}
+        dimensions = []
+        for view_type, path in image_paths.items():
+            if path:  # Only process if path exists
+                img = cv2.imread(path)
+                if img is None:
+                    continue
+                images[view_type] = img
+                dimensions.append(img.shape[:2])
+
+        if not images:
+            raise ValueError("No valid images provided")
+
+        # Find smallest dimension
+        min_dim = min(min(dim) for dim in dimensions)
+        target_size = ((min_dim // 32) * 32)
+
+        # Normalize all images
+        normalized = {
+            view_type: self._normalize_single_image(img, target_size)
+            for view_type, img in images.items()
+        }
+
+        return normalized, target_size
+
     def process_orthogonal_views(self, front_path: str, back_path: str, 
                                top_path: str, depth_threshold: float = 0.25,
                                sampling_rate: float = 1.0) -> Dict:
         """
         Process multiple views with comprehensive monitoring and quality analysis
         """
+
+        image_paths = {
+            'front': front_path,
+            'back': back_path,
+            'top': top_path
+        }
+        
+        # Filter out None paths
+        image_paths = {k: v for k, v in image_paths.items() if v is not None}
+        
+        # Process images using your existing pipeline
+        # This is where you'll integrate your current processing logic
+        normalized_images, target_size = self._normalize_images(image_paths)
+
         # Generate unique ID for this processing task
         process_id = str(uuid.uuid4())
         self.monitor.start_processing(process_id)
@@ -77,12 +153,28 @@ class Enhanced3DVisualizer:
             # Complete processing and collect final metrics
             final_metrics = self.monitor.end_processing()
 
-            # Return results with metrics
+
+            # For now, return a placeholder result
             return {
-                'visualization': combined_result,
-                'metrics': final_metrics,
-                'quality_summary': self._generate_quality_summary(final_metrics)
+                'visualization': {},  # Your visualization data
+                'metrics': {
+                    'total_time': 0,
+                    'peak_memory': 0,
+                    'peak_gpu_memory': 0,
+                    'stages': {}
+                },
+                'quality_summary': {
+                    'overall_quality': 0,
+                    'depth_confidence': 0,
+                    'mesh_quality': 0
+                }
             }
+            # # Return results with metrics
+            # return {
+            #     'visualization': combined_result,
+            #     'metrics': final_metrics,
+            #     'quality_summary': self._generate_quality_summary(final_metrics)
+            # }
 
         except Exception as e:
             self.monitor.logger.error(f"Processing error: {str(e)}")
