@@ -61,3 +61,25 @@
 2025-01-21 20:59:48,912 - werkzeug - WARNING -  * Debugger is active!
 2025-01-21 20:59:48,920 - werkzeug - INFO -  * Debugger PIN: 316-943-606
 2025-01-21 20:59:51,995 - werkzeug - INFO -  * Detected change in 'C:\\Work\\Masters\\3d-product-visualization\\utils\\benchmark_runner.py', reloading
+2025-01-21 21:00:03,150 - werkzeug - WARNING -  * Debugger is active!
+2025-01-21 21:00:03,162 - werkzeug - INFO -  * Debugger PIN: 316-943-606
+2025-01-21 21:00:49,552 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 21:00:49] "GET /dashboard HTTP/1.1" 200 -
+2025-01-21 21:00:49,709 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 21:00:49] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-01-21 21:00:50,332 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 21:00:50] "GET /dashboard/metrics?days=30 HTTP/1.1" 200 -
+2025-01-21 21:01:13,013 - ModelMonitor - INFO - Started processing image: 045a487b-fc11-4f1c-ace1-f94334feabb7
+2025-01-21 21:01:13,013 - ModelMonitor - INFO - Started stage: normalization
+2025-01-21 21:01:13,041 - ModelMonitor - ERROR - Processing error: 'Enhanced3DVisualizer' object has no attribute '_analyze_normalization_quality'
+2025-01-21 21:01:13,068 - ModelMonitor - INFO - Started processing image: 01df2105-aeaa-450f-804d-54ee0c34e79d
+2025-01-21 21:01:13,076 - ModelMonitor - INFO - Started stage: normalization
+2025-01-21 21:01:13,093 - ModelMonitor - ERROR - Processing error: 'Enhanced3DVisualizer' object has no attribute '_analyze_normalization_quality'
+2025-01-21 21:01:13,093 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 21:01:13] "GET /dashboard/run-benchmarks HTTP/1.1" 200 -
+2025-01-21 21:03:03,671 - werkzeug - INFO -  * Detected change in 'C:\\Work\\Masters\\3d-product-visualization\\models\\enhanced_visualization.py', reloading
+2025-01-21 21:04:38,703 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-01-21 21:04:38,703 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-01-21 21:04:38,706 - werkzeug - INFO -  * Restarting with stat
+2025-01-21 21:04:47,520 - werkzeug - WARNING -  * Debugger is active!
+2025-01-21 21:04:47,537 - werkzeug - INFO -  * Debugger PIN: 316-943-606
+2025-01-21 21:05:11,089 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 21:05:11] "GET /dashboard/run-benchmarks HTTP/1.1" 200 -
+2025-01-21 21:06:28,727 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 21:06:28] "GET /dashboard/run-benchmarks HTTP/1.1" 200 -
+2025-01-21 21:13:30,277 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 21:13:30] "GET /dashboard/run-benchmarks HTTP/1.1" 200 -

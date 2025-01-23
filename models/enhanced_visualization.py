@@ -108,6 +108,23 @@ class Enhanced3DVisualizer:
         # This is where you'll integrate your current processing logic
         normalized_images, target_size = self._normalize_images(image_paths)
 
+         # For now, return a placeholder result
+        return {
+            'visualization': {},  # Your visualization data
+            'metrics': {
+                'total_time': 0,
+                'peak_memory': 0,
+                'peak_gpu_memory': 0,
+                'stages': {}
+            },
+            'quality_summary': {
+                'overall_quality': 0,
+                'depth_confidence': 0,
+                'mesh_quality': 0
+            }
+        }
+
+        
         # Generate unique ID for this processing task
         process_id = str(uuid.uuid4())
         self.monitor.start_processing(process_id)
@@ -154,21 +171,7 @@ class Enhanced3DVisualizer:
             final_metrics = self.monitor.end_processing()
 
 
-            # For now, return a placeholder result
-            return {
-                'visualization': {},  # Your visualization data
-                'metrics': {
-                    'total_time': 0,
-                    'peak_memory': 0,
-                    'peak_gpu_memory': 0,
-                    'stages': {}
-                },
-                'quality_summary': {
-                    'overall_quality': 0,
-                    'depth_confidence': 0,
-                    'mesh_quality': 0
-                }
-            }
+           
             # # Return results with metrics
             # return {
             #     'visualization': combined_result,
