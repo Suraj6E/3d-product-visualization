@@ -1,6 +1,6 @@
 # run.py
 import os
-from app import create_app
+from application import create_app
 from config import get_config
 
 # Create the application instance
