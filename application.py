@@ -27,7 +27,8 @@ from utils.benchmark_system import BenchmarkSystem
 from routes.dashboard import dashboard
 from routes.visualization import visualization
 
-app = Flask(__name__)
+application = Flask(__name__)
+app = application  # This provides compatibility with both 'app' and 'application' names
 app.config.from_object(Config)
 
 
@@ -438,7 +439,8 @@ def allowed_file(filename):
 
 if __name__ == '__main__':
     try:
-        app.run(debug=True)
+        application.run(host='0.0.0.0', port=8000)
+        # app.run(debug=True)
     except KeyboardInterrupt:
         print('Shutting down gracefully...')
         sys.exit(0)

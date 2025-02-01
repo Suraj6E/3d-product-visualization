@@ -1,0 +1,30 @@
+﻿{
+    "memory":  "512",
+    "executionRoleArn":  "arn:aws:iam::798862424610:role/ecsTaskExecutionRole",
+    "family":  "3d-product-app",
+    "networkMode":  "awsvpc",
+    "requiresCompatibilities":  [
+                                    "FARGATE"
+                                ],
+    "containerDefinitions":  [
+                                 {
+                                     "portMappings":  [
+                                                          {
+                                                              "protocol":  "tcp",
+                                                              "containerPort":  8000
+                                                          }
+                                                      ],
+                                     "logConfiguration":  {
+                                                              "logDriver":  "awslogs",
+                                                              "options":  {
+                                                                              "awslogs-region":  "ap-south-1",
+                                                                              "awslogs-stream-prefix":  "ecs",
+                                                                              "awslogs-group":  "/ecs/3d-product-app"
+                                                                          }
+                                                          },
+                                     "name":  "3d-product-app",
+                                     "image":  "798862424610.dkr.ecr.ap-south-1.amazonaws.com/3d-product-app:latest"
+                                 }
+                             ],
+    "cpu":  "256"
+}
