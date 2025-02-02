@@ -170,23 +170,33 @@ def index():
 
 @app.route('/folder/<folder_name>')
 def view_folder(folder_name):
-    """Dedicated page for each folder"""
+    print("""Dedicated page for each folder""")
     try:
         # Get list of images in the folder
         images = storage.list_files(folder_name)
         
         # Filter for image files
-        images = [f for f in images if f.lower().endswith(tuple(current_app.config['ALLOWED_EXTENSIONS']))]
+        images = [f for f in images if f.lower().endswith(tuple(app.config['ALLOWED_EXTENSIONS']))]
+        
+        # Debug print
+        print("\nDebug - Folder View:")
+        print(f"Folder: {folder_name}")
+        print(f"Found images: {images}")
         
         # For each image, get its URL
-        image_urls = {img: storage.get_file_url(folder_name, img) for img in images}
+        image_urls = {}
+        for img in images:
+            url = storage.get_file_url(folder_name, img)
+            image_urls[img] = url
+            print(f"Image URL for {img}: {url}")
         
         return render_template('folder.html',
                              folder_name=folder_name,
                              images=images,
                              image_urls=image_urls)
     except Exception as e:
-        current_app.logger.error(f"Error in view_folder route: {str(e)}")
+        print(f"Error in view_folder route: {str(e)}")
+        traceback.print_exc()  # Add this for more detailed error information
         return render_template('folder.html', 
                              folder_name=folder_name,
                              images=[],

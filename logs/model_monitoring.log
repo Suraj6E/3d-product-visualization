@@ -1,244 +1,34 @@
-2025-01-21 19:47:25,300 - werkzeug - WARNING -  * Debugger is active!
-2025-01-21 19:47:25,300 - werkzeug - INFO -  * Debugger PIN: 316-943-606
-2025-01-21 19:47:25,381 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:25] "GET / HTTP/1.1" 200 -
-2025-01-21 19:47:25,483 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:25] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
-2025-01-21 19:47:43,200 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:43] "GET /folder/Chair HTTP/1.1" 200 -
-2025-01-21 19:47:43,406 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:43] "[36mGET /static/css/folder.css HTTP/1.1[0m" 304 -
-2025-01-21 19:47:43,546 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:43] "GET /static/uploads/Chair/plot_data.json HTTP/1.1" 200 -
-2025-01-21 19:47:43,546 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:43] "GET /static/uploads/Chair/back.jpg HTTP/1.1" 200 -
-2025-01-21 19:47:43,547 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:43] "GET /static/uploads/Chair/front.jpg HTTP/1.1" 200 -
-2025-01-21 19:47:43,787 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:43] "GET /static/uploads/Chair/top.jpg HTTP/1.1" 200 -
-2025-01-21 19:47:44,499 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:44] "POST /track-interaction/Chair HTTP/1.1" 200 -
-2025-01-21 19:47:44,814 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:44] "GET /get_feedback/Chair HTTP/1.1" 200 -
-2025-01-21 19:47:47,833 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:47] "POST /track-interaction/Chair HTTP/1.1" 200 -
-2025-01-21 19:47:48,096 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:48] "GET / HTTP/1.1" 200 -
-2025-01-21 19:47:48,447 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:47:48] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
-2025-01-21 19:48:12,167 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:48:12] "GET /dashboard HTTP/1.1" 200 -
-2025-01-21 19:48:12,514 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:48:12] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
-2025-01-21 19:48:12,923 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:48:12] "GET /dashboard/metrics?days=30 HTTP/1.1" 200 -
-2025-01-21 19:49:03,013 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:49:03] "GET /dashboard/metrics HTTP/1.1" 200 -
-2025-01-21 19:49:16,239 - ModelMonitor - INFO - Started processing image: b65eae6e-6ebf-48ca-9ea4-ca8ccb7f4f72
-2025-01-21 19:49:16,241 - ModelMonitor - INFO - Started stage: normalization
-2025-01-21 19:49:16,258 - ModelMonitor - ERROR - Processing error: 'Enhanced3DVisualizer' object has no attribute '_normalize_single_image'
-2025-01-21 19:49:16,258 - ModelMonitor - INFO - Started processing image: a2addc96-1629-4b58-94ca-4411514c6c15
-2025-01-21 19:49:16,259 - ModelMonitor - INFO - Started stage: normalization
-2025-01-21 19:49:16,268 - ModelMonitor - ERROR - Processing error: 'Enhanced3DVisualizer' object has no attribute '_normalize_single_image'
-2025-01-21 19:49:16,277 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:49:16] "[35m[1mGET /dashboard/run-benchmarks HTTP/1.1[0m" 500 -
-2025-01-21 19:49:16,350 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:49:16] "GET /dashboard/run-benchmarks?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1" 200 -
-2025-01-21 19:49:16,645 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:49:16] "GET /dashboard/run-benchmarks?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1" 200 -
-2025-01-21 19:49:16,977 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:49:16] "GET /dashboard/run-benchmarks?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1" 200 -
-2025-01-21 19:49:17,236 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:49:17] "[36mGET /dashboard/run-benchmarks?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
-2025-01-21 19:51:27,410 - werkzeug - INFO -  * Detected change in 'C:\\Work\\Masters\\3d-product-visualization\\routes\\dashboard.py', reloading
-2025-01-21 19:51:37,549 - werkzeug - WARNING -  * Debugger is active!
-2025-01-21 19:51:37,549 - werkzeug - INFO -  * Debugger PIN: 316-943-606
-2025-01-21 19:51:39,155 - ModelMonitor - INFO - Started processing image: 0a5aa6ef-b9ca-40e4-a8d0-d049d2debc5e
-2025-01-21 19:51:39,156 - ModelMonitor - INFO - Started stage: normalization
-2025-01-21 19:51:39,160 - ModelMonitor - ERROR - Processing error: 'Enhanced3DVisualizer' object has no attribute '_normalize_single_image'
-2025-01-21 19:51:39,160 - ModelMonitor - INFO - Started processing image: c2451562-1a85-45b5-ac10-2e09b6dba5aa
-2025-01-21 19:51:39,161 - ModelMonitor - INFO - Started stage: normalization
-2025-01-21 19:51:39,168 - ModelMonitor - ERROR - Processing error: 'Enhanced3DVisualizer' object has no attribute '_normalize_single_image'
-2025-01-21 19:51:39,172 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:51:39] "[35m[1mGET /dashboard/run-benchmarks HTTP/1.1[0m" 500 -
-2025-01-21 19:53:44,610 - werkzeug - INFO -  * Detected change in 'C:\\Work\\Masters\\3d-product-visualization\\config.py', reloading
-2025-01-21 19:53:54,357 - werkzeug - WARNING -  * Debugger is active!
-2025-01-21 19:53:54,368 - werkzeug - INFO -  * Debugger PIN: 316-943-606
-2025-01-21 19:56:35,469 - ModelMonitor - INFO - Started processing image: 7d2f340b-0df7-47e3-83a4-c56f96e761d9
-2025-01-21 19:56:35,469 - ModelMonitor - INFO - Started stage: normalization
-2025-01-21 19:56:35,469 - ModelMonitor - ERROR - Processing error: 'Enhanced3DVisualizer' object has no attribute '_normalize_single_image'
-2025-01-21 19:56:35,469 - ModelMonitor - INFO - Started processing image: efbb6d9a-13f3-49e4-b81d-b0cfd026fad5
-2025-01-21 19:56:35,478 - ModelMonitor - INFO - Started stage: normalization
-2025-01-21 19:56:35,483 - ModelMonitor - ERROR - Processing error: 'Enhanced3DVisualizer' object has no attribute '_normalize_single_image'
-2025-01-21 19:56:35,487 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 19:56:35] "[35m[1mGET /dashboard/run-benchmarks HTTP/1.1[0m" 500 -
-2025-01-21 20:55:52,475 - werkzeug - INFO -  * Detected change in 'C:\\Work\\Masters\\3d-product-visualization\\models\\enhanced_visualization.py', reloading
-2025-01-21 20:56:03,015 - werkzeug - WARNING -  * Debugger is active!
-2025-01-21 20:56:03,028 - werkzeug - INFO -  * Debugger PIN: 316-943-606
-2025-01-21 20:57:11,720 - werkzeug - INFO -  * Detected change in 'C:\\Work\\Masters\\3d-product-visualization\\models\\enhanced_visualization.py', reloading
-2025-01-21 20:57:22,198 - werkzeug - WARNING -  * Debugger is active!
-2025-01-21 20:57:22,207 - werkzeug - INFO -  * Debugger PIN: 316-943-606
-2025-01-21 20:58:27,750 - werkzeug - INFO -  * Detected change in 'C:\\Work\\Masters\\3d-product-visualization\\models\\enhanced_visualization.py', reloading
-2025-01-21 20:58:38,586 - werkzeug - WARNING -  * Debugger is active!
-2025-01-21 20:58:38,596 - werkzeug - INFO -  * Debugger PIN: 316-943-606
-2025-01-21 20:59:38,114 - werkzeug - INFO -  * Detected change in 'C:\\Work\\Masters\\3d-product-visualization\\utils\\benchmark_runner.py', reloading
-2025-01-21 20:59:48,912 - werkzeug - WARNING -  * Debugger is active!
-2025-01-21 20:59:48,920 - werkzeug - INFO -  * Debugger PIN: 316-943-606
-2025-01-21 20:59:51,995 - werkzeug - INFO -  * Detected change in 'C:\\Work\\Masters\\3d-product-visualization\\utils\\benchmark_runner.py', reloading
-2025-01-21 21:00:03,150 - werkzeug - WARNING -  * Debugger is active!
-2025-01-21 21:00:03,162 - werkzeug - INFO -  * Debugger PIN: 316-943-606
-2025-01-21 21:00:49,552 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 21:00:49] "GET /dashboard HTTP/1.1" 200 -
-2025-01-21 21:00:49,709 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 21:00:49] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
-2025-01-21 21:00:50,332 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 21:00:50] "GET /dashboard/metrics?days=30 HTTP/1.1" 200 -
-2025-01-21 21:01:13,013 - ModelMonitor - INFO - Started processing image: 045a487b-fc11-4f1c-ace1-f94334feabb7
-2025-01-21 21:01:13,013 - ModelMonitor - INFO - Started stage: normalization
-2025-01-21 21:01:13,041 - ModelMonitor - ERROR - Processing error: 'Enhanced3DVisualizer' object has no attribute '_analyze_normalization_quality'
-2025-01-21 21:01:13,068 - ModelMonitor - INFO - Started processing image: 01df2105-aeaa-450f-804d-54ee0c34e79d
-2025-01-21 21:01:13,076 - ModelMonitor - INFO - Started stage: normalization
-2025-01-21 21:01:13,093 - ModelMonitor - ERROR - Processing error: 'Enhanced3DVisualizer' object has no attribute '_analyze_normalization_quality'
-2025-01-21 21:01:13,093 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 21:01:13] "GET /dashboard/run-benchmarks HTTP/1.1" 200 -
-2025-01-21 21:03:03,671 - werkzeug - INFO -  * Detected change in 'C:\\Work\\Masters\\3d-product-visualization\\models\\enhanced_visualization.py', reloading
-2025-01-21 21:04:38,703 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
- * Running on http://127.0.0.1:5000
-2025-01-21 21:04:38,703 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
-2025-01-21 21:04:38,706 - werkzeug - INFO -  * Restarting with stat
-2025-01-21 21:04:47,520 - werkzeug - WARNING -  * Debugger is active!
-2025-01-21 21:04:47,537 - werkzeug - INFO -  * Debugger PIN: 316-943-606
-2025-01-21 21:05:11,089 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 21:05:11] "GET /dashboard/run-benchmarks HTTP/1.1" 200 -
-2025-01-21 21:06:28,727 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 21:06:28] "GET /dashboard/run-benchmarks HTTP/1.1" 200 -
-2025-01-21 21:13:30,277 - werkzeug - INFO - 127.0.0.1 - - [21/Jan/2025 21:13:30] "GET /dashboard/run-benchmarks HTTP/1.1" 200 -
-2025-01-31 08:57:54,604 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
- * Running on http://127.0.0.1:5000
-2025-01-31 08:57:54,608 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
-2025-01-31 08:57:54,609 - werkzeug - INFO -  * Restarting with stat
-2025-01-31 08:58:05,007 - werkzeug - WARNING -  * Debugger is active!
-2025-01-31 08:58:05,026 - werkzeug - INFO -  * Debugger PIN: 316-943-606
-2025-01-31 08:58:05,067 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 08:58:05] "GET / HTTP/1.1" 200 -
-2025-01-31 08:58:05,273 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 08:58:05] "GET /static/css/index.css HTTP/1.1" 200 -
-2025-01-31 08:58:05,757 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 08:58:05] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
-2025-01-31 08:58:07,598 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 08:58:07] "GET /login HTTP/1.1" 200 -
-2025-01-31 08:58:07,948 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 08:58:07] "GET /static/css/auth.css HTTP/1.1" 200 -
-2025-01-31 08:58:10,402 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 08:58:10] "POST /login HTTP/1.1" 200 -
-2025-01-31 08:58:11,078 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 08:58:11] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
-2025-01-31 08:58:17,039 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 08:58:17] "POST /login HTTP/1.1" 200 -
-2025-01-31 08:58:17,372 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 08:58:17] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
-2025-01-31 08:58:30,739 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 08:58:30] "POST /login HTTP/1.1" 200 -
-2025-01-31 08:58:31,057 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 08:58:31] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
-2025-01-31 08:58:35,784 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 08:58:35] "POST /login HTTP/1.1" 200 -
-2025-01-31 08:58:36,103 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 08:58:36] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
-2025-01-31 08:58:38,098 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 08:58:38] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
-2025-01-31 08:58:53,220 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 08:58:53] "[32mPOST /login HTTP/1.1[0m" 302 -
-2025-01-31 08:58:53,394 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 08:58:53] "GET / HTTP/1.1" 200 -
-2025-01-31 08:58:53,532 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 08:58:53] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
-2025-01-31 08:59:13,221 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 08:59:13] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
-2025-01-31 09:01:18,434 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:01:18] "GET /folder/green-tshirt HTTP/1.1" 200 -
-2025-01-31 09:01:18,629 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:01:18] "GET /static/css/folder.css HTTP/1.1" 200 -
-2025-01-31 09:01:18,761 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:01:18] "GET /static/uploads/green-tshirt/back.png HTTP/1.1" 200 -
-2025-01-31 09:01:18,777 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:01:18] "GET /static/uploads/green-tshirt/front.png HTTP/1.1" 200 -
-2025-01-31 09:01:18,787 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:01:18] "GET /static/uploads/green-tshirt/top.png HTTP/1.1" 200 -
-2025-01-31 09:01:19,372 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:01:19] "GET /static/uploads/green-tshirt/plot_data.json HTTP/1.1" 200 -
-2025-01-31 09:01:25,235 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:01:25] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
-2025-01-31 09:01:25,881 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:01:25] "GET /get_feedback/green-tshirt HTTP/1.1" 200 -
-2025-01-31 09:01:49,484 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:01:49] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
-2025-01-31 09:02:19,165 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:02:19] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
-2025-01-31 09:02:47,786 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:02:47] "GET /dashboard HTTP/1.1" 200 -
-2025-01-31 09:02:47,821 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:02:47] "GET /static/css/dashboard.css HTTP/1.1" 200 -
-2025-01-31 09:02:48,111 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:02:48] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
-2025-01-31 09:02:48,495 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:02:48] "GET /dashboard/metrics?days=30 HTTP/1.1" 200 -
-2025-01-31 09:02:53,116 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:02:53] "GET /dashboard/analytics HTTP/1.1" 200 -
-2025-01-31 09:02:53,221 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:02:53] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
-2025-01-31 09:03:23,753 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:03:23] "GET / HTTP/1.1" 200 -
-2025-01-31 09:03:24,137 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:03:24] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
-2025-01-31 09:03:33,676 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:03:33] "GET /folder/Chair HTTP/1.1" 200 -
-2025-01-31 09:03:34,023 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:03:34] "[36mGET /static/css/folder.css HTTP/1.1[0m" 304 -
-2025-01-31 09:03:34,025 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:03:34] "GET /static/uploads/Chair/back.jpg HTTP/1.1" 200 -
-2025-01-31 09:03:34,025 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:03:34] "GET /static/uploads/Chair/front.jpg HTTP/1.1" 200 -
-2025-01-31 09:03:34,268 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:03:34] "GET /static/uploads/Chair/plot_data.json HTTP/1.1" 200 -
-2025-01-31 09:03:34,374 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:03:34] "GET /static/uploads/Chair/top.jpg HTTP/1.1" 200 -
-2025-01-31 09:03:35,384 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:03:35] "POST /track-interaction/Chair HTTP/1.1" 200 -
-2025-01-31 09:03:35,711 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:03:35] "GET /get_feedback/Chair HTTP/1.1" 200 -
-2025-01-31 09:04:04,187 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:04:04] "POST /track-interaction/Chair HTTP/1.1" 200 -
-2025-01-31 09:04:34,487 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:04:34] "POST /track-interaction/Chair HTTP/1.1" 200 -
-2025-01-31 09:04:39,008 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:04:39] "POST /track-interaction/Chair HTTP/1.1" 200 -
-2025-01-31 09:04:39,273 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:04:39] "GET / HTTP/1.1" 200 -
-2025-01-31 09:04:39,607 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:04:39] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
-2025-01-31 09:04:46,154 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:04:46] "GET /folder/green-tshirt HTTP/1.1" 200 -
-2025-01-31 09:04:46,492 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:04:46] "[36mGET /static/css/folder.css HTTP/1.1[0m" 304 -
-2025-01-31 09:04:46,500 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:04:46] "[36mGET /static/uploads/green-tshirt/back.png HTTP/1.1[0m" 304 -
-2025-01-31 09:04:46,500 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:04:46] "[36mGET /static/uploads/green-tshirt/front.png HTTP/1.1[0m" 304 -
-2025-01-31 09:04:46,500 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:04:46] "[36mGET /static/uploads/green-tshirt/top.png HTTP/1.1[0m" 304 -
-2025-01-31 09:04:46,758 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:04:46] "[36mGET /static/uploads/green-tshirt/plot_data.json HTTP/1.1[0m" 304 -
-2025-01-31 09:04:51,229 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:04:51] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
-2025-01-31 09:04:51,587 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:04:51] "GET /get_feedback/green-tshirt HTTP/1.1" 200 -
-2025-01-31 09:05:16,995 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:05:16] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
-2025-01-31 09:05:46,695 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:05:46] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
-2025-01-31 09:06:17,055 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:06:17] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
-2025-01-31 09:06:46,694 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:06:46] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
-2025-01-31 09:07:16,994 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 09:07:16] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
-2025-01-31 10:12:30,068 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:12:30] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
-2025-01-31 10:12:44,239 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:12:44] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
-2025-01-31 10:13:03,166 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:03] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
-2025-01-31 10:13:03,521 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:03] "GET / HTTP/1.1" 200 -
-2025-01-31 10:13:03,863 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:03] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
-2025-01-31 10:13:09,420 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:09] "GET /folder/Chair HTTP/1.1" 200 -
-2025-01-31 10:13:09,757 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:09] "[36mGET /static/css/folder.css HTTP/1.1[0m" 304 -
-2025-01-31 10:13:09,758 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:09] "[36mGET /static/uploads/Chair/back.jpg HTTP/1.1[0m" 304 -
-2025-01-31 10:13:09,760 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:09] "[36mGET /static/uploads/Chair/front.jpg HTTP/1.1[0m" 304 -
-2025-01-31 10:13:10,018 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:10] "[36mGET /static/uploads/Chair/plot_data.json HTTP/1.1[0m" 304 -
-2025-01-31 10:13:10,215 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:10] "[36mGET /static/uploads/Chair/top.jpg HTTP/1.1[0m" 304 -
-2025-01-31 10:13:10,791 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:10] "POST /track-interaction/Chair HTTP/1.1" 200 -
-2025-01-31 10:13:11,106 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:11] "GET /get_feedback/Chair HTTP/1.1" 200 -
-2025-01-31 10:13:23,524 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:23] "POST /track-interaction/Chair HTTP/1.1" 200 -
-2025-01-31 10:13:23,785 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:23] "GET / HTTP/1.1" 200 -
-2025-01-31 10:13:24,119 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:24] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
-2025-01-31 10:13:26,949 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:26] "[32mGET /logout HTTP/1.1[0m" 302 -
-2025-01-31 10:13:27,270 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:27] "GET / HTTP/1.1" 200 -
-2025-01-31 10:13:27,522 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:27] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
-2025-01-31 10:13:34,964 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:34] "GET /register HTTP/1.1" 200 -
-2025-01-31 10:13:35,323 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:35] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
-2025-01-31 10:13:37,728 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:37] "GET /login HTTP/1.1" 200 -
-2025-01-31 10:13:38,074 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:38] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
-2025-01-31 10:13:41,455 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:41] "POST /login HTTP/1.1" 200 -
-2025-01-31 10:13:41,785 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:41] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
-2025-01-31 10:13:47,588 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:47] "[32mPOST /login HTTP/1.1[0m" 302 -
-2025-01-31 10:13:47,958 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:47] "GET / HTTP/1.1" 200 -
-2025-01-31 10:13:48,170 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:48] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
-2025-01-31 10:13:57,362 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:13:57] "[32mGET /login HTTP/1.1[0m" 302 -
-2025-01-31 10:14:02,292 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:02] "GET /folder/green-tshirt HTTP/1.1" 200 -
-2025-01-31 10:14:02,496 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:02] "[36mGET /static/css/folder.css HTTP/1.1[0m" 304 -
-2025-01-31 10:14:02,629 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:02] "[36mGET /static/uploads/green-tshirt/back.png HTTP/1.1[0m" 304 -
-2025-01-31 10:14:02,637 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:02] "[36mGET /static/uploads/green-tshirt/front.png HTTP/1.1[0m" 304 -
-2025-01-31 10:14:02,640 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:02] "[36mGET /static/uploads/green-tshirt/top.png HTTP/1.1[0m" 304 -
-2025-01-31 10:14:02,706 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:02] "[36mGET /static/uploads/green-tshirt/plot_data.json HTTP/1.1[0m" 304 -
-2025-01-31 10:14:06,305 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:06] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
-2025-01-31 10:14:06,478 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:06] "GET /get_feedback/green-tshirt HTTP/1.1" 200 -
-2025-01-31 10:14:31,741 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:31] "GET / HTTP/1.1" 200 -
-2025-01-31 10:14:31,946 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:31] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
-2025-01-31 10:14:32,053 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:32] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
-2025-01-31 10:14:44,578 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:44] "GET /dashboard HTTP/1.1" 200 -
-2025-01-31 10:14:44,901 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:44] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
-2025-01-31 10:14:45,462 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:45] "GET /dashboard/metrics?days=30 HTTP/1.1" 200 -
-2025-01-31 10:14:48,295 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:48] "GET /dashboard/analytics HTTP/1.1" 200 -
-2025-01-31 10:14:48,622 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:48] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
-2025-01-31 10:14:53,965 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:53] "GET /dashboard/feedback HTTP/1.1" 200 -
-2025-01-31 10:14:54,298 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:54] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
-2025-01-31 10:14:56,939 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:56] "GET /dashboard/performance HTTP/1.1" 200 -
-2025-01-31 10:14:57,262 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:14:57] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
-2025-01-31 10:15:02,657 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:15:02] "GET /dashboard HTTP/1.1" 200 -
-2025-01-31 10:15:02,992 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:15:02] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
-2025-01-31 10:15:03,420 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:15:03] "GET /dashboard/metrics?days=30 HTTP/1.1" 200 -
-2025-01-31 10:15:15,537 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:15:15] "GET /dashboard/analytics HTTP/1.1" 200 -
-2025-01-31 10:15:15,866 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:15:15] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
-2025-01-31 10:15:16,702 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:15:16] "GET /dashboard HTTP/1.1" 200 -
-2025-01-31 10:15:17,042 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:15:17] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
-2025-01-31 10:15:17,440 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:15:17] "GET /dashboard/metrics?days=30 HTTP/1.1" 200 -
-2025-01-31 10:15:18,297 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:15:18] "GET /dashboard/feedback HTTP/1.1" 200 -
-2025-01-31 10:15:18,627 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:15:18] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
-2025-01-31 10:15:19,165 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:15:19] "GET /dashboard/performance HTTP/1.1" 200 -
-2025-01-31 10:15:19,491 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:15:19] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
-2025-01-31 10:15:20,207 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:15:20] "GET /dashboard HTTP/1.1" 200 -
-2025-01-31 10:15:20,537 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:15:20] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
-2025-01-31 10:15:20,957 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:15:20] "GET /dashboard/metrics?days=30 HTTP/1.1" 200 -
-2025-02-01 18:14:14,039 - botocore.credentials - INFO - Found credentials in shared credentials file: ~/.aws/credentials
-2025-02-01 18:14:14,351 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+2025-02-03 03:21:30,755 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:21:30] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-03 03:21:38,215 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:21:38] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-03 03:21:38,473 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:21:38] "GET /folder/Chair HTTP/1.1" 200 -
+2025-02-03 03:21:38,825 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:21:38] "[36mGET /static/css/folder.css HTTP/1.1[0m" 304 -
+2025-02-03 03:21:38,827 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:21:38] "[36mGET /static/uploads/Chair/back.jpg HTTP/1.1[0m" 304 -
+2025-02-03 03:21:38,831 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:21:38] "[36mGET /static/uploads/Chair/front.jpg HTTP/1.1[0m" 304 -
+2025-02-03 03:21:39,299 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:21:39] "[36mGET /static/uploads/Chair/top.jpg HTTP/1.1[0m" 304 -
+2025-02-03 03:21:51,052 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:21:51] "GET /process/Chair HTTP/1.1" 200 -
+2025-02-03 03:21:51,244 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:21:51] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-03 03:21:51,569 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:21:51] "GET /get_feedback/Chair HTTP/1.1" 200 -
+2025-02-03 03:22:09,448 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:22:09] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-03 03:22:39,763 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:22:39] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-03 03:23:09,454 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:23:09] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-03 03:23:38,867 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:23:38] "GET / HTTP/1.1" 200 -
+2025-02-03 03:23:38,938 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:23:38] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-03 03:23:39,046 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:23:39] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-03 03:24:03,944 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on all addresses (0.0.0.0)
  * Running on http://127.0.0.1:8000
  * Running on http://192.168.1.65:8000
-2025-02-01 18:14:14,351 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
-2025-02-01 18:14:31,680 - application - ERROR - Exception on / [GET]
-Traceback (most recent call last):
-  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
-    response = self.full_dispatch_request()
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
-    rv = self.dispatch_request()
-         ^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Work\Masters\3d-product-visualization\application.py", line 162, in index
-    folders = [f for f in os.listdir(app.config['UPLOAD_FOLDER'])
-                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-FileNotFoundError: [WinError 3] The system cannot find the path specified: 'get_s3_data'
-2025-02-01 18:14:31,686 - werkzeug - INFO - 192.168.1.65 - - [01/Feb/2025 18:14:31] "[35m[1mGET / HTTP/1.1[0m" 500 -
-2025-02-01 18:14:32,305 - werkzeug - INFO - 192.168.1.65 - - [01/Feb/2025 18:14:32] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
-2025-02-02 17:57:55,389 - botocore.credentials - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-02-03 03:24:03,944 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-03 03:24:11,043 - application - ERROR - Error in index route: Parameter validation failed:
+Invalid bucket name "3d-product-uploads/uploads": Bucket name must match the regex "^[a-zA-Z0-9.\-_]{1,255}$" or be an ARN matching the regex "^arn:(aws).*:(s3|s3-object-lambda):[a-z\-0-9]*:[0-9]{12}:accesspoint[/:][a-zA-Z0-9\-.]{1,63}$|^arn:(aws).*:s3-outposts:[a-z\-0-9]+:[0-9]{12}:outpost[/:][a-zA-Z0-9\-]{1,63}[/:]accesspoint[/:][a-zA-Z0-9\-]{1,63}$"
+2025-02-03 03:24:11,043 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:24:11] "GET / HTTP/1.1" 200 -
+2025-02-03 03:24:11,395 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:24:11] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-03 03:24:13,626 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:24:13] "GET /login HTTP/1.1" 200 -
+2025-02-03 03:24:13,975 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:24:13] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-03 03:24:29,287 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:24:29] "POST /login HTTP/1.1" 200 -
+2025-02-03 03:24:29,630 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:24:29] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-03 03:24:43,454 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:24:43] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-02-03 03:24:43,782 - application - ERROR - Error in index route: Parameter validation failed:
+Invalid bucket name "3d-product-uploads/uploads": Bucket name must match the regex "^[a-zA-Z0-9.\-_]{1,255}$" or be an ARN matching the regex "^arn:(aws).*:(s3|s3-object-lambda):[a-z\-0-9]*:[0-9]{12}:accesspoint[/:][a-zA-Z0-9\-.]{1,63}$|^arn:(aws).*:s3-outposts:[a-z\-0-9]+:[0-9]{12}:outpost[/:][a-zA-Z0-9\-]{1,63}[/:]accesspoint[/:][a-zA-Z0-9\-]{1,63}$"
+2025-02-03 03:24:43,847 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:24:43] "GET / HTTP/1.1" 200 -
+2025-02-03 03:24:44,033 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:24:44] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -

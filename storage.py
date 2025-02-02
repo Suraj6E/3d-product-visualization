@@ -147,15 +147,23 @@ class S3StorageManager(StorageManager):
 
 def create_storage_manager(app):
     """Creates a storage manager instance based on configuration"""
+    # Add debug prints
+    print("Creating storage manager:")
+    print("FLASK_ENV:", app.config.get('FLASK_ENV'))
+    print("AWS_BUCKET_NAME:", app.config.get('AWS_BUCKET_NAME'))
+    print("AWS_ACCESS_KEY_ID exists:", bool(app.config.get('AWS_ACCESS_KEY_ID')))
+    print("AWS_SECRET_ACCESS_KEY exists:", bool(app.config.get('AWS_SECRET_ACCESS_KEY')))
+
     if app.config.get('FLASK_ENV') == 'production':
+        print("Initializing S3 Storage Manager")
         return S3StorageManager(
             bucket_name=app.config['AWS_BUCKET_NAME'],
             aws_access_key_id=app.config['AWS_ACCESS_KEY_ID'],
             aws_secret_access_key=app.config['AWS_SECRET_ACCESS_KEY'],
-            region=app.config['AWS_REGION']
+            region=app.config.get('AWS_REGION', 'us-east-1')
         )
     else:
-        # Ensure upload folder exists
+        print("Initializing Local Storage Manager")
         upload_folder = app.config.get('UPLOAD_FOLDER')
         if not upload_folder:
             upload_folder = app.config['BASE_DIR'] / 'static' / 'uploads'
