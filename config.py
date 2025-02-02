@@ -3,7 +3,6 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
-
 class Config:
     # Basic Flask configuration
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'your-secret-key-here'
@@ -16,33 +15,39 @@ class Config:
     PERMANENT_SESSION_LIFETIME = timedelta(days=7)
     SESSION_COOKIE_SECURE = True  # Only send cookies over HTTPS
     SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access to session cookie
-    AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
-    AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
-    AWS_REGION = os.getenv('AWS_REGION')
-    AWS_BUCKET_NAME=os.getenv('AWS_BUCKET_NAME')
+    
+    # Environment configuration
+    FLASK_ENV = os.environ.get('FLASK_ENV', 'development')
     
     # Security configurations
     CSRF_ENABLED = True
     
-    # Logging configuration
-    LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    LOG_LEVEL = 'INFO'
-
-     # Directory configurations
+    # Base directory configurations
     BASE_DIR = Path(__file__).parent
-    UPLOAD_FOLDER = BASE_DIR / 'static' / 'uploads'
-    UPLOAD_FOLDER = 'get_s3_data'
     LOG_DIR = BASE_DIR / 'logs'
     BENCHMARK_DIR = BASE_DIR / 'benchmarks'
-    
-    # Create necessary directories
-    for directory in [UPLOAD_FOLDER, LOG_DIR, BENCHMARK_DIR]:
-        directory.mkdir(parents=True, exist_ok=True)
+
+    # Storage configuration
+    if FLASK_ENV == 'production':
+        # AWS S3 configuration
+        AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+        AWS_REGION = os.getenv('AWS_REGION', 'us-east-1')
+        AWS_BUCKET_NAME = '3d-product-uploads'
+        UPLOAD_FOLDER = None  # Not used in production
+    else:
+        # Local storage configuration
+        UPLOAD_FOLDER = BASE_DIR / 'static' / 'uploads'
+        # Create upload directory if it doesn't exist
+        UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
     
     # File configurations
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
+    
+    # Create necessary directories
+    for directory in [LOG_DIR, BENCHMARK_DIR]:
+        directory.mkdir(parents=True, exist_ok=True)
     
     # Model configurations
     MODEL_SETTINGS = {
@@ -62,13 +67,8 @@ class DevelopmentConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG = False
-    # In production, you should set a proper secret key
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'generate-a-proper-key-here'
-    
-    # Production logging
     LOG_LEVEL = 'ERROR'
-    
-    # Production security settings
     SESSION_COOKIE_SECURE = True
 
 # Choose configuration based on environment

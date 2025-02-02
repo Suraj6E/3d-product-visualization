@@ -9,7 +9,7 @@ import traceback
 from models.vision_processing import process_image, process_orthogonal_views
 import plotly.utils
 
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, current_app
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from urllib.parse import urlparse
 
@@ -30,6 +30,9 @@ from routes.visualization import visualization
 import boto3
 from botocore.exceptions import ClientError
 
+from storage import create_storage_manager
+
+
 application = Flask(__name__)
 app = application  # This provides compatibility with both 'app' and 'application' names
 app.config.from_object(Config)
@@ -46,11 +49,9 @@ visualizer = Enhanced3DVisualizer(log_dir=app.config['LOG_DIR'])
 monitor = ModelMonitor(log_dir=app.config['LOG_DIR'])
 benchmark_system = BenchmarkSystem(output_dir=app.config['BENCHMARK_DIR'])
 
-# Initialize S3 client
-s3_client = boto3.client('s3')
-AWS_BUCKET_NAME = app.config['AWS_BUCKET_NAME']
-
-
+# Initialize storage manager
+storage = create_storage_manager(app)
+        
 app.register_blueprint(dashboard)
 
 def is_safe_url(target):
@@ -154,125 +155,92 @@ def logout():
         print(f"User {email} logged out")
     return redirect(url_for('index'))
 
-# Main application routes
+# Update the routes to use the storage manager
 @app.route('/')
 def index():
     """Home page showing list of folders"""
-    print("Upload folder: ", app.config['UPLOAD_FOLDER'])
-    folders = [f for f in os.listdir(app.config['UPLOAD_FOLDER']) 
-            if os.path.isdir(os.path.join(app.config['UPLOAD_FOLDER'], f))]
-    return render_template('index.html', folders=folders)
+    try:
+        # List all unique folder names from existing files
+        folders = storage.list_folders()
+        return render_template('index.html', folders=sorted(list(folders)))
+    except Exception as e:
+        current_app.logger.error(f"Error in index route: {str(e)}")
+        return render_template('index.html', folders=[], error="Error loading folders")
 
 
 @app.route('/folder/<folder_name>')
 def view_folder(folder_name):
     """Dedicated page for each folder"""
-    folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder_name)
-    
-    # Get images in folder
-    images = []
-    if os.path.exists(folder_path):
-        images = [f for f in os.listdir(folder_path) 
-                 if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
-    
-    # Get feedback for this folder
-    feedback_file = os.path.join(folder_path, 'feedback.json')
-    feedback_data = {}
-    if os.path.exists(feedback_file):
-        with open(feedback_file, 'r') as f:
-            feedback_data = json.load(f)
-            
-    # Check if plot data exists
-    plot_file = os.path.join(folder_path, 'plot_data.json')
-    has_plot = os.path.exists(plot_file)
-
-    return render_template('folder.html', 
-                         folder_name=folder_name,
-                         images=images,
-                         feedback=feedback_data,
-                         has_plot=has_plot)  # Pass this to template if needed
+    try:
+        # Get list of images in the folder
+        images = storage.list_files(folder_name)
+        
+        # Filter for image files
+        images = [f for f in images if f.lower().endswith(tuple(current_app.config['ALLOWED_EXTENSIONS']))]
+        
+        # For each image, get its URL
+        image_urls = {img: storage.get_file_url(folder_name, img) for img in images}
+        
+        return render_template('folder.html',
+                             folder_name=folder_name,
+                             images=images,
+                             image_urls=image_urls)
+    except Exception as e:
+        current_app.logger.error(f"Error in view_folder route: {str(e)}")
+        return render_template('folder.html', 
+                             folder_name=folder_name,
+                             images=[],
+                             image_urls={},
+                             error="Error loading folder")
 
 
 @app.route('/upload', methods=['POST'])
 @login_required
 def upload_files():
-    """Handle file uploads to S3 bucket with automatic view type naming"""
+    """Handle file uploads to storage"""
+    if 'files[]' not in request.files:
+        return jsonify({'success': False, 'message': 'No files provided'})
+
+    folder_name = request.form.get('folder_name', 'Untitled')
+    files = request.files.getlist('files[]')
+    uploaded_files = []
+    processed_views = []
+    view_types = ['front', 'back', 'top']
+
     try:
-        if 'files[]' not in request.files:
-            print("DEBUG: No files provided in request")
-            return jsonify({'success': False, 'message': 'No files provided'})
-
-        folder_name = request.form.get('folder_name', 'Untitled')
-        s3_folder_path = f"{folder_name}/"  # S3 uses forward slashes
-        print(f"DEBUG: Processing uploads for folder: {folder_name}")
-
-        # Process files
-        files = request.files.getlist('files[]')
-        uploaded_files = []
-        processed_views = []
-        view_types = ['front', 'back', 'top']
-        
-        # Process each file and assign view type based on order
         for i, file in enumerate(files):
             if file and file.filename:
                 if not allowed_file(file.filename):
                     return jsonify({
                         'success': False, 
-                        'message': f'File {file.filename} has an invalid format. Allowed formats: {", ".join(app.config["ALLOWED_EXTENSIONS"])}'
+                        'message': f'Invalid file format. Allowed: {", ".join(app.config["ALLOWED_EXTENSIONS"])}'
                     })
                 
-                # Get file extension
+                # Get file extension and create new filename
                 ext = os.path.splitext(file.filename)[1].lower()
-                
-                # Assign view type based on upload order
                 if i < len(view_types):
                     new_filename = f"{view_types[i]}{ext}"
-                    s3_file_path = f"{s3_folder_path}{new_filename}"
                     
-                    try:
-                        # Upload file to S3
-                        s3_client.upload_fileobj(
-                            file,
-                            AWS_BUCKET_NAME,
-                            s3_file_path,
-                            ExtraArgs={'ContentType': file.content_type}
-                        )
-                        
-                        uploaded_files.append(new_filename)
-                        processed_views.append(view_types[i])
-                        print(f"DEBUG: Saved file to S3 as {s3_file_path}")
-                    
-                    except ClientError as e:
-                        print(f"DEBUG: S3 upload error: {str(e)}")
-                        return jsonify({'success': False, 'message': f'Error uploading {new_filename} to S3'})
-                else:
-                    print(f"DEBUG: Skipping extra file {file.filename}, maximum 3 views supported")
-
-        print(f"DEBUG: Successfully uploaded files: {uploaded_files}")
+                    # Save file using storage manager
+                    storage.save_file(file, folder_name, new_filename)
+                    uploaded_files.append(new_filename)
+                    processed_views.append(view_types[i])
 
         # Process metrics
-        try:
-            metrics_data = json.loads(request.form.get('metrics', '{}'))
-            print(f"Debug: metrics_data: {metrics_data}")
+        metrics_data = json.loads(request.form.get('metrics', '{}'))
+        feedback_data = {
+            'interaction_type': 'upload',
+            'metrics': metrics_data,
+            'processed_views': processed_views,
+            'visualization_type': '3D'
+        }
 
-            feedback_data = {
-                'interaction_type': 'upload',
-                'metrics': metrics_data,
-                'processed_views': processed_views,
-                'visualization_type': '3D'
-            }
-
-            if current_user.is_authenticated:
-                result = feedback_manager.create_feedback(
-                    user_id=current_user.get_id(),
-                    product_id=folder_name,
-                    feedback_data=feedback_data
-                )
-                print(f"Debug: Feedback saved with result: {result}")
-        
-        except Exception as metrics_error:
-            print(f"Debug: Error processing metrics: {str(metrics_error)}")
-            traceback.print_exc()
+        if current_user.is_authenticated:
+            feedback_manager.create_feedback(
+                user_id=current_user.get_id(),
+                product_id=folder_name,
+                feedback_data=feedback_data
+            )
 
         return jsonify({
             'success': True,
@@ -282,8 +250,7 @@ def upload_files():
         })
         
     except Exception as e:
-        print(f"Debug: Upload error: {str(e)}")
-        traceback.print_exc()
+        current_app.logger.error(f"Upload error: {str(e)}")
         return jsonify({'success': False, 'message': str(e)})
 
 @app.route('/track-interaction/<folder_name>', methods=['POST'])
@@ -418,30 +385,30 @@ def get_feedback(folder_name):
     
     return jsonify({'success': True, 'feedback': []})
 
-@app.route('/get-s3-data/<folder_name>')
-@login_required
-def get_s3_data(folder_name):
-    try:
-        s3_client = boto3.client('s3')
+# @app.route('/get-s3-data/<folder_name>')
+# @login_required
+# def get_s3_data(folder_name):
+#     try:
+#         s3_client = boto3.client('s3')
         
-        # Generate a presigned URL that expires in 3600 seconds (1 hour)
-        presigned_url = s3_client.generate_presigned_url('get_object',
-            Params={
-                'Bucket': AWS_BUCKET_NAME,
-                'Key': f"{folder_name}/plot_data.json"
-            },
-            ExpiresIn=3600
-        )
+#         # Generate a presigned URL that expires in 3600 seconds (1 hour)
+#         presigned_url = s3_client.generate_presigned_url('get_object',
+#             Params={
+#                 'Bucket': AWS_BUCKET_NAME,
+#                 'Key': f"{folder_name}/plot_data.json"
+#             },
+#             ExpiresIn=3600
+#         )
         
-        return jsonify({
-            'success': True,
-            'url': presigned_url
-        })
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        })
+#         return jsonify({
+#             'success': True,
+#             'url': presigned_url
+#         })
+#     except Exception as e:
+#         return jsonify({
+#             'success': False,
+#             'error': str(e)
+#         })
 
 @app.route('/feedback/<folder_name>', methods=['POST'])
 def save_feedback(folder_name):
