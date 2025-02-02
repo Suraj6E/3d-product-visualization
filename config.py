@@ -16,6 +16,10 @@ class Config:
     PERMANENT_SESSION_LIFETIME = timedelta(days=7)
     SESSION_COOKIE_SECURE = True  # Only send cookies over HTTPS
     SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access to session cookie
+    AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+    AWS_REGION = os.getenv('AWS_REGION')
+    AWS_BUCKET_NAME=os.getenv('AWS_BUCKET_NAME')
     
     # Security configurations
     CSRF_ENABLED = True
@@ -27,6 +31,7 @@ class Config:
      # Directory configurations
     BASE_DIR = Path(__file__).parent
     UPLOAD_FOLDER = BASE_DIR / 'static' / 'uploads'
+    UPLOAD_FOLDER = 'get_s3_data'
     LOG_DIR = BASE_DIR / 'logs'
     BENCHMARK_DIR = BASE_DIR / 'benchmarks'
     

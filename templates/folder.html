@@ -162,7 +162,7 @@
     
                     const endpoint = isReprocessing ? 
                         `/process/${folderName}` : 
-                        `/static/uploads/${folderName}/plot_data.json`;
+                        `/get-s3-data/${folderName}/plot_data.json`;
     
                     const response = await fetch(endpoint);
                     if (!response.ok) {

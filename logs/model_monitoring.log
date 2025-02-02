@@ -215,3 +215,29 @@
 2025-01-31 10:15:20,207 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:15:20] "GET /dashboard HTTP/1.1" 200 -
 2025-01-31 10:15:20,537 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:15:20] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
 2025-01-31 10:15:20,957 - werkzeug - INFO - 127.0.0.1 - - [31/Jan/2025 10:15:20] "GET /dashboard/metrics?days=30 HTTP/1.1" 200 -
+2025-02-01 18:14:14,039 - botocore.credentials - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-02-01 18:14:14,351 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.65:8000
+2025-02-01 18:14:14,351 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-01 18:14:31,680 - application - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\application.py", line 162, in index
+    folders = [f for f in os.listdir(app.config['UPLOAD_FOLDER'])
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [WinError 3] The system cannot find the path specified: 'get_s3_data'
+2025-02-01 18:14:31,686 - werkzeug - INFO - 192.168.1.65 - - [01/Feb/2025 18:14:31] "[35m[1mGET / HTTP/1.1[0m" 500 -
+2025-02-01 18:14:32,305 - werkzeug - INFO - 192.168.1.65 - - [01/Feb/2025 18:14:32] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
