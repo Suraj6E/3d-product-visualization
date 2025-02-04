@@ -30,7 +30,7 @@ from routes.visualization import visualization
 import boto3
 from botocore.exceptions import ClientError
 
-from storage import create_storage_manager
+from storage import create_storage_manager, S3StorageManager
 
 
 application = Flask(__name__)
@@ -282,65 +282,66 @@ def track_interaction(folder_name):
         return jsonify({'success': False, 'error': str(e)})
     
     
-
 @app.route('/process/<folder_name>')
 def process_folder(folder_name):
-    print("Process folder: ", app.config['UPLOAD_FOLDER'])
     """Process images in a folder and generate 3D visualization"""
-    folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder_name)
-    print(f"DEBUG: Processing folder: {folder_path}")
+    print(f"DEBUG: Processing folder: {folder_name}")
     
-    # Look for specific view files
-    view_files = {
-        'front': os.path.join(folder_path, 'front.jpg'),
-        'back': os.path.join(folder_path, 'back.jpg'),
-        'top': os.path.join(folder_path, 'top.jpg')
-    }
-    
-    # Check for other possible extensions
-    for view in view_files.keys():
-        if not os.path.exists(view_files[view]):
-            for ext in ['.png', '.jpeg', '.gif']:
-                alt_path = os.path.join(folder_path, f"{view}{ext}")
-                if os.path.exists(alt_path):
-                    view_files[view] = alt_path
-                    break
-    
-    # Log found files
-    print("DEBUG: Found view files:")
-    for view, path in view_files.items():
-        print(f"DEBUG: {view}: {'Found' if os.path.exists(path) else 'Not found'} - {path}")
-
     try:
-        # Check if we have all three views
-        if all(os.path.exists(path) for path in view_files.values()):
-            print("DEBUG: Processing with all three views")
-            figure = process_orthogonal_views(
-                view_files['front'],
-                view_files['back'],
-                view_files['top']
-            )
-        else:
-            # Fall back to single view if not all views are available
-            print("DEBUG: Falling back to single view processing")
-            front_path = view_files['front']
-            if not os.path.exists(front_path):
-                # If front view doesn't exist, use the first available view
-                available_views = [path for path in view_files.values() if os.path.exists(path)]
+        # Get list of files in the folder
+        files = storage.list_files(folder_name)
+        
+        # Initialize view files dictionary
+        view_files = {'front': None, 'back': None, 'top': None}
+        
+        # Look for view files with different extensions
+        for file in files:
+            file_lower = file.lower()
+            for view in view_files.keys():
+                if file_lower.startswith(view) and file_lower.endswith(('.jpg', '.png', '.jpeg', '.gif')):
+                    # Get the actual file content for processing
+                    if isinstance(storage, S3StorageManager):
+                        # For S3, we need to download the file temporarily
+                        temp_path = os.path.join('/tmp', file)
+                        s3_client = storage.s3_client
+                        s3_client.download_file(
+                            storage.bucket_name,
+                            f"{folder_name}/{file}",
+                            temp_path
+                        )
+                        view_files[view] = temp_path
+                    else:
+                        # For local storage, use the direct path
+                        view_files[view] = os.path.join(app.config['UPLOAD_FOLDER'], folder_name, file)
+        
+        # Log found files
+        print("DEBUG: Found view files:")
+        for view, path in view_files.items():
+            print(f"DEBUG: {view}: {'Found' if path else 'Not found'} - {path}")
+
+        try:
+            # Check if we have all three views
+            if all(view_files.values()):
+                print("DEBUG: Processing with all three views")
+                figure = process_orthogonal_views(
+                    view_files['front'],
+                    view_files['back'],
+                    view_files['top']
+                )
+            else:
+                # Fall back to single view if not all views are available
+                print("DEBUG: Falling back to single view processing")
+                available_views = [path for path in view_files.values() if path]
                 if not available_views:
                     print("DEBUG: No valid views found")
                     return jsonify({'success': False, 'message': 'No valid views found'})
-                front_path = available_views[0]
+                figure = process_image(available_views[0])
             
-            figure = process_image(front_path)
+            if figure is None:
+                print("DEBUG: Failed to generate plot data")
+                return jsonify({'success': False, 'message': 'Failed to process images'})
             
-        if figure is None:
-            print("DEBUG: Failed to generate plot data")
-            return jsonify({'success': False, 'message': 'Failed to process images'})
-        
-        # Convert Plotly figure to JSON-serializable format and handle NumPy arrays
-        try:
-            # Custom conversion of any NumPy arrays in the figure data
+            # Convert Plotly figure to JSON-serializable format
             def convert_numpy(obj):
                 if isinstance(obj, np.ndarray):
                     return obj.tolist()
@@ -350,24 +351,42 @@ def process_folder(folder_name):
                     return [convert_numpy(item) for item in list(obj)]
                 return obj
             
-            # First convert any NumPy arrays to Python lists
+            # Convert and save plot data
             plot_data = convert_numpy(figure)
-            # Save plot data
-            plot_file = os.path.join(folder_path, 'plot_data.json')
-            with open(plot_file, 'w') as f:
-                json.dump(plot_data, f, cls=plotly.utils.PlotlyJSONEncoder)
+            
+            if isinstance(storage, S3StorageManager):
+                # Save to S3
+                plot_data_json = json.dumps(plot_data, cls=plotly.utils.PlotlyJSONEncoder)
+                s3_client.put_object(
+                    Bucket=storage.bucket_name,
+                    Key=f"{folder_name}/plot_data.json",
+                    Body=plot_data_json,
+                    ContentType='application/json'
+                )
+            else:
+                # Save locally
+                plot_file = os.path.join(app.config['UPLOAD_FOLDER'], folder_name, 'plot_data.json')
+                with open(plot_file, 'w') as f:
+                    json.dump(plot_data, f, cls=plotly.utils.PlotlyJSONEncoder)
+            
             print("DEBUG: Successfully saved plot data")
-                
-            # Return processing results with view status
+            
+            # Clean up temporary files if using S3
+            if isinstance(storage, S3StorageManager):
+                for path in view_files.values():
+                    if path and os.path.exists(path):
+                        os.remove(path)
+            
             return jsonify({
                 'success': True, 
                 'plot': plot_data,
                 'processedViews': {
-                    'front': os.path.exists(view_files['front']),
-                    'back': os.path.exists(view_files['back']),
-                    'top': os.path.exists(view_files['top'])
+                    'front': bool(view_files['front']),
+                    'back': bool(view_files['back']),
+                    'top': bool(view_files['top'])
                 }
             })
+            
         except TypeError as json_error:
             print(f"DEBUG: JSON serialization error: {str(json_error)}")
             return jsonify({
@@ -377,11 +396,17 @@ def process_folder(folder_name):
             
     except Exception as e:
         print(f"DEBUG: Processing error: {str(e)}")
-        import traceback
-        print("DEBUG: Full traceback:")
-        print(traceback.format_exc())
+        traceback.print_exc()
         return jsonify({'success': False, 'message': str(e)})
-
+    finally:
+        # Ensure temporary files are cleaned up in case of errors
+        if isinstance(storage, S3StorageManager):
+            for path in view_files.values():
+                if path and os.path.exists(path):
+                    try:
+                        os.remove(path)
+                    except:
+                        pass
 
 @app.route('/get_feedback/<folder_name>')
 def get_feedback(folder_name):

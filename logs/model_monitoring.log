@@ -32,3 +32,76 @@ Invalid bucket name "3d-product-uploads/uploads": Bucket name must match the reg
 Invalid bucket name "3d-product-uploads/uploads": Bucket name must match the regex "^[a-zA-Z0-9.\-_]{1,255}$" or be an ARN matching the regex "^arn:(aws).*:(s3|s3-object-lambda):[a-z\-0-9]*:[0-9]{12}:accesspoint[/:][a-zA-Z0-9\-.]{1,63}$|^arn:(aws).*:s3-outposts:[a-z\-0-9]+:[0-9]{12}:outpost[/:][a-zA-Z0-9\-]{1,63}[/:]accesspoint[/:][a-zA-Z0-9\-]{1,63}$"
 2025-02-03 03:24:43,847 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:24:43] "GET / HTTP/1.1" 200 -
 2025-02-03 03:24:44,033 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:24:44] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-03 03:25:38,796 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.65:8000
+2025-02-03 03:25:38,796 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-03 03:25:43,383 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:25:43] "GET / HTTP/1.1" 200 -
+2025-02-03 03:25:43,518 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:25:43] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-03 03:25:50,109 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:25:50] "GET /folder/green-tshirt HTTP/1.1" 200 -
+2025-02-03 03:25:50,135 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:25:50] "[36mGET /static/css/folder.css HTTP/1.1[0m" 304 -
+2025-02-03 03:25:50,513 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:25:50] "[33mGET /get-s3-data/green-tshirt HTTP/1.1[0m" 404 -
+2025-02-03 03:25:50,781 - application - ERROR - Exception on /get_feedback/green-tshirt [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\application.py", line 389, in get_feedback
+    feedback_file = os.path.join(app.config['UPLOAD_FOLDER'], folder_name, 'feedback.json')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen ntpath>", line 108, in join
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2025-02-03 03:25:50,784 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:25:50] "[35m[1mGET /get_feedback/green-tshirt HTTP/1.1[0m" 500 -
+2025-02-03 03:25:56,294 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:25:56] "[36mGET /static/css/folder.css HTTP/1.1[0m" 304 -
+2025-02-03 03:26:20,658 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:26:20] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-03 03:26:21,622 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:26:21] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-03 03:26:22,646 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:26:22] "GET / HTTP/1.1" 200 -
+2025-02-03 03:26:22,987 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:26:22] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-03 03:56:41,584 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.65:8000
+2025-02-03 03:56:41,584 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-03 03:56:47,618 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:56:47] "GET / HTTP/1.1" 200 -
+2025-02-03 03:56:47,788 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:56:47] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-03 03:56:50,429 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:56:50] "GET /folder/green-tshirt HTTP/1.1" 200 -
+2025-02-03 03:56:50,562 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:56:50] "[36mGET /static/css/folder.css HTTP/1.1[0m" 304 -
+2025-02-03 03:56:50,793 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:56:50] "[33mGET /get-s3-data/green-tshirt HTTP/1.1[0m" 404 -
+2025-02-03 03:56:50,974 - application - ERROR - Exception on /get_feedback/green-tshirt [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\application.py", line 414, in get_feedback
+    feedback_file = os.path.join(app.config['UPLOAD_FOLDER'], folder_name, 'feedback.json')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen ntpath>", line 108, in join
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2025-02-03 03:56:50,974 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:56:50] "[35m[1mGET /get_feedback/green-tshirt HTTP/1.1[0m" 500 -
+2025-02-03 03:56:54,001 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:56:54] "GET /process/green-tshirt HTTP/1.1" 200 -
+2025-02-03 03:57:22,059 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:57:22] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-03 03:57:51,759 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:57:51] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-03 03:58:21,061 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:58:21] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-03 03:58:23,054 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:58:23] "GET /process/green-tshirt HTTP/1.1" 200 -
+2025-02-03 03:58:52,073 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:58:52] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-03 03:59:20,765 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:59:20] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-03 04:00:27,077 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 04:00:27] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
