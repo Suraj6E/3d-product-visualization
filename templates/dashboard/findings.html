@@ -27,180 +27,476 @@
         <div class="findings-container">
             <section class="findings-section">
                 <h1 class="section-title">4. Experimental Results and System Validation</h1>
+                <p>Experimental validation approach combines quantitative performance metrics with qualitative user
+                    experience analysis, providing a comprehensive evaluation of the system's effectiveness in
+                    real-world e-commerce scenarios. This multi-faceted analysis examines technical performance, user
+                    engagement patterns, and system scalability to validate the practical applicability of our 3D
+                    visualization approach.</p>
 
+                {% if findings_data.model_performance %}
                 <section class="subsection">
-                    <h2>4.1 Model Performance Comparison</h2>
-                    <p>Our experimental analysis compares the performance of multiple 3D reconstruction approaches,
-                        focusing on three key metrics: reconstruction accuracy, processing time, and resource
-                        utilization. The Depth Anything V2 model demonstrates superior performance in most scenarios,
-                        particularly when handling complex product geometries.</p>
+                    <h2>4.1 Model Performance and Quality Analysis</h2>
+                    <p>The performance analysis of different 3D reconstruction approaches reveals significant variations
+                        in accuracy, processing time, and resource utilization. Of particular interest is the
+                        relationship between model complexity and reconstruction quality, which demonstrates a
+                        non-linear correlation that influences the practical deployment considerations in e-commerce
+                        environments.</p>
 
-                    <!-- Model Comparison Visualization -->
                     <div class="visualization-card">
-                        <h3>Comparative Model Performance</h3>
-                        <div id="modelComparison" class="viz-container"></div>
+                        <h3>Comparative Model Analysis</h3>
+                        <div id="modelPerformanceMatrix" class="viz-container"></div>
                         <div class="viz-interpretation">
-                            <h4>Key Findings:</h4>
-                            <p>The visualization reveals several critical insights about model performance:</p>
+                            <h4>Performance Analysis Insights:</h4>
                             <ul>
-                                <li>Depth Anything V2 achieves 15% higher accuracy compared to baseline models,
-                                    particularly in handling complex surface textures.</li>
-                                <li>Processing times show an inverse relationship with model complexity, with more
-                                    sophisticated models requiring additional computational resources but delivering
-                                    higher quality results.</li>
-                                <li>Resource utilization patterns indicate optimal performance thresholds for each
-                                    model, suggesting opportunities for dynamic model selection based on product
-                                    complexity.</li>
+                                <li>{{ findings_data.model_performance.models[0] }} achieves
+                                    {{ findings_data.model_performance.accuracy[0] }}% accuracy, surpassing baseline
+                                    approaches by
+                                    {{ (findings_data.model_performance.accuracy[0] -
+                                    findings_data.model_performance.accuracy[1])|round(1) }}%</li>
+
+                                <li>Processing time optimization demonstrates a
+                                    {{ ((1 -
+                                    findings_data.model_performance.processing_time[0]/findings_data.model_performance.processing_time[2])
+                                    * 100)|round }}%
+                                    improvement over traditional methods while maintaining superior quality</li>
+
+                                <li>Resource utilization analysis shows optimal performance at
+                                    {{ findings_data.model_performance.resource_usage[0] }}% usage, with quality metrics
+                                    maintaining
+                                    {{
+                                    findings_data.model_performance.quality_metrics.threshold_performance.high_quality
+                                    }}%+ accuracy</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="visualization-card">
+                        <h3>Quality Metrics Correlation</h3>
+                        <div id="qualityCorrelation" class="viz-container"></div>
+                        <div class="viz-interpretation">
+                            <h4>Quality Analysis Findings:</h4>
+                            <p>Statistical analysis reveals a correlation coefficient of
+                                {{ findings_data.model_performance.quality_metrics.correlation }} between model-assessed
+                                quality and user satisfaction.</p>
+                            <ul>
+                                <li>High-quality threshold ({{
+                                    findings_data.model_performance.quality_metrics.threshold_performance.high_quality
+                                    }}%+)
+                                    consistently achieves superior user satisfaction ratings</li>
+                                <li>Medium-quality range ({{
+                                    findings_data.model_performance.quality_metrics.threshold_performance.medium_quality
+                                    }}%)
+                                    maintains acceptable user experience metrics</li>
+                                <li>Minimum acceptable quality ({{
+                                    findings_data.model_performance.quality_metrics.threshold_performance.minimum_acceptable
+                                    }}%)
+                                    established for production deployment</li>
                             </ul>
                         </div>
                     </div>
                 </section>
+                {% endif %}
 
+                <!-- device_performance.html -->
+                {% if findings_data.device_performance %}
                 <section class="subsection">
-                    <h2>4.2 User Interaction Analysis</h2>
-                    <p>User interaction patterns provide crucial insights into the effectiveness of different
-                        reconstruction approaches. Our analysis examines how users engage with 3D models generated by
-                        different approaches, measuring factors such as exploration time, interaction depth, and user
-                        satisfaction.</p>
+                    <h2>4.2 Device Performance Impact Analysis</h2>
+                    <p>The cross-platform analysis reveals how different device capabilities influence both the
+                        technical performance and user experience aspects of 3D visualization. This understanding is
+                        crucial for implementing adaptive optimization strategies that maintain acceptable performance
+                        across diverse user devices, a key consideration for broad e-commerce adoption and how device
+                        capabilities influence both reconstruction quality and user experience.</p>
 
-                    <!-- User Interaction Heatmap -->
+                    <div class="visualization-card">
+                        <h3>Cross-Device Performance Analysis</h3>
+                        <div id="devicePerformance" class="viz-container"></div>
+                        <div class="viz-interpretation">
+                            <h4>Device-Specific Insights:</h4>
+                            <ul>
+                                {% for device in findings_data.device_performance.devices %}
+                                <li>{{ device }}: Achieves {{ findings_data.device_performance.metrics.fps[loop.index0]
+                                    }} FPS with
+                                    {{ findings_data.device_performance.metrics.quality[loop.index0] }}% visualization
+                                    quality, loading in
+                                    {{ findings_data.device_performance.metrics.load_time[loop.index0] }} seconds</li>
+                                {% endfor %}
+                            </ul>
+                            <p>Optimization impacts show {{
+                                findings_data.device_performance.metrics.optimization_impact.performance_improvement }}%
+                                performance improvement while maintaining {{
+                                findings_data.device_performance.metrics.optimization_impact.quality_retention }}%
+                                of original quality metrics.</p>
+                        </div>
+                    </div>
+                </section>
+                {% endif %}
+
+                <!-- user_interaction.html -->
+                {% if findings_data.user_interaction %}
+                <section class="subsection">
+                    <h2>4.3 User Interaction Analysis and E-commerce Potential</h2>
+                    <p>The analysis of user behavior patterns provides crucial insights into how different user segments
+                        interact with 3D product visualizations. By applying machine learning techniques to interaction
+                        data, we identified distinct behavioral clusters that inform both technical optimization
+                        strategies and user interface design decisions. The data reveals distinct behavioral clusters
+                        that
+                        provide valuable insights for e-commerce optimization.</p>
+
                     <div class="visualization-card">
                         <h3>User Interaction Patterns</h3>
-                        <div id="interactionHeatmap" class="viz-container"></div>
+                        <div id="userInteractionPatterns" class="viz-container"></div>
                         <div class="viz-interpretation">
-                            <h4>Interaction Analysis:</h4>
-                            <p>The heatmap visualization demonstrates distinct user behavior patterns:</p>
+                            <h4>Behavioral Pattern Analysis:</h4>
                             <ul>
-                                <li>Users spend 40% more time exploring models with higher detail preservation,
-                                    indicating a correlation between reconstruction quality and engagement.</li>
-                                <li>Interaction patterns show clusters around specific view angles, suggesting these
-                                    perspectives are crucial for product understanding.</li>
-                                <li>The temporal distribution of interactions reveals peak engagement periods, informing
-                                    optimal model loading strategies.</li>
+                                <li>Detailed Examiners ({{
+                                    findings_data.user_interaction.patterns.detailed_examiners.percentage }}%):
+                                    Spend average {{ findings_data.user_interaction.patterns.detailed_examiners.avg_time
+                                    }} seconds,
+                                    achieving {{
+                                    findings_data.user_interaction.patterns.detailed_examiners.conversion_rate }}%
+                                    conversion</li>
+
+                                <li>Quick Browsers ({{ findings_data.user_interaction.patterns.quick_browsers.percentage
+                                    }}%):
+                                    Average {{ findings_data.user_interaction.patterns.quick_browsers.avg_time }}
+                                    seconds interaction time,
+                                    with {{ findings_data.user_interaction.patterns.quick_browsers.conversion_rate }}%
+                                    conversion rate</li>
+
+                                <li>Feature-Focused Users ({{
+                                    findings_data.user_interaction.patterns.feature_focused.percentage }}%):
+                                    Maintain {{ findings_data.user_interaction.patterns.feature_focused.avg_time }}
+                                    seconds engagement,
+                                    converting at {{
+                                    findings_data.user_interaction.patterns.feature_focused.conversion_rate }}%</li>
                             </ul>
                         </div>
                     </div>
                 </section>
+                {% endif %}
 
+                <!-- system_performance.html -->
+                {% if findings_data.system_performance %}
                 <section class="subsection">
-                    <h2>4.3 Quality Metrics Over Time</h2>
-                    <p>Longitudinal analysis of reconstruction quality reveals important trends in system performance
-                        and highlights the impact of various optimization strategies.</p>
+                    <h2>4.4 Performance Optimization and Scalability Analysis</h2>
+                    <p>System performance analysis across various deployment scenarios reveals the effectiveness of the
+                        optimization strategies and it/'s impact on scalability. The findings demonstrate that
+                        intelligent resource management can significantly improve system performance while maintaining
+                        high-quality visualization standards and provides crucial insights for scalability
+                        considerations.</p>
 
-                    <!-- Quality Trends Visualization -->
                     <div class="visualization-card">
-                        <h3>Quality Metrics Timeline</h3>
-                        <div id="qualityTrends" class="viz-container"></div>
+                        <h3>System Performance Analytics</h3>
+                        <div id="performanceAnalytics" class="viz-container"></div>
                         <div class="viz-interpretation">
-                            <h4>Quality Analysis:</h4>
-                            <p>The temporal analysis of quality metrics reveals:</p>
+                            <h4>Key Performance Findings:</h4>
                             <ul>
-                                <li>A consistent improvement in reconstruction accuracy over the testing period, with
-                                    notable jumps following optimization implementations.</li>
-                                <li>Seasonal variations in processing performance, possibly correlated with server load
-                                    patterns.</li>
-                                <li>Strong correlation between quality metrics and user satisfaction scores, validating
-                                    our quality assessment framework.</li>
+                                <li>Quality optimization achieved {{
+                                    findings_data.system_performance.optimization_metrics.quality_improvement }}%
+                                    improvement on lower-end devices while maintaining consistent visualization
+                                    standards</li>
+
+                                <li>Caching strategies reduced load times by {{
+                                    findings_data.system_performance.optimization_metrics.cache_impact }}%
+                                    for frequently accessed products</li>
+
+                                <li>System optimizations enabled {{
+                                    findings_data.system_performance.optimization_metrics.concurrent_users_increase }}%
+                                    increase in concurrent user capacity while maintaining {{
+                                    findings_data.system_performance.optimization_metrics.resource_efficiency }}%
+                                    resource efficiency</li>
                             </ul>
                         </div>
                     </div>
                 </section>
+                {% endif %}
+                {% if findings_data.synthesis %}
+                <section class="subsection">
+                    <h2>4.5 Synthesis of Experimental Results</h2>
+                    <p>Our comprehensive analysis reveals several key findings that validate the effectiveness of our
+                        approach and its potential impact on e-commerce applications:</p>
+
+                    <div class="synthesis-card">
+                        <h3>Technical Achievement</h3>
+                        <p>The implementation of the {{ findings_data.model_performance.models[0] }} model achieves
+                            {{ findings_data.model_performance.accuracy[0] }}% accuracy in 3D reconstruction while
+                            maintaining efficient processing times,
+                            representing a {{ ((1 -
+                            findings_data.model_performance.processing_time[0]/findings_data.model_performance.processing_time[2])
+                            * 100)|round }}%
+                            improvement over traditional approaches. This technical advancement directly addresses our
+                            primary research objective of developing
+                            an efficient multi-view geometry system for enhanced product visualization.</p>
+                    </div>
+
+                    <div class="synthesis-card">
+                        <h3>User Engagement Insights</h3>
+                        <p>The identification of three distinct user behavior patterns provides valuable insights for
+                            optimizing the e-commerce experience:</p>
+                        <ul>
+                            <li><strong>Detailed Examiners ({{
+                                    findings_data.user_interaction.patterns.detailed_examiners.percentage }}%):</strong>
+                                Demonstrate the highest conversion rate ({{
+                                findings_data.user_interaction.patterns.detailed_examiners.conversion_rate }}%),
+                                suggesting that comprehensive product examination leads to increased purchase confidence
+                            </li>
+
+                            <li><strong>Quick Browsers ({{
+                                    findings_data.user_interaction.patterns.quick_browsers.percentage }}%):</strong>
+                                Show efficient decision-making patterns with a {{
+                                findings_data.user_interaction.patterns.quick_browsers.conversion_rate }}% conversion
+                                rate</li>
+
+                            <li><strong>Feature-Focused Users ({{
+                                    findings_data.user_interaction.patterns.feature_focused.percentage }}%):</strong>
+                                Exhibit targeted interaction patterns resulting in a {{
+                                findings_data.user_interaction.patterns.feature_focused.conversion_rate }}% conversion
+                                rate</li>
+                        </ul>
+                    </div>
+
+                    <div class="synthesis-card">
+                        <h3>System Scalability</h3>
+                        <p>The implementation demonstrates robust scalability characteristics:</p>
+                        <ul>
+                            <li>Cross-platform compatibility maintains acceptable performance levels even on mobile
+                                devices
+                                ({{ findings_data.device_performance.metrics.fps[2] }} FPS with
+                                {{ findings_data.device_performance.metrics.quality[2] }}% quality)</li>
+
+                            <li>Resource optimization enables handling
+                                {{ findings_data.system_performance.optimization_metrics.concurrent_users_increase }}%
+                                more concurrent users
+                                while maintaining {{
+                                findings_data.system_performance.optimization_metrics.resource_efficiency }}% resource
+                                efficiency</li>
+
+                            <li>Caching strategies reduce load times by
+                                {{ findings_data.system_performance.optimization_metrics.cache_impact }}% for frequently
+                                accessed products</li>
+                        </ul>
+                    </div>
+
+                    <div class="synthesis-card">
+                        <h3>Key Contributions</h3>
+                        <ol>
+                            <li>Development of an efficient 3D reconstruction pipeline that achieves
+                                {{ findings_data.model_performance.accuracy[0] }}% accuracy while optimizing processing
+                                time</li>
+
+                            <li>Implementation of adaptive performance optimization strategies that maintain quality
+                                across different device categories</li>
+
+                            <li>Identification and characterization of user interaction patterns that inform e-commerce
+                                optimization strategies</li>
+
+                            <li>Validation of system scalability and practical applicability in real-world e-commerce
+                                scenarios</li>
+                        </ol>
+                    </div>
+
+                    <div class="synthesis-card">
+                        <h3>Conclusion</h3>
+                        <p>This comprehensive validation demonstrates that our implementation successfully bridges the
+                            gap between technical capabilities
+                            and practical e-commerce requirements. The strong correlation (r={{
+                            findings_data.model_performance.quality_metrics.correlation }})
+                            between model-assessed quality and user satisfaction validates our approach to quality
+                            metrics and user experience evaluation.
+                            These findings provide a solid foundation for the broader adoption of 3D visualization
+                            technologies in e-commerce platforms
+                            while identifying clear pathways for future optimization and enhancement.</p>
+                    </div>
+                </section>
+                {% endif %}
+
             </section>
         </div>
     </div>
     <script>
-        // Enhanced visualization code with more sophisticated plots
+        // Properly escape and parse the data from Flask at the top level
+        const findingsData = JSON.parse('{{ findings_data | tojson | safe }}');
 
-        // Model Comparison Plot
-        const modelComparisonData = {
-            models: ['Depth Anything V2', 'BaselineNN', 'Traditional SfM'],
-            accuracy: [95, 82, 78],
-            processing_time: [1.5, 0.8, 2.1],
-            resource_usage: [75, 45, 60]
-        };
-
-        Plotly.newPlot('modelComparison', [{
-            type: 'bar',
-            x: modelComparisonData.models,
-            y: modelComparisonData.accuracy,
-            name: 'Accuracy (%)',
-            marker: {
-                color: 'rgb(49,130,189)'
+        document.addEventListener('DOMContentLoaded', function () {
+            // Model Performance Matrix Visualization
+            if (findingsData.model_performance && document.getElementById('modelPerformanceMatrix')) {
+                Plotly.newPlot('modelPerformanceMatrix', [{
+                    type: 'scatter',
+                    mode: 'markers',
+                    x: findingsData.model_performance.processing_time,
+                    y: findingsData.model_performance.accuracy,
+                    text: findingsData.model_performance.models,
+                    marker: {
+                        size: findingsData.model_performance.user_satisfaction.map(v => v * 5),
+                        color: findingsData.model_performance.resource_usage,
+                        colorscale: 'Viridis',
+                        showscale: true
+                    },
+                    hovertemplate:
+                        '<b>%{text}</b><br>' +
+                        'Processing Time: %{x}s<br>' +
+                        'Accuracy: %{y}%<br>' +
+                        'Resource Usage: %{marker.color}%<br>' +
+                        'User Satisfaction: %{marker.size/5}/10<br>'
+                }], {
+                    title: 'Model Performance Comparison',
+                    xaxis: { title: 'Processing Time (s)' },
+                    yaxis: { title: 'Accuracy (%)' },
+                    showlegend: false
+                });
             }
-        }, {
-            type: 'bar',
-            x: modelComparisonData.models,
-            y: modelComparisonData.processing_time,
-            name: 'Processing Time (s)',
-            marker: {
-                color: 'rgb(204,204,204)'
+
+            // Quality Correlation Matrix Visualization
+            if (findingsData.model_performance && document.getElementById('qualityCorrelation')) {
+                // Create synthetic correlation data points for visualization
+                // We'll use the accuracy and user satisfaction metrics we already have
+                const qualityData = findingsData.model_performance.models.map((model, index) => ({
+                    quality: findingsData.model_performance.accuracy[index],
+                    satisfaction: findingsData.model_performance.user_satisfaction[index],
+                    model: model
+                }));
+
+                Plotly.newPlot('qualityCorrelation', [{
+                    type: 'scatter',
+                    mode: 'markers+text',
+                    x: qualityData.map(d => d.quality),
+                    y: qualityData.map(d => d.satisfaction),
+                    text: qualityData.map(d => d.model),
+                    textposition: 'top center',
+                    marker: {
+                        size: 12,
+                        color: qualityData.map(d => d.quality),
+                        colorscale: 'Viridis',
+                        showscale: true,
+                        colorbar: {
+                            title: 'Quality Score (%)'
+                        }
+                    },
+                    hovertemplate:
+                        '<b>%{text}</b><br>' +
+                        'Quality Score: %{x}%<br>' +
+                        'User Satisfaction: %{y}/10<br>',
+                }], {
+                    title: 'Quality Metrics vs User Satisfaction',
+                    xaxis: {
+                        title: 'Model-assessed Quality Score (%)',
+                        range: [70, 100]  // Adjusted for better visualization
+                    },
+                    yaxis: {
+                        title: 'User Satisfaction Score (0-10)',
+                        range: [7, 9]     // Adjusted for better visualization
+                    },
+                    showlegend: false
+                });
             }
-        }, {
-            type: 'bar',
-            x: modelComparisonData.models,
-            y: modelComparisonData.resource_usage,
-            name: 'Resource Usage (%)',
-            marker: {
-                color: 'rgb(222,45,38)'
+
+            // Device Performance Visualization
+            if (findingsData.device_performance && document.getElementById('devicePerformance')) {
+                Plotly.newPlot('devicePerformance', [
+                    {
+                        type: 'bar',
+                        name: 'FPS',
+                        x: findingsData.device_performance.devices,
+                        y: findingsData.device_performance.metrics.fps,
+                        marker: { color: 'rgb(49,130,189)' }
+                    },
+                    {
+                        type: 'bar',
+                        name: 'Quality (%)',
+                        x: findingsData.device_performance.devices,
+                        y: findingsData.device_performance.metrics.quality,
+                        marker: { color: 'rgb(204,204,204)' }
+                    },
+                    {
+                        type: 'bar',
+                        name: 'Load Time (s)',
+                        x: findingsData.device_performance.devices,
+                        y: findingsData.device_performance.metrics.load_time,
+                        marker: { color: 'rgb(222,45,38)' }
+                    }
+                ], {
+                    barmode: 'group',
+                    title: 'Performance Across Devices',
+                    xaxis: { title: 'Device Type' },
+                    yaxis: { title: 'Value' }
+                });
             }
-        }], {
-            title: 'Model Performance Comparison',
-            barmode: 'group',
-            xaxis: { title: 'Models' },
-            yaxis: { title: 'Values' },
-            legend: { x: 1, y: 1 }
-        });
 
-        // Interaction Heatmap
-        const interactionData = {
-            x: Array.from({ length: 24 }, (_, i) => i), // Hours
-            y: Array.from({ length: 7 }, (_, i) => ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][i]),
-            z: Array.from({ length: 7 }, () =>
-                Array.from({ length: 24 }, () => Math.floor(Math.random() * 100))
-            )
-        };
+            // User Interaction Pattern Visualization
+            if (findingsData.user_interaction && document.getElementById('userInteractionPatterns')) {
+                const patterns = findingsData.user_interaction.patterns;
+                const patternData = [
+                    {
+                        name: 'Detailed Examiners',
+                        time: patterns.detailed_examiners.avg_time,
+                        conversion: patterns.detailed_examiners.conversion_rate,
+                        percentage: patterns.detailed_examiners.percentage
+                    },
+                    {
+                        name: 'Quick Browsers',
+                        time: patterns.quick_browsers.avg_time,
+                        conversion: patterns.quick_browsers.conversion_rate,
+                        percentage: patterns.quick_browsers.percentage
+                    },
+                    {
+                        name: 'Feature-Focused',
+                        time: patterns.feature_focused.avg_time,
+                        conversion: patterns.feature_focused.conversion_rate,
+                        percentage: patterns.feature_focused.percentage
+                    }
+                ];
 
-        Plotly.newPlot('interactionHeatmap', [{
-            type: 'heatmap',
-            x: interactionData.x,
-            y: interactionData.y,
-            z: interactionData.z,
-            colorscale: 'Viridis'
-        }], {
-            title: 'User Interaction Patterns by Day and Hour',
-            xaxis: { title: 'Hour of Day' },
-            yaxis: { title: 'Day of Week' }
-        });
+                Plotly.newPlot('userInteractionPatterns', [{
+                    type: 'scatter',
+                    mode: 'markers+text',
+                    x: patternData.map(d => d.time),
+                    y: patternData.map(d => d.conversion),
+                    text: patternData.map(d => d.name),
+                    textposition: 'top center',
+                    marker: {
+                        size: patternData.map(d => d.percentage * 2),
+                        color: ['rgb(49,130,189)', 'rgb(204,204,204)', 'rgb(222,45,38)']
+                    },
+                    hovertemplate:
+                        '<b>%{text}</b><br>' +
+                        'Time: %{x}s<br>' +
+                        'Conversion: %{y}%<br>'
+                }], {
+                    title: 'User Interaction Patterns',
+                    xaxis: { title: 'Average Time Spent (seconds)' },
+                    yaxis: { title: 'Conversion Rate (%)' }
+                });
+            }
 
-        // Quality Trends
-        const qualityTrendsData = {
-            dates: Array.from({ length: 30 }, (_, i) => new Date(2024, 0, i + 1)),
-            accuracy: Array.from({ length: 30 }, (_, i) => 85 + (i / 30) * 10 + Math.random() * 5),
-            satisfaction: Array.from({ length: 30 }, (_, i) => 7.5 + (i / 30) * 2 + Math.random())
-        };
-
-        Plotly.newPlot('qualityTrends', [{
-            type: 'scatter',
-            x: qualityTrendsData.dates,
-            y: qualityTrendsData.accuracy,
-            name: 'Reconstruction Accuracy',
-            line: { shape: 'spline' }
-        }, {
-            type: 'scatter',
-            x: qualityTrendsData.dates,
-            y: qualityTrendsData.satisfaction,
-            name: 'User Satisfaction',
-            yaxis: 'y2',
-            line: { shape: 'spline', dash: 'dot' }
-        }], {
-            title: 'Quality Metrics and User Satisfaction Over Time',
-            xaxis: { title: 'Date' },
-            yaxis: { title: 'Accuracy (%)', range: [80, 100] },
-            yaxis2: {
-                title: 'Satisfaction Score',
-                overlaying: 'y',
-                side: 'right',
-                range: [7, 10]
+            // System Performance Analytics Visualization
+            if (findingsData.system_performance && document.getElementById('performanceAnalytics')) {
+                const metrics = findingsData.system_performance.optimization_metrics;
+                Plotly.newPlot('performanceAnalytics', [{
+                    type: 'scatterpolar',
+                    r: [
+                        metrics.quality_improvement,
+                        metrics.cache_impact,
+                        metrics.concurrent_users_increase,
+                        metrics.resource_efficiency
+                    ],
+                    theta: [
+                        'Quality Improvement',
+                        'Cache Impact',
+                        'Concurrent Users',
+                        'Resource Efficiency'
+                    ],
+                    fill: 'toself',
+                    name: 'Optimization Impact'
+                }], {
+                    title: 'System Performance Optimization Impact',
+                    polar: {
+                        radialaxis: {
+                            visible: true,
+                            range: [0, Math.max(...Object.values(metrics)) * 1.1]
+                        }
+                    },
+                    showlegend: true
+                });
             }
         });
     </script>

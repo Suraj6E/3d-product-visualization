@@ -126,3 +126,96 @@ TypeError: expected str, bytes or os.PathLike object, not NoneType
 2025-02-04 14:22:34,841 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 14:22:34] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
 2025-02-04 18:07:22,677 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 18:07:22] "GET /dashboard/findings HTTP/1.1" 200 -
 2025-02-04 18:07:22,706 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 18:07:22] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 18:08:33,557 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 18:08:33,557 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 18:10:03,373 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 18:10:03] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 18:10:03,486 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 18:10:03] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 18:11:55,586 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 18:11:55] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 18:11:55,806 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 18:11:55] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 19:44:20,319 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 19:44:20,319 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 19:44:20,494 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 19:44:20] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 19:44:20,759 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 19:44:20] "GET /static/css/dashboard.css HTTP/1.1" 200 -
+2025-02-04 20:02:20,931 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:02:20] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 20:02:21,137 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:02:21] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:02:22,955 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:02:22] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:03:01,123 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 20:03:01,123 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 20:03:53,824 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:03:53] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 20:03:54,078 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:03:54] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:12:25,028 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 20:12:25,029 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 20:12:26,360 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:12:26] "GET / HTTP/1.1" 200 -
+2025-02-04 20:12:26,545 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:12:26] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-04 20:12:32,764 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:12:32] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 20:12:32,948 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:12:32] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:15:44,468 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:15:44] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 20:15:44,680 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:15:44] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:15:55,135 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:15:55] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 20:15:55,476 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:15:55] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:16:57,484 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:16:57] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:18:13,094 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:18:13] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 20:18:13,302 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:18:13] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:19:05,339 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 20:19:05,340 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 20:20:17,735 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:20:17] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 20:20:18,080 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:20:18] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:23:26,741 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 20:23:26,741 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 20:23:27,202 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:23:27] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 20:23:27,328 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:23:27] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:23:52,843 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:23:52] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:29:08,781 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 20:29:08,781 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 20:29:18,841 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:29:18] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-02-04 20:29:19,520 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:29:19] "GET / HTTP/1.1" 200 -
+2025-02-04 20:29:19,834 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:29:19] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-04 20:29:24,881 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:29:24] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 20:29:25,022 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:29:25] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:30:18,427 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:30:18] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:41:05,369 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 20:41:05,370 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 20:41:30,121 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:41:30] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 20:41:30,428 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:41:30] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:42:56,208 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:42:56] "GET /dashboard/performance HTTP/1.1" 200 -
+2025-02-04 20:42:56,317 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:42:56] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:43:09,908 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:43:09] "GET /dashboard/feedback HTTP/1.1" 200 -
+2025-02-04 20:43:10,251 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:43:10] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:43:12,473 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:43:12] "GET /dashboard/analytics HTTP/1.1" 200 -
+2025-02-04 20:43:12,814 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:43:12] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:43:14,429 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:43:14] "GET /dashboard HTTP/1.1" 200 -
+2025-02-04 20:43:14,771 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:43:14] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:43:15,233 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:43:15] "GET /dashboard/metrics?days=30 HTTP/1.1" 200 -
+2025-02-04 20:43:28,508 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:43:28] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 20:43:28,848 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:43:28] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:49:03,680 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:49:03] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 20:49:03,893 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:49:03] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 20:56:59,279 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 20:56:59,279 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
