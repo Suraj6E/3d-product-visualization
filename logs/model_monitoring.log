@@ -219,3 +219,416 @@ TypeError: expected str, bytes or os.PathLike object, not NoneType
  * Running on http://127.0.0.1:8000
  * Running on http://192.168.1.64:8000
 2025-02-04 20:56:59,279 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 20:58:20,398 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 20:58:20,398 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 20:58:35,132 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:58:35] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 20:58:35,380 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 20:58:35] "GET /static/css/dashboard.css HTTP/1.1" 200 -
+2025-02-04 22:12:06,153 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 22:12:06,154 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 22:12:16,727 - werkzeug - INFO - 192.168.1.64 - - [04/Feb/2025 22:12:16] "GET / HTTP/1.1" 200 -
+2025-02-04 22:12:16,850 - werkzeug - INFO - 192.168.1.64 - - [04/Feb/2025 22:12:16] "GET /static/css/index.css HTTP/1.1" 200 -
+2025-02-04 22:12:17,044 - werkzeug - INFO - 192.168.1.64 - - [04/Feb/2025 22:12:17] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-02-04 22:12:19,169 - werkzeug - INFO - 192.168.1.64 - - [04/Feb/2025 22:12:19] "GET /login HTTP/1.1" 200 -
+2025-02-04 22:12:19,219 - werkzeug - INFO - 192.168.1.64 - - [04/Feb/2025 22:12:19] "GET /static/css/auth.css HTTP/1.1" 200 -
+2025-02-04 22:12:28,164 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-02-04 22:12:30,104 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 22:12:30] "GET /aws/info HTTP/1.1" 200 -
+2025-02-04 22:19:03,482 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 22:19:03] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 22:19:03,654 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 22:19:03] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 23:04:36,016 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 23:04:36,016 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 23:04:53,793 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:04:53] "GET / HTTP/1.1" 200 -
+2025-02-04 23:04:53,972 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:04:53] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-04 23:04:57,069 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:04:57] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 23:04:57,199 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:04:57] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 23:08:26,550 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:08:26] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 23:08:26,760 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:08:26] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 23:12:36,604 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 23:12:36,605 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 23:12:56,378 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:12:56] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 23:12:56,613 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:12:56] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 23:15:28,110 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 23:15:28,110 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 23:20:29,969 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 23:20:29,970 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 23:23:16,643 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 23:23:16,643 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 23:23:31,335 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-02-04 23:23:33,469 - application - ERROR - Exception on /dashboard/findings [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\routes\dashboard.py", line 203, in findings
+    return render_template("dashboard/findings.html", findings_data=findings_data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1301, in render
+    self.environment.handle_exception()
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Work\Masters\3d-product-visualization\templates\dashboard\findings.html", line 49, in top-level template code
+    <li>Cluster Name: {{ aws_info.cluster.name }}</li>
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 485, in getattr
+    return getattr(obj, attribute)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'aws_info' is undefined
+2025-02-04 23:23:33,542 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:23:33] "[35m[1mGET /dashboard/findings HTTP/1.1[0m" 500 -
+2025-02-04 23:25:05,626 - application - ERROR - Exception on /dashboard/findings [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\routes\dashboard.py", line 203, in findings
+    return render_template("dashboard/findings.html", findings_data=findings_data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1301, in render
+    self.environment.handle_exception()
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Work\Masters\3d-product-visualization\templates\dashboard\findings.html", line 49, in top-level template code
+    <li>Cluster Name: {{ findings_data.aws_info.cluster.name }}</li>
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 485, in getattr
+    return getattr(obj, attribute)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'aws_info' is undefined
+2025-02-04 23:25:05,657 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:25:05] "[35m[1mGET /dashboard/findings HTTP/1.1[0m" 500 -
+2025-02-04 23:25:23,606 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 23:25:23,606 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 23:25:30,128 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-02-04 23:25:32,095 - application - ERROR - Exception on /dashboard/findings [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\routes\dashboard.py", line 203, in findings
+    return render_template("dashboard/findings.html", findings_data=findings_data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1301, in render
+    self.environment.handle_exception()
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Work\Masters\3d-product-visualization\templates\dashboard\findings.html", line 96, in top-level template code
+    {% for model, accuracy in zip(findings_data.model_performance.models,
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\utils.py", line 83, in from_obj
+    if hasattr(obj, "jinja_pass_arg"):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'zip' is undefined
+2025-02-04 23:25:32,111 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:25:32] "[35m[1mGET /dashboard/findings HTTP/1.1[0m" 500 -
+2025-02-04 23:26:38,900 - application - ERROR - Exception on /dashboard/findings [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\routes\dashboard.py", line 203, in findings
+    return render_template("dashboard/findings.html", findings_data=findings_data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1301, in render
+    self.environment.handle_exception()
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Work\Masters\3d-product-visualization\templates\dashboard\findings.html", line 96, in top-level template code
+    {% for model, accuracy in zip(findings_data.model_performance.models,
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\utils.py", line 83, in from_obj
+    if hasattr(obj, "jinja_pass_arg"):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'zip' is undefined
+2025-02-04 23:26:38,916 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:26:38] "[35m[1mGET /dashboard/findings HTTP/1.1[0m" 500 -
+2025-02-04 23:26:56,601 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 23:26:56,601 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 23:26:59,131 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-02-04 23:27:01,036 - application - ERROR - Exception on /dashboard/findings [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\routes\dashboard.py", line 203, in findings
+    return render_template("dashboard/findings.html", findings_data=findings_data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1301, in render
+    self.environment.handle_exception()
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Work\Masters\3d-product-visualization\templates\dashboard\findings.html", line 49, in top-level template code
+    <li>Cluster Name: {{ findings_data.aws_info.cluster.name }}</li>
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 485, in getattr
+    return getattr(obj, attribute)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'flask.wrappers.Response object' has no attribute 'cluster'
+2025-02-04 23:27:01,036 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:27:01] "[35m[1mGET /dashboard/findings HTTP/1.1[0m" 500 -
+2025-02-04 23:33:21,671 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 23:33:21,673 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 23:33:35,511 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-02-04 23:33:37,478 - application - ERROR - Exception on /dashboard/findings [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\routes\dashboard.py", line 204, in findings
+    "name": aws_info.cluster.name,
+            ^^^^^^^^^^^^^^^^
+AttributeError: 'dict' object has no attribute 'cluster'
+2025-02-04 23:33:37,479 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:33:37] "[35m[1mGET /dashboard/findings HTTP/1.1[0m" 500 -
+2025-02-04 23:36:34,267 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 23:36:34,267 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 23:36:38,665 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-02-04 23:36:40,735 - application - ERROR - Exception on /dashboard/findings [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\routes\dashboard.py", line 204, in findings
+    "name": aws_info.cluster.name,
+            ^^^^^^^^^^^^^^^^
+AttributeError: 'dict' object has no attribute 'cluster'
+2025-02-04 23:36:40,735 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:36:40] "[35m[1mGET /dashboard/findings HTTP/1.1[0m" 500 -
+2025-02-04 23:39:40,749 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 23:39:40,749 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 23:39:40,913 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-02-04 23:39:42,904 - application - ERROR - Exception on /dashboard/findings [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\routes\dashboard.py", line 204, in findings
+    "name": aws_info.cluster.name,
+            ^^^^^^^^^^^^^^^^
+AttributeError: 'Response' object has no attribute 'cluster'
+2025-02-04 23:39:42,907 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:39:42] "[35m[1mGET /dashboard/findings HTTP/1.1[0m" 500 -
+2025-02-04 23:44:08,025 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 23:44:08,026 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 23:44:11,188 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-02-04 23:44:13,280 - application - ERROR - Exception on /dashboard/findings [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\routes\dashboard.py", line 204, in findings
+    "name": aws_info['cluster']['name'],
+            ~~~~~~~~^^^^^^^^^^^
+TypeError: 'Response' object is not subscriptable
+2025-02-04 23:44:13,282 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:44:13] "[35m[1mGET /dashboard/findings HTTP/1.1[0m" 500 -
+2025-02-04 23:44:43,269 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 23:44:43,269 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 23:45:06,624 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-02-04 23:45:08,619 - application - ERROR - Exception on /dashboard/findings [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\routes\dashboard.py", line 212, in findings
+    return render_template("dashboard/findings.html", findings_data=findings_data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 1301, in render
+    self.environment.handle_exception()
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\environment.py", line 936, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\Work\Masters\3d-product-visualization\templates\dashboard\findings.html", line 96, in top-level template code
+    {% for model, accuracy in zip(findings_data.model_performance.models,
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\jinja2\utils.py", line 83, in from_obj
+    if hasattr(obj, "jinja_pass_arg"):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'zip' is undefined
+2025-02-04 23:45:08,623 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:45:08] "[35m[1mGET /dashboard/findings HTTP/1.1[0m" 500 -
