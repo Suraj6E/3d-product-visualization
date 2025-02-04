@@ -733,3 +733,44 @@ body{
 .metric-value.error {
     background-color: rgba(220, 53, 69, 0.1);
 }
+
+
+/*findings.html*/
+.findings-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.findings-section {
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #333;
+}
+
+.subsection {
+    margin-bottom: 2.5rem;
+}
+
+.visualization-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.viz-container {
+    height: 400px;
+    margin: 1rem 0;
+}
+
+.viz-description {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 1rem;
+}

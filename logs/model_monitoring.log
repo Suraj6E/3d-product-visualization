@@ -105,3 +105,24 @@ TypeError: expected str, bytes or os.PathLike object, not NoneType
 2025-02-03 03:58:52,073 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:58:52] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
 2025-02-03 03:59:20,765 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 03:59:20] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
 2025-02-03 04:00:27,077 - werkzeug - INFO - 127.0.0.1 - - [03/Feb/2025 04:00:27] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-04 14:20:12,439 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-04 14:20:12,439 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-04 14:20:39,125 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 14:20:39] "GET / HTTP/1.1" 200 -
+2025-02-04 14:20:39,259 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 14:20:39] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-04 14:20:39,742 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 14:20:39] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-02-04 14:20:52,760 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 14:20:52] "GET /dashboard HTTP/1.1" 200 -
+2025-02-04 14:20:53,101 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 14:20:53] "GET /static/css/dashboard.css HTTP/1.1" 200 -
+2025-02-04 14:20:53,550 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 14:20:53] "GET /dashboard/metrics?days=30 HTTP/1.1" 200 -
+2025-02-04 14:21:04,558 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 14:21:04] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 14:21:04,896 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 14:21:04] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 14:22:24,976 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 14:22:24] "GET /dashboard/feedback HTTP/1.1" 200 -
+2025-02-04 14:22:25,155 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 14:22:25] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 14:22:27,213 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 14:22:27] "GET /dashboard/performance HTTP/1.1" 200 -
+2025-02-04 14:22:27,548 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 14:22:27] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 14:22:34,507 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 14:22:34] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 14:22:34,841 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 14:22:34] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-04 18:07:22,677 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 18:07:22] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-04 18:07:22,706 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 18:07:22] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -

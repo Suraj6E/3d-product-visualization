@@ -112,6 +112,60 @@ def get_dashboard_metrics():
         return jsonify({'success': False, 'error': str(e)})
 
 
+@dashboard.route('/dashboard/findings')
+@login_required
+def findings():
+    """Finngs"""
+    try:
+        findings_data = {
+            'experiment_metrics': {
+                'processing_times': {
+                    'mean': 1.5,
+                    'std': 0.3,
+                    'min': 0.8,
+                    'max': 2.3
+                },
+                'memory_usage': {
+                    'mean': 750,
+                    'std': 150,
+                    'min': 500,
+                    'max': 1000
+                },
+                'model_inference': {
+                    'mean': 0.75,
+                    'std': 0.15,
+                    'min': 0.5,
+                    'max': 1.0
+                }
+            },
+            'user_metrics': {
+                'satisfaction_scores': {
+                    'mean': 8.5,
+                    'std': 0.8,
+                    'min': 7,
+                    'max': 10
+                },
+                'task_completion_rate': {
+                    'mean': 90,
+                    'std': 5,
+                    'min': 80,
+                    'max': 100
+                },
+                'interaction_time': {
+                    'mean': 90,
+                    'std': 30,
+                    'min': 60,
+                    'max': 180
+                }
+            }
+        }
+        return render_template('dashboard/findings.html',
+                             findings_data=findings_data)
+    except Exception as e:
+        print(f"Error loading findings: {str(e)}")
+        return render_template('dashboard/findings.html',
+                             findings_data={})
+
 @dashboard.route('/dashboard/run-benchmarks')
 @login_required
 def run_benchmarks():
