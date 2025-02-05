@@ -9,7 +9,7 @@ import traceback
 from models.vision_processing import process_image, process_orthogonal_views
 import plotly.utils
 
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, current_app
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, current_app, session
 from flask_login import LoginManager, current_user, login_required, login_user, logout_user
 from urllib.parse import urlparse
 
@@ -25,24 +25,34 @@ from models.model_monitoring import ModelMonitor
 from utils.benchmark_system import BenchmarkSystem
 
 from routes.dashboard import dashboard
-from routes.visualization import visualization
 
-import boto3
 from botocore.exceptions import ClientError
 
 from storage import create_storage_manager, S3StorageManager
+
+from datetime import timedelta
+import secrets
+
 
 
 application = Flask(__name__)
 app = application  # This provides compatibility with both 'app' and 'application' names
 app.config.from_object(Config)
 
+# Add these configurations after creating the Flask app
+app.config['SECRET_KEY'] = secrets.token_hex(32)  # Generate a secure secret key
+app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=30)  # Set remember me duration
+app.config['SESSION_PROTECTION'] = 'strong'
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)  # Session lifetime
 
 # Initialize Flask-Login with the correct login view
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'  # Changed from 'auth.login' to just 'login'
+login_manager.session_protection = 'strong'
 login_manager.login_message = 'Please log in to access this feature.'
+login_manager.login_message_category = 'info'
+
 
 # Initialize our enhanced visualization system
 visualizer = Enhanced3DVisualizer(log_dir=app.config['LOG_DIR'])
@@ -53,6 +63,13 @@ benchmark_system = BenchmarkSystem(output_dir=app.config['BENCHMARK_DIR'])
 storage = create_storage_manager(app)
         
 app.register_blueprint(dashboard)
+
+# Add a before_request handler to check session
+@app.before_request
+def before_request():
+    if current_user.is_authenticated:
+        # Refresh the user's session to prevent timeout
+        session.modified = True
 
 def is_safe_url(target):
     """
@@ -157,6 +174,7 @@ def logout():
 
 # Update the routes to use the storage manager
 @app.route('/')
+@login_required
 def index():
     """Home page showing list of folders"""
     try:
@@ -169,6 +187,7 @@ def index():
 
 
 @app.route('/folder/<folder_name>')
+@login_required
 def view_folder(folder_name):
     print("""Dedicated page for each folder""")
     try:
@@ -283,6 +302,7 @@ def track_interaction(folder_name):
     
     
 @app.route('/process/<folder_name>')
+@login_required
 def process_folder(folder_name):
     """Process images in a folder and generate 3D visualization"""
     print(f"DEBUG: Processing folder: {folder_name}")
@@ -409,6 +429,7 @@ def process_folder(folder_name):
                         pass
 
 @app.route('/get_feedback/<folder_name>')
+@login_required
 def get_feedback(folder_name):
     """Get all feedback for a folder"""
     feedback_file = os.path.join(app.config['UPLOAD_FOLDER'], folder_name, 'feedback.json')
@@ -419,6 +440,21 @@ def get_feedback(folder_name):
         return jsonify({'success': True, 'feedback': feedback_data})
     
     return jsonify({'success': True, 'feedback': []})
+
+
+@app.after_request
+def after_request(response):
+    """Log important headers and session info after each request"""
+    if app.debug:
+        print("\nRequest Debug Info:")
+        print(f"Endpoint: {request.endpoint}")
+        print(f"Method: {request.method}")
+        print(f"User Authenticated: {current_user.is_authenticated}")
+        if current_user.is_authenticated:
+            print(f"User ID: {current_user.get_id()}")
+        print(f"Session: {dict(session)}")
+        print(f"Response Status: {response.status_code}")
+    return response
 
 # @app.route('/get-s3-data/<folder_name>')
 # @login_required
@@ -446,6 +482,7 @@ def get_feedback(folder_name):
 #         })
 
 @app.route('/feedback/<folder_name>', methods=['POST'])
+@login_required
 def save_feedback(folder_name):
     """Save feedback for a folder"""
     feedback_data = request.json
@@ -478,6 +515,26 @@ def save_feedback(folder_name):
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+@app.route('/debug/session')
+def debug_session():
+    """Debug endpoint to check session data"""
+    if not current_user.is_authenticated:
+        return jsonify({
+            'authenticated': False,
+            'session': dict(session),
+            'user': None
+        })
+    
+    return jsonify({
+        'authenticated': True,
+        'session': dict(session),
+        'user': {
+            'id': current_user.get_id(),
+            'email': current_user.email,
+            'username': current_user.username
+        }
+    })
 
 if __name__ == '__main__':
     try:

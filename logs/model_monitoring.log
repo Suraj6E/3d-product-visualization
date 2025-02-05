@@ -640,3 +640,80 @@ jinja2.exceptions.UndefinedError: 'zip' is undefined
 2025-02-04 23:48:02,279 - botocore.credentials - INFO - Found credentials in environment variables.
 2025-02-04 23:48:04,356 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:48:04] "GET /dashboard/findings HTTP/1.1" 200 -
 2025-02-04 23:48:04,481 - werkzeug - INFO - 127.0.0.1 - - [04/Feb/2025 23:48:04] "[36mGET /static/css/dashboard.css HTTP/1.1[0m" 304 -
+2025-02-05 21:22:00,989 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-05 21:22:00,989 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-05 21:46:27,578 - werkzeug - INFO - 127.0.0.1 - - [05/Feb/2025 21:46:27] "GET / HTTP/1.1" 200 -
+2025-02-05 21:46:27,706 - werkzeug - INFO - 127.0.0.1 - - [05/Feb/2025 21:46:27] "GET /static/css/index.css HTTP/1.1" 200 -
+2025-02-05 21:46:28,251 - werkzeug - INFO - 127.0.0.1 - - [05/Feb/2025 21:46:28] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-02-05 21:46:41,572 - werkzeug - INFO - 127.0.0.1 - - [05/Feb/2025 21:46:41] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-05 21:46:52,645 - werkzeug - INFO - 127.0.0.1 - - [05/Feb/2025 21:46:52] "[32mGET /logout HTTP/1.1[0m" 302 -
+2025-02-05 21:46:53,498 - werkzeug - INFO - 127.0.0.1 - - [05/Feb/2025 21:46:53] "GET / HTTP/1.1" 200 -
+2025-02-05 21:46:53,520 - werkzeug - INFO - 127.0.0.1 - - [05/Feb/2025 21:46:53] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-05 21:46:56,184 - werkzeug - INFO - 127.0.0.1 - - [05/Feb/2025 21:46:56] "GET /login HTTP/1.1" 200 -
+2025-02-05 21:46:56,430 - werkzeug - INFO - 127.0.0.1 - - [05/Feb/2025 21:46:56] "GET /static/css/auth.css HTTP/1.1" 200 -
+2025-02-05 21:47:19,791 - werkzeug - INFO - 127.0.0.1 - - [05/Feb/2025 21:47:19] "POST /login HTTP/1.1" 200 -
+2025-02-05 21:47:20,128 - werkzeug - INFO - 127.0.0.1 - - [05/Feb/2025 21:47:20] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-05 21:47:34,293 - werkzeug - INFO - 127.0.0.1 - - [05/Feb/2025 21:47:34] "[32mPOST /login HTTP/1.1[0m" 302 -
+2025-02-05 21:47:35,334 - werkzeug - INFO - 127.0.0.1 - - [05/Feb/2025 21:47:35] "GET / HTTP/1.1" 200 -
+2025-02-05 21:47:35,361 - werkzeug - INFO - 127.0.0.1 - - [05/Feb/2025 21:47:35] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-05 21:47:46,270 - werkzeug - INFO - 127.0.0.1 - - [05/Feb/2025 21:47:46] "GET /folder/green-tshirt HTTP/1.1" 200 -
+2025-02-05 21:47:46,343 - werkzeug - INFO - 127.0.0.1 - - [05/Feb/2025 21:47:46] "GET /static/css/folder.css HTTP/1.1" 200 -
+2025-02-05 21:47:47,192 - werkzeug - INFO - 127.0.0.1 - - [05/Feb/2025 21:47:47] "[33mGET /get-s3-data/green-tshirt HTTP/1.1[0m" 404 -
+2025-02-05 21:47:47,443 - application - ERROR - Exception on /get_feedback/green-tshirt [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\application.py", line 414, in get_feedback
+    feedback_file = os.path.join(app.config['UPLOAD_FOLDER'], folder_name, 'feedback.json')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen ntpath>", line 108, in join
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2025-02-05 21:47:47,459 - werkzeug - INFO - 127.0.0.1 - - [05/Feb/2025 21:47:47] "[35m[1mGET /get_feedback/green-tshirt HTTP/1.1[0m" 500 -
+2025-02-05 21:48:16,990 - werkzeug - INFO - 127.0.0.1 - - [05/Feb/2025 21:48:16] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-06 02:28:06,562 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-06 02:28:06,563 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-06 02:28:25,387 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:28:25] "[32mGET /dashboard/findings HTTP/1.1[0m" 302 -
+2025-02-06 02:28:25,663 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:28:25] "GET /login?next=/dashboard/findings HTTP/1.1" 200 -
+2025-02-06 02:28:25,817 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:28:25] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 02:28:29,902 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:28:29] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 02:28:44,609 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:28:44] "[32mPOST /login?next=/dashboard/findings HTTP/1.1[0m" 302 -
+2025-02-06 02:28:44,963 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-02-06 02:28:46,021 - application - ERROR - Exception on /dashboard/findings [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\routes\dashboard.py", line 206, in findings
+    "ip": aws_info['tasks'][0]['publicIp'],
+          ~~~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+2025-02-06 02:28:46,058 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:28:46] "[35m[1mGET /dashboard/findings HTTP/1.1[0m" 500 -
+2025-02-06 02:29:06,693 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:29:06] "GET /debug/session HTTP/1.1" 200 -

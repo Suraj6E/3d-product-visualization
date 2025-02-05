@@ -150,6 +150,12 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            const uploadSection = document.querySelector('.upload-section');
+            if (!uploadSection) {
+                console.log("Unauthorized user.");
+                return; // Exit if user is not authenticated
+            }
+
             // Setup file upload preview functionality for each view
             ['front', 'back', 'top'].forEach(view => {
                 const uploadBox = document.getElementById(`${view}-upload`);
