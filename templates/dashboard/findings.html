@@ -45,14 +45,14 @@
                         <div class="infrastructure-details">
                             <h4>AWS Environment Configuration:</h4>
                             <ul>
-                                <li>Deployment: AWS ECS (Elastic Container Service)</li>
+                                <li>Deployment: AWS Instance (AWS Linux)</li>
                                 <li>Cluster Name: {{ findings_data.aws_info.name }}</li>
                                 <li>Cluster Status: {{ findings_data.aws_info.status }}</li>
                                 <li>Computing Resources:
                                     <ul>
-                                        <li>IP: {{ findings_data.aws_info.ip }}:8000</li>
-                                        <li>CPU Allocation: {{ findings_data.aws_info.cpu }} units</li>
-                                        <li>Memory Allocation: {{ findings_data.aws_info.memory }}MB</li>
+                                        <li>IP: {{ findings_data.aws_info.ip }}</li>
+                                        <li>CPU Allocation: {{ findings_data.aws_info.cpu }}</li>
+                                        <li>Memory Allocation: {{ findings_data.aws_info.memory }}</li>
                                     </ul>
                                 </li>
                             </ul>

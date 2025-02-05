@@ -717,3 +717,113 @@ Traceback (most recent call last):
 IndexError: list index out of range
 2025-02-06 02:28:46,058 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:28:46] "[35m[1mGET /dashboard/findings HTTP/1.1[0m" 500 -
 2025-02-06 02:29:06,693 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:29:06] "GET /debug/session HTTP/1.1" 200 -
+2025-02-06 02:47:02,974 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-06 02:47:02,975 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-06 02:47:21,119 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:47:21] "[32mGET / HTTP/1.1[0m" 302 -
+2025-02-06 02:47:21,397 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:47:21] "GET /login?next=/ HTTP/1.1" 200 -
+2025-02-06 02:47:21,524 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:47:21] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 02:47:23,337 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:47:23] "[32mPOST /login?next=/ HTTP/1.1[0m" 302 -
+2025-02-06 02:47:24,177 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:47:24] "GET / HTTP/1.1" 200 -
+2025-02-06 02:47:24,262 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:47:24] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-06 02:47:29,152 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-02-06 02:47:30,859 - application - ERROR - Exception on /dashboard/findings [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\routes\dashboard.py", line 206, in findings
+    "ip": aws_info['tasks'][0]['publicIp'],
+          ~~~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+2025-02-06 02:47:30,863 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:47:30] "[35m[1mGET /dashboard/findings HTTP/1.1[0m" 500 -
+2025-02-06 02:54:23,151 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-06 02:54:23,152 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-06 02:54:33,273 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:54:33] "[32mGET /dashboard/findings HTTP/1.1[0m" 302 -
+2025-02-06 02:54:33,528 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:54:33] "GET /login?next=/dashboard/findings HTTP/1.1" 200 -
+2025-02-06 02:54:33,680 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:54:33] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 02:54:35,377 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:54:35] "[32mPOST /login?next=/dashboard/findings HTTP/1.1[0m" 302 -
+2025-02-06 02:54:35,741 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-02-06 02:54:36,637 - application - ERROR - Exception on /dashboard/findings [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\routes\dashboard.py", line 204, in findings
+    "name": aws_info["name"],
+            ~~~~~~~~^^^^^^^^
+KeyError: 'name'
+2025-02-06 02:54:36,639 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:54:36] "[35m[1mGET /dashboard/findings HTTP/1.1[0m" 500 -
+2025-02-06 02:58:42,074 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-06 02:58:42,074 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-06 02:59:01,934 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:59:01] "[32mGET /dashboard/findings HTTP/1.1[0m" 302 -
+2025-02-06 02:59:02,184 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:59:02] "GET /login?next=/dashboard/findings HTTP/1.1" 200 -
+2025-02-06 02:59:02,357 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:59:02] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 02:59:03,849 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:59:03] "[32mPOST /login?next=/dashboard/findings HTTP/1.1[0m" 302 -
+2025-02-06 02:59:04,209 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-02-06 02:59:05,087 - application - ERROR - Exception on /dashboard/findings [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\routes\dashboard.py", line 206, in findings
+    "ip": aws_info['aws_info']['publicIp'],
+          ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'publicIp'
+2025-02-06 02:59:05,090 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:59:05] "[35m[1mGET /dashboard/findings HTTP/1.1[0m" 500 -
+2025-02-06 02:59:40,005 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-06 02:59:40,006 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-06 02:59:55,176 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:59:55] "[32mGET /dashboard/findings HTTP/1.1[0m" 302 -
+2025-02-06 02:59:55,442 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:59:55] "GET /login?next=/dashboard/findings HTTP/1.1" 200 -
+2025-02-06 02:59:55,563 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:59:55] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 02:59:57,007 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:59:57] "[32mPOST /login?next=/dashboard/findings HTTP/1.1[0m" 302 -
+2025-02-06 02:59:57,367 - botocore.credentials - INFO - Found credentials in environment variables.
+2025-02-06 02:59:58,233 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:59:58] "GET /dashboard/findings HTTP/1.1" 200 -
+2025-02-06 02:59:58,318 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:59:58] "GET /static/css/dashboard.css HTTP/1.1" 200 -
