@@ -827,3 +827,103 @@ KeyError: 'publicIp'
 2025-02-06 02:59:57,367 - botocore.credentials - INFO - Found credentials in environment variables.
 2025-02-06 02:59:58,233 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:59:58] "GET /dashboard/findings HTTP/1.1" 200 -
 2025-02-06 02:59:58,318 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 02:59:58] "GET /static/css/dashboard.css HTTP/1.1" 200 -
+2025-02-06 15:38:22,583 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-06 15:38:22,584 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-06 15:58:38,544 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 15:58:38] "[32mGET / HTTP/1.1[0m" 302 -
+2025-02-06 15:58:38,596 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 15:58:38] "GET /login?next=/ HTTP/1.1" 200 -
+2025-02-06 15:58:38,757 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 15:58:38] "GET /static/css/auth.css HTTP/1.1" 200 -
+2025-02-06 15:58:38,929 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 15:58:38] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-02-06 15:59:13,244 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 15:59:13] "[32mGET / HTTP/1.1[0m" 302 -
+2025-02-06 15:59:13,502 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 15:59:13] "GET /login?next=/ HTTP/1.1" 200 -
+2025-02-06 15:59:13,557 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 15:59:13] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 15:59:16,155 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 15:59:16] "[32mPOST /login?next=/ HTTP/1.1[0m" 302 -
+2025-02-06 15:59:17,217 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 15:59:17] "GET / HTTP/1.1" 200 -
+2025-02-06 15:59:17,312 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 15:59:17] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-06 15:59:22,435 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 15:59:22] "GET /folder/Chair HTTP/1.1" 200 -
+2025-02-06 15:59:22,560 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 15:59:22] "GET /static/css/folder.css HTTP/1.1" 200 -
+2025-02-06 15:59:22,810 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 15:59:22] "[33mGET /get-s3-data/Chair HTTP/1.1[0m" 404 -
+2025-02-06 15:59:23,074 - application - ERROR - Exception on /get_feedback/Chair [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\application.py", line 435, in get_feedback
+    feedback_file = os.path.join(app.config['UPLOAD_FOLDER'], folder_name, 'feedback.json')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen ntpath>", line 108, in join
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2025-02-06 15:59:23,100 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 15:59:23] "[35m[1mGET /get_feedback/Chair HTTP/1.1[0m" 500 -
+2025-02-06 15:59:52,841 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 15:59:52] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:00:23,132 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:00:23] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:00:52,823 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:00:52] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:01:23,134 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:01:23] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:01:52,823 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:01:52] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:02:23,141 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:02:23] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:02:52,814 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:02:52] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:03:23,136 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:03:23] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:03:52,815 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:03:52] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:04:23,142 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:04:23] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:04:52,826 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:04:52] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:05:23,142 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:05:23] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:05:52,828 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:05:52] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:06:23,143 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:06:23] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:06:52,821 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:06:52] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:07:23,161 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:07:23] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:08:46,142 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:08:46] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:09:45,844 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:09:45] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:10:46,161 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:10:46] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:11:45,829 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:11:45] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:43:08,578 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:43:08] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:43:19,520 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:43:19] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:43:19,838 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:43:19] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-06 16:43:20,731 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:43:20] "GET / HTTP/1.1" 200 -
+2025-02-06 16:43:21,115 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:43:21] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-06 16:46:17,480 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:46:17] "GET /folder/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:46:17,571 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:46:17] "[36mGET /static/css/folder.css HTTP/1.1[0m" 304 -
+2025-02-06 16:46:17,994 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:46:17] "[33mGET /get-s3-data/green-tshirt HTTP/1.1[0m" 404 -
+2025-02-06 16:46:18,236 - application - ERROR - Exception on /get_feedback/green-tshirt [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\application.py", line 435, in get_feedback
+    feedback_file = os.path.join(app.config['UPLOAD_FOLDER'], folder_name, 'feedback.json')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen ntpath>", line 108, in join
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2025-02-06 16:46:18,250 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:46:18] "[35m[1mGET /get_feedback/green-tshirt HTTP/1.1[0m" 500 -
+2025-02-06 16:46:48,240 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:46:48] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:47:18,534 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:47:18] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:47:48,233 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:47:48] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:48:18,538 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:48:18] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:49:42,555 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:49:42] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:50:42,231 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:50:42] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:51:42,538 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:51:42] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:52:42,243 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:52:42] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -

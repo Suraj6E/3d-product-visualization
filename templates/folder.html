@@ -156,7 +156,6 @@
             // Core function to load and display 3D visualization
             async function loadPlotData(isReprocessing = false) {
                 try {
-                    // Start timing the model generation
                     pageMetrics.modelGenerationStartTime = Date.now();
                     statusMessage.textContent = isReprocessing ? 'Reprocessing images...' : 'Loading visualization...';
 
@@ -164,14 +163,12 @@
                         processBtn.disabled = true;
                     }
 
+                    // Determine which endpoint to use
                     let endpoint;
                     if (isReprocessing) {
                         endpoint = `/process/${folderName}`;
                     } else {
-                        // Try S3 first, fall back to local if needed
-                        endpoint = "{{ config['FLASK_ENV'] }}" === 'production' ?
-                            `/get-s3-data/${folderName}` :
-                            `/process/${folderName}`;
+                        endpoint = `/get-s3-data/${folderName}`;
                     }
 
                     const response = await fetch(endpoint);
@@ -179,59 +176,42 @@
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
 
-                    const data = await response.json();
+                    const result = await response.json();
 
-                    if (isReprocessing ? data.success : true) {
-                        const plotData = isReprocessing ? data.plot : data;
+                    // Check if we got a success response or direct plot data
+                    const plotData = result.success ? result.plot : result;
 
-                        // Create the interactive 3D visualization
-                        await Plotly.newPlot('plot-container',
-                            plotData.data,
-                            plotData.layout,
-                            {
-                                responsive: true,
-                                displayModeBar: true,
-                                displaylogo: false,
-                                modeBarButtonsToAdd: [{
-                                    name: 'Reset View',
-                                    icon: Plotly.Icons.home,
-                                    click: function (gd) {
-                                        Plotly.relayout(gd, {
-                                            'scene.camera': null
-                                        });
-                                    }
-                                }]
-                            }
-                        );
+                    // Create the interactive 3D visualization
+                    await Plotly.newPlot('plot-container',
+                        plotData.data,
+                        plotData.layout,
+                        {
+                            responsive: true,
+                            displayModeBar: true,
+                            displaylogo: false,
+                            modeBarButtonsToAdd: [{
+                                name: 'Reset View',
+                                icon: Plotly.Icons.home,
+                                click: function (gd) {
+                                    Plotly.relayout(gd, {
+                                        'scene.camera': null
+                                    });
+                                }
+                            }]
+                        }
+                    );
 
-                        // Record generation completion time
-                        pageMetrics.modelGenerationEndTime = Date.now();
-                        pageMetrics.performanceMetrics.generationTime =
-                            (pageMetrics.modelGenerationEndTime - pageMetrics.modelGenerationStartTime) / 1000;
+                    // Record generation completion time
+                    pageMetrics.modelGenerationEndTime = Date.now();
+                    pageMetrics.performanceMetrics.generationTime =
+                        (pageMetrics.modelGenerationEndTime - pageMetrics.modelGenerationStartTime) / 1000;
 
-                        // Set up interaction tracking
-                        plotContainer.on('plotly_relayout', () => {
-                            pageMetrics.modelInteractions.rotations++;
-                            pageMetrics.lastInteractionTime = Date.now();
-                        });
+                    statusMessage.textContent = isReprocessing ?
+                        'Successfully reprocessed visualization' :
+                        'Visualization loaded';
 
-                        plotContainer.on('plotly_zoom', () => {
-                            pageMetrics.modelInteractions.zooms++;
-                            pageMetrics.lastInteractionTime = Date.now();
-                        });
-
-                        plotContainer.on('plotly_pan', () => {
-                            pageMetrics.modelInteractions.pans++;
-                            pageMetrics.lastInteractionTime = Date.now();
-                        });
-
-                        statusMessage.textContent = isReprocessing ?
-                            'Successfully reprocessed visualization' :
-                            'Visualization loaded';
-
-                        // Save initial load metrics
-                        await saveInteractionData(folderName, false);
-                    }
+                    // Save initial load metrics
+                    await saveInteractionData(folderName, false);
                 } catch (error) {
                     console.error('Processing error:', error);
                     statusMessage.textContent = isReprocessing ?

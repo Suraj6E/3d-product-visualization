@@ -313,32 +313,27 @@ def process_folder(folder_name):
         
         # Initialize view files dictionary
         view_files = {'front': None, 'back': None, 'top': None}
+        temp_files = []  # Track temporary files for cleanup
         
         # Look for view files with different extensions
         for file in files:
             file_lower = file.lower()
             for view in view_files.keys():
                 if file_lower.startswith(view) and file_lower.endswith(('.jpg', '.png', '.jpeg', '.gif')):
-                    # Get the actual file content for processing
                     if isinstance(storage, S3StorageManager):
-                        # For S3, we need to download the file temporarily
+                        # For S3, download file temporarily
                         temp_path = os.path.join('/tmp', file)
-                        s3_client = storage.s3_client
-                        s3_client.download_file(
+                        storage.s3_client.download_file(
                             storage.bucket_name,
                             f"{folder_name}/{file}",
                             temp_path
                         )
                         view_files[view] = temp_path
+                        temp_files.append(temp_path)
                     else:
-                        # For local storage, use the direct path
+                        # For local storage, use direct path
                         view_files[view] = os.path.join(app.config['UPLOAD_FOLDER'], folder_name, file)
         
-        # Log found files
-        print("DEBUG: Found view files:")
-        for view, path in view_files.items():
-            print(f"DEBUG: {view}: {'Found' if path else 'Not found'} - {path}")
-
         try:
             # Check if we have all three views
             if all(view_files.values()):
@@ -362,40 +357,23 @@ def process_folder(folder_name):
                 return jsonify({'success': False, 'message': 'Failed to process images'})
             
             # Convert Plotly figure to JSON-serializable format
-            def convert_numpy(obj):
-                if isinstance(obj, np.ndarray):
-                    return obj.tolist()
-                elif isinstance(obj, dict):
-                    return {key: convert_numpy(value) for key, value in obj.items()}
-                elif isinstance(obj, list):
-                    return [convert_numpy(item) for item in list(obj)]
-                return obj
+            plot_data = json.loads(json.dumps(figure, cls=plotly.utils.PlotlyJSONEncoder))
             
-            # Convert and save plot data
-            plot_data = convert_numpy(figure)
-            
+            # Save plot data based on storage type
             if isinstance(storage, S3StorageManager):
                 # Save to S3
-                plot_data_json = json.dumps(plot_data, cls=plotly.utils.PlotlyJSONEncoder)
-                s3_client.put_object(
+                storage.s3_client.put_object(
                     Bucket=storage.bucket_name,
                     Key=f"{folder_name}/plot_data.json",
-                    Body=plot_data_json,
+                    Body=json.dumps(plot_data),
                     ContentType='application/json'
                 )
             else:
                 # Save locally
                 plot_file = os.path.join(app.config['UPLOAD_FOLDER'], folder_name, 'plot_data.json')
+                os.makedirs(os.path.dirname(plot_file), exist_ok=True)
                 with open(plot_file, 'w') as f:
-                    json.dump(plot_data, f, cls=plotly.utils.PlotlyJSONEncoder)
-            
-            print("DEBUG: Successfully saved plot data")
-            
-            # Clean up temporary files if using S3
-            if isinstance(storage, S3StorageManager):
-                for path in view_files.values():
-                    if path and os.path.exists(path):
-                        os.remove(path)
+                    json.dump(plot_data, f)
             
             return jsonify({
                 'success': True, 
@@ -407,26 +385,19 @@ def process_folder(folder_name):
                 }
             })
             
-        except TypeError as json_error:
-            print(f"DEBUG: JSON serialization error: {str(json_error)}")
-            return jsonify({
-                'success': False,
-                'message': 'Failed to serialize visualization data'
-            })
+        except Exception as e:
+            print(f"DEBUG: Processing error: {str(e)}")
+            traceback.print_exc()
+            return jsonify({'success': False, 'message': str(e)})
             
-    except Exception as e:
-        print(f"DEBUG: Processing error: {str(e)}")
-        traceback.print_exc()
-        return jsonify({'success': False, 'message': str(e)})
     finally:
-        # Ensure temporary files are cleaned up in case of errors
-        if isinstance(storage, S3StorageManager):
-            for path in view_files.values():
-                if path and os.path.exists(path):
-                    try:
-                        os.remove(path)
-                    except:
-                        pass
+        # Clean up temporary files
+        for temp_file in temp_files:
+            try:
+                if os.path.exists(temp_file):
+                    os.remove(temp_file)
+            except Exception as e:
+                print(f"Error cleaning up temp file {temp_file}: {str(e)}")
 
 @app.route('/get_feedback/<folder_name>')
 @login_required
@@ -456,30 +427,6 @@ def after_request(response):
         print(f"Response Status: {response.status_code}")
     return response
 
-# @app.route('/get-s3-data/<folder_name>')
-# @login_required
-# def get_s3_data(folder_name):
-#     try:
-#         s3_client = boto3.client('s3')
-        
-#         # Generate a presigned URL that expires in 3600 seconds (1 hour)
-#         presigned_url = s3_client.generate_presigned_url('get_object',
-#             Params={
-#                 'Bucket': AWS_BUCKET_NAME,
-#                 'Key': f"{folder_name}/plot_data.json"
-#             },
-#             ExpiresIn=3600
-#         )
-        
-#         return jsonify({
-#             'success': True,
-#             'url': presigned_url
-#         })
-#     except Exception as e:
-#         return jsonify({
-#             'success': False,
-#             'error': str(e)
-#         })
 
 @app.route('/feedback/<folder_name>', methods=['POST'])
 @login_required
@@ -535,6 +482,42 @@ def debug_session():
             'username': current_user.username
         }
     })
+
+
+@app.route('/get-s3-data/<folder_name>')
+@login_required
+def get_s3_data(folder_name):
+    """Retrieve plot data from S3 or process it if not found"""
+    try:
+        if isinstance(storage, S3StorageManager):
+            try:
+                # Try to get existing plot data from S3
+                response = storage.s3_client.get_object(
+                    Bucket=storage.bucket_name,
+                    Key=f"{folder_name}/plot_data.json"
+                )
+                plot_data = json.loads(response['Body'].read().decode('utf-8'))
+                return jsonify(plot_data)
+            except ClientError as e:
+                if e.response['Error']['Code'] == 'NoSuchKey':
+                    # If plot data doesn't exist, process the images
+                    return process_folder(folder_name)
+                raise
+        else:
+            # Check local storage
+            plot_file = os.path.join(app.config['UPLOAD_FOLDER'], folder_name, 'plot_data.json')
+            if os.path.exists(plot_file):
+                with open(plot_file, 'r') as f:
+                    plot_data = json.load(f)
+                return jsonify(plot_data)
+            else:
+                # If plot data doesn't exist, process the images
+                return process_folder(folder_name)
+                
+    except Exception as e:
+        print(f"Error retrieving plot data: {str(e)}")
+        traceback.print_exc()
+        return jsonify({'success': False, 'message': str(e)})
 
 if __name__ == '__main__':
     try:
