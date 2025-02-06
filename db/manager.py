@@ -10,7 +10,7 @@ db = client['3dvisualization']  # Your database name
 
 class UserManager:
     """
-    Handles all user-related database operations.
+    Handles all user-related database operations with enhanced error handling and Google OAuth support.
     This class provides an abstraction layer between your application and MongoDB.
     """
     def __init__(self):
@@ -19,37 +19,90 @@ class UserManager:
 
     def setup_indexes(self):
         """Creates necessary indexes for the users collection"""
-        # Create unique indexes for email and username
+        # Create unique indexes for email, username, and google_id
         self.users.create_index('email', unique=True)
         self.users.create_index('username', unique=True)
+        self.users.create_index('google_id', unique=True, sparse=True)  # sparse index for optional field
 
-    def create_user(self, username, email, password):
+    def create_user(self, username, email, password=None, google_id=None):
         """
-        Creates a new user in the database
-        Returns user document if successful, None if user already exists
+        Creates a new user in the database with enhanced error handling
+        
+        Args:
+            username (str): User's display name
+            email (str): User's email address
+            password (str, optional): User's password (None for Google users)
+            google_id (str, optional): Google user ID for OAuth users
+            
+        Returns:
+            tuple: (user_doc, error_message)
+            - user_doc: The created user document or None if failed
+            - error_message: Description of error if failed, None if successful
         """
         try:
+            # Check if email already exists
+            if self.get_user_by_email(email):
+                return None, "Email already registered"
+
+            # Check if username already exists
+            if self.get_user_by_username(username):
+                return None, "Username already taken"
+
+            # Check if Google ID already exists (if provided)
+            if google_id and self.get_user_by_google_id(google_id):
+                return None, "Google account already linked to another user"
+
+            # Create user document
             user_doc = {
                 'username': username,
                 'email': email,
-                'password_hash': generate_password_hash(password),
                 'created_at': datetime.utcnow(),
                 'role': 'user',
-                'active': True
+                'active': True,
+                'last_login': datetime.utcnow()
             }
+
+            # Add authentication method specific fields
+            if google_id:
+                user_doc['google_id'] = google_id
+                user_doc['auth_type'] = 'google'
+            else:
+                if not password:
+                    return None, "Password is required for regular registration"
+                user_doc['password_hash'] = generate_password_hash(password)
+                user_doc['auth_type'] = 'local'
+
+            # Insert the new user
             result = self.users.insert_one(user_doc)
             user_doc['_id'] = result.inserted_id
-            return user_doc
+            return user_doc, None
+
         except Exception as e:
+            error_msg = str(e)
+            if "duplicate key error" in error_msg:
+                if "email" in error_msg:
+                    return None, "Email already registered"
+                elif "username" in error_msg:
+                    return None, "Username already taken"
+                elif "google_id" in error_msg:
+                    return None, "Google account already linked"
             print(f"Error creating user: {e}")
-            return None
+            return None, "An error occurred during registration"
 
     def get_user_by_email(self, email):
         """Retrieves a user by email"""
         return self.users.find_one({'email': email})
 
+    def get_user_by_username(self, username):
+        """Retrieves a user by username"""
+        return self.users.find_one({'username': username})
+
+    def get_user_by_google_id(self, google_id):
+        """Retrieves a user by Google ID"""
+        return self.users.find_one({'google_id': google_id})
+
     def get_user_by_id(self, user_id):
-        """Retrieves a user by ID"""
+        """Retrieves a user by ID with error handling"""
         if not isinstance(user_id, ObjectId):
             try:
                 user_id = ObjectId(user_id)
@@ -58,10 +111,62 @@ class UserManager:
         return self.users.find_one({'_id': user_id})
 
     def verify_password(self, user_doc, password):
-        """Verifies a user's password"""
+        """
+        Verifies a user's password with additional checks
+        
+        Returns:
+            bool: True if password is valid, False otherwise
+        """
         if not user_doc:
             return False
+            
+        # Google users don't have passwords
+        if user_doc.get('auth_type') == 'google':
+            return False
+            
+        if not user_doc.get('password_hash'):
+            return False
+            
         return check_password_hash(user_doc['password_hash'], password)
+
+    def update_last_login(self, user_id):
+        """Updates the user's last login timestamp"""
+        try:
+            self.users.update_one(
+                {'_id': user_id},
+                {'$set': {'last_login': datetime.utcnow()}}
+            )
+        except Exception as e:
+            print(f"Error updating last login: {e}")
+
+    def link_google_account(self, user_id, google_id):
+        """
+        Links an existing account with a Google ID
+        
+        Returns:
+            tuple: (success, message)
+        """
+        try:
+            # Check if Google ID is already linked
+            existing_user = self.get_user_by_google_id(google_id)
+            if existing_user:
+                return False, "Google account already linked to another user"
+
+            # Update user document
+            result = self.users.update_one(
+                {'_id': user_id},
+                {
+                    '$set': {
+                        'google_id': google_id,
+                        'auth_type': 'google'
+                    }
+                }
+            )
+            return bool(result.modified_count), "Google account linked successfully"
+
+        except Exception as e:
+            print(f"Error linking Google account: {e}")
+            return False, "Error linking Google account"
 
 class SurveyManager:
     """Handles all survey-related database operations"""

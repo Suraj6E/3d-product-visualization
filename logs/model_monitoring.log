@@ -1223,3 +1223,16 @@ TypeError: expected str, bytes or os.PathLike object, not NoneType
 2025-02-06 18:02:25,442 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 18:02:25] "[32mGET /auth/login/callback?code=4/0ASVgi3Kzag9rFdIx3rFJBGaocvgDbDim8E4CccquRMwjzU4yEi7q2iF_53WhcTouK8ok5A&scope=email+profile+openid+https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email&authuser=0&prompt=consent HTTP/1.1[0m" 302 -
 2025-02-06 18:02:25,752 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 18:02:25] "GET /auth/login HTTP/1.1" 200 -
 2025-02-06 18:02:26,017 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 18:02:26] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 19:23:41,871 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-06 19:23:41,871 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-06 19:24:05,162 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:24:05] "[32mGET / HTTP/1.1[0m" 302 -
+2025-02-06 19:24:05,430 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:24:05] "GET /auth/login?next=/ HTTP/1.1" 200 -
+2025-02-06 19:24:05,583 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:24:05] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 19:24:08,905 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:24:08] "[32mPOST /auth/login HTTP/1.1[0m" 302 -
+2025-02-06 19:24:15,264 - application - ERROR - Error in Google callback: UserManager.create_user() got an unexpected keyword argument 'google_id'
+2025-02-06 19:24:15,265 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:24:15] "[32mGET /auth/login/callback?code=4/0ASVgi3Lpysgn7rQMJjDPZkyQ5-jEIbl_zTkIcj742lnXlCwOrH9Dx1xq4uDU0giTaEOWBw&scope=email+profile+openid+https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email&authuser=0&prompt=consent HTTP/1.1[0m" 302 -
+2025-02-06 19:24:15,572 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:24:15] "GET /auth/login HTTP/1.1" 200 -
+2025-02-06 19:24:15,821 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:24:15] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
