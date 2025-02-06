@@ -1236,3 +1236,48 @@ TypeError: expected str, bytes or os.PathLike object, not NoneType
 2025-02-06 19:24:15,265 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:24:15] "[32mGET /auth/login/callback?code=4/0ASVgi3Lpysgn7rQMJjDPZkyQ5-jEIbl_zTkIcj742lnXlCwOrH9Dx1xq4uDU0giTaEOWBw&scope=email+profile+openid+https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email&authuser=0&prompt=consent HTTP/1.1[0m" 302 -
 2025-02-06 19:24:15,572 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:24:15] "GET /auth/login HTTP/1.1" 200 -
 2025-02-06 19:24:15,821 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:24:15] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 19:30:37,562 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-06 19:30:37,562 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-06 19:30:40,791 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:30:40] "[32mPOST /auth/login HTTP/1.1[0m" 302 -
+2025-02-06 19:30:40,921 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:30:40] "GET / HTTP/1.1" 200 -
+2025-02-06 19:30:41,258 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:30:41] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-06 19:30:43,197 - application - INFO - User suraj.neupane151@gmail.com logged out
+2025-02-06 19:30:43,198 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:30:43] "[32mGET /auth/logout HTTP/1.1[0m" 302 -
+2025-02-06 19:30:43,511 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:30:43] "[32mGET / HTTP/1.1[0m" 302 -
+2025-02-06 19:30:43,770 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:30:43] "GET /auth/login?next=/ HTTP/1.1" 200 -
+2025-02-06 19:30:43,824 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:30:43] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 19:31:12,780 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:31:12] "[32mPOST /auth/login HTTP/1.1[0m" 302 -
+2025-02-06 19:31:17,370 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:31:17] "[32mGET /auth/login/callback?code=4/0ASVgi3IHjMbhhQKaIjibp9PXoUA7Zxy1GmDqGTpBBLaQq9vMB4H4uvG7ktBlIaT7tkl6qw&scope=email+profile+openid+https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile&authuser=0&prompt=none HTTP/1.1[0m" 302 -
+2025-02-06 19:31:17,418 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:31:17] "GET / HTTP/1.1" 200 -
+2025-02-06 19:31:17,830 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:31:17] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-06 19:31:23,178 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:31:23] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-06 19:31:31,312 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:31:31] "GET /debug/session HTTP/1.1" 200 -
+2025-02-06 19:31:40,966 - application - INFO - User neupanes48@gmail.com logged out
+2025-02-06 19:31:40,966 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:31:40] "[32mGET /auth/logout HTTP/1.1[0m" 302 -
+2025-02-06 19:31:41,274 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:31:41] "[32mGET / HTTP/1.1[0m" 302 -
+2025-02-06 19:31:41,539 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:31:41] "GET /auth/login?next=/ HTTP/1.1" 200 -
+2025-02-06 19:31:41,590 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:31:41] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 19:31:44,145 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:31:44] "[32mPOST /auth/login HTTP/1.1[0m" 302 -
+2025-02-06 19:31:44,503 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:31:44] "[32mPOST /auth/login HTTP/1.1[0m" 302 -
+2025-02-06 19:31:50,236 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:31:50] "[32mGET /auth/login/callback?code=4/0ASVgi3KC_AB-r0jmtY_lVxSXa3bYqcPo2oWBSzAcMuDzioaTLdQ1dDGb-JQ7n8YG751Kkg&scope=email+profile+openid+https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email&authuser=1&prompt=consent HTTP/1.1[0m" 302 -
+2025-02-06 19:31:50,594 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:31:50] "GET / HTTP/1.1" 200 -
+2025-02-06 19:31:50,856 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:31:50] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-06 19:31:56,418 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:31:56] "GET /debug/session HTTP/1.1" 200 -
+2025-02-06 19:32:07,748 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:32:07] "GET / HTTP/1.1" 200 -
+2025-02-06 19:32:08,150 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:32:08] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-06 19:32:09,655 - application - INFO - User suraj.neupane151@gmail.com logged out
+2025-02-06 19:32:09,655 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:32:09] "[32mGET /auth/logout HTTP/1.1[0m" 302 -
+2025-02-06 19:32:09,987 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:32:09] "[32mGET / HTTP/1.1[0m" 302 -
+2025-02-06 19:32:10,237 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:32:10] "GET /auth/login?next=/ HTTP/1.1" 200 -
+2025-02-06 19:32:10,306 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:32:10] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 19:32:55,393 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-06 19:32:55,393 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-06 19:33:09,106 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:33:09] "GET /auth/login?next=/ HTTP/1.1" 200 -
+2025-02-06 19:33:09,430 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:33:09] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 19:33:10,813 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:33:10] "[32mPOST /auth/login HTTP/1.1[0m" 302 -
