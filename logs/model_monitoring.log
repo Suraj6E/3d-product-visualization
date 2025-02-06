@@ -927,3 +927,96 @@ TypeError: expected str, bytes or os.PathLike object, not NoneType
 2025-02-06 16:50:42,231 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:50:42] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
 2025-02-06 16:51:42,538 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:51:42] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
 2025-02-06 16:52:42,243 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:52:42] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:53:59,463 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-06 16:53:59,463 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-06 16:54:01,948 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:54:01] "[32mGET /folder/green-tshirt HTTP/1.1[0m" 302 -
+2025-02-06 16:54:02,201 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:54:02] "GET /login?next=/folder/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:54:02,384 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:54:02] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 16:54:05,006 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:54:05] "[32mPOST /login?next=/folder/green-tshirt HTTP/1.1[0m" 302 -
+2025-02-06 16:54:06,066 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:54:06] "GET /folder/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:54:06,153 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:54:06] "[36mGET /static/css/folder.css HTTP/1.1[0m" 304 -
+2025-02-06 16:54:08,510 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:54:08] "GET /get-s3-data/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:54:11,467 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:54:11] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:54:12,190 - application - ERROR - Exception on /get_feedback/green-tshirt [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\application.py", line 406, in get_feedback
+    feedback_file = os.path.join(app.config['UPLOAD_FOLDER'], folder_name, 'feedback.json')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen ntpath>", line 108, in join
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2025-02-06 16:54:12,222 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:54:12] "[35m[1mGET /get_feedback/green-tshirt HTTP/1.1[0m" 500 -
+2025-02-06 16:54:36,887 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:54:36] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:55:07,039 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:55:07] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:55:36,734 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:55:36] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:56:07,083 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:56:07] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:56:24,202 - application - ERROR - Exception on /process/green-tshirt [GET]
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\Masters\3d-product-visualization\application.py", line 326, in process_folder
+    storage.s3_client.download_file(
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\boto3\s3\inject.py", line 192, in download_file
+    return transfer.download_file(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\boto3\s3\transfer.py", line 405, in download_file
+    future.result()
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\s3transfer\futures.py", line 103, in result
+    return self._coordinator.result()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\s3transfer\futures.py", line 266, in result
+    raise self._exception
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\s3transfer\tasks.py", line 139, in __call__
+    return self._execute_main(kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\s3transfer\tasks.py", line 162, in _execute_main
+    return_value = self._main(**kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\s3transfer\download.py", line 642, in _main
+    fileobj.seek(offset)
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\s3transfer\utils.py", line 382, in seek
+    self._open_if_needed()
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\s3transfer\utils.py", line 365, in _open_if_needed
+    self._fileobj = self._open_function(self._filename, self._mode)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python312\Lib\site-packages\s3transfer\utils.py", line 276, in open
+    return open(filename, mode)
+           ^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp\\back.png.FE810F9a'
+2025-02-06 16:56:24,311 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:56:24] "[35m[1mGET /process/green-tshirt HTTP/1.1[0m" 500 -
+2025-02-06 16:56:37,049 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:56:37] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:57:06,729 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:57:06] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:57:37,038 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:57:37] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:58:06,733 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:58:06] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:58:37,048 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:58:37] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-06 16:59:06,732 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 16:59:06] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
