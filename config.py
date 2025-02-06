@@ -20,7 +20,7 @@ class Config:
     SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access to session cookie
     
     # Environment configuration
-    FLASK_ENV = os.getenv('FLASK_ENV', 'development')
+    FLASK_ENV = os.getenv('FLASK_ENV', 'production')
     
     # Security configurations
     CSRF_ENABLED = True
