@@ -16,7 +16,7 @@ from models.model_monitoring import ModelMonitor
 from utils.benchmark_system import BenchmarkSystem
 
 from routes.dashboard import dashboard
-from routes.auth import auth
+from routes.auth import auth, google_auth
 
 from botocore.exceptions import ClientError
 from storage import create_storage_manager, S3StorageManager
@@ -52,6 +52,9 @@ benchmark_system = BenchmarkSystem(output_dir=app.config['BENCHMARK_DIR'])
 
 # Initialize storage manager
 storage = create_storage_manager(app)
+
+# Initialize GoogleAuth with the app
+google_auth.init_app(app)
 
 # Register blueprints
 app.register_blueprint(dashboard, url_prefix='/dashboard')

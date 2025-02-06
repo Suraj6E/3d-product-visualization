@@ -7,11 +7,25 @@ import json
 from urllib.parse import urlparse
 from db.manager import user_manager
 from db.models import User
+from functools import cached_property
 
 auth = Blueprint('auth', __name__)
 
-# OAuth 2 client setup
-client = WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])
+class GoogleAuth:
+    def __init__(self, app=None):
+        self.app = app
+        if app is not None:
+            self.init_app(app)
+
+    def init_app(self, app):
+        self.app = app
+
+    @cached_property
+    def client(self):
+        return WebApplicationClient(current_app.config['GOOGLE_CLIENT_ID'])
+
+# Create a global instance that will be initialized with the app
+google_auth = GoogleAuth()
 
 def get_google_provider_cfg():
     """Get Google's OAuth 2.0 provider configuration"""
@@ -43,9 +57,9 @@ def login():
             if not google_provider_cfg:
                 flash('Error connecting to Google')
                 return redirect(url_for('auth.login'))
-
+            
             authorization_endpoint = google_provider_cfg["authorization_endpoint"]
-            request_uri = client.prepare_request_uri(
+            request_uri = google_auth.client.prepare_request_uri(
                 authorization_endpoint,
                 redirect_uri=request.base_url + "/callback",
                 scope=["openid", "email", "profile"],
@@ -76,19 +90,16 @@ def login():
 @auth.route('/login/callback')
 def google_callback():
     """Handle the Google OAuth 2.0 callback"""
-    # Get authorization code Google sent back
     code = request.args.get("code")
     if not code:
         flash('Error during Google login')
         return redirect(url_for('auth.login'))
 
     try:
-        # Find out what URL to hit to get tokens
         google_provider_cfg = get_google_provider_cfg()
         token_endpoint = google_provider_cfg["token_endpoint"]
 
-        # Get tokens
-        token_url, headers, body = client.prepare_token_request(
+        token_url, headers, body = google_auth.client.prepare_token_request(
             token_endpoint,
             authorization_response=request.url,
             redirect_url=request.base_url,
@@ -102,26 +113,22 @@ def google_callback():
                   current_app.config['GOOGLE_CLIENT_SECRET']),
         )
 
-        # Parse tokens
-        client.parse_request_body_response(json.dumps(token_response.json()))
+        google_auth.client.parse_request_body_response(json.dumps(token_response.json()))
 
-        # Get user info from Google
         userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
-        uri, headers, body = client.add_token(userinfo_endpoint)
+        uri, headers, body = google_auth.client.add_token(userinfo_endpoint)
         userinfo_response = requests.get(uri, headers=headers, data=body)
 
         if userinfo_response.json().get("email_verified"):
             google_email = userinfo_response.json()["email"]
             google_name = userinfo_response.json()["given_name"]
 
-            # Check if user exists
             user_doc = user_manager.get_user_by_email(google_email)
             if not user_doc:
-                # Create new user
                 user_doc = user_manager.create_user(
                     username=google_name,
                     email=google_email,
-                    password=None,  # No password for Google users
+                    password=None,
                     google_id=userinfo_response.json()["sub"]
                 )
 

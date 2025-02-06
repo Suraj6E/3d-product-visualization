@@ -1160,3 +1160,44 @@ TypeError: expected str, bytes or os.PathLike object, not NoneType
 2025-02-06 17:04:06,804 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:04:06] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
 2025-02-06 17:04:41,925 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:04:41] "GET / HTTP/1.1" 200 -
 2025-02-06 17:04:42,291 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:04:42] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-06 17:45:36,147 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-06 17:45:36,147 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-06 17:45:44,558 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:45:44] "[33mGET /logout HTTP/1.1[0m" 404 -
+2025-02-06 17:45:48,773 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:45:48] "[32mGET / HTTP/1.1[0m" 302 -
+2025-02-06 17:45:49,112 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:45:49] "GET /auth/login?next=/ HTTP/1.1" 200 -
+2025-02-06 17:45:49,437 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:45:49] "GET /static/css/auth.css HTTP/1.1" 200 -
+2025-02-06 17:45:55,957 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:45:55] "[32mPOST /auth/login HTTP/1.1[0m" 302 -
+2025-02-06 17:46:27,343 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:46:27] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 17:48:15,602 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-06 17:48:15,603 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-06 17:48:26,367 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:48:26] "GET /auth/login?next=/ HTTP/1.1" 200 -
+2025-02-06 17:48:26,689 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:48:26] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 17:48:30,731 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:48:30] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 17:50:07,172 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-06 17:50:07,173 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-06 17:50:12,496 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:50:12] "GET /auth/login?next=/ HTTP/1.1" 200 -
+2025-02-06 17:50:12,863 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:50:12] "GET /static/css/auth.css HTTP/1.1" 200 -
+2025-02-06 17:50:20,143 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:50:20] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 17:52:16,116 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-06 17:52:16,118 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-06 17:52:16,174 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:52:16] "GET /auth/login?next=/ HTTP/1.1" 200 -
+2025-02-06 17:52:16,522 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:52:16] "GET /static/css/auth.css HTTP/1.1" 200 -
+2025-02-06 17:52:25,991 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:52:25] "GET /auth/register HTTP/1.1" 200 -
+2025-02-06 17:52:26,331 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:52:26] "GET /auth/register HTTP/1.1" 200 -
+2025-02-06 17:52:26,596 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:52:26] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 17:52:29,039 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:52:29] "GET /auth/login HTTP/1.1" 200 -
+2025-02-06 17:52:29,391 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:52:29] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-06 17:52:31,334 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:52:31] "[32mPOST /auth/login HTTP/1.1[0m" 302 -
+2025-02-06 17:52:51,746 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 17:52:51] "[32mPOST /auth/login HTTP/1.1[0m" 302 -
