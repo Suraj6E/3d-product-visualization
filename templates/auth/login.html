@@ -26,7 +26,21 @@
                 {% endif %}
             {% endwith %}
 
-            <form method="POST" class="auth-form">
+            <!-- Google Sign In Button -->
+            <form method="POST" action="{{ url_for('auth.login') }}">
+                <input type="hidden" name="login_type" value="google">
+                <button type="submit" class="google-btn">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google logo">
+                    Sign in with Google
+                </button>
+            </form>
+
+            <div class="divider">or</div>
+
+            <!-- Regular Login Form -->
+            <form method="POST" action="{{ url_for('auth.login') }}" class="auth-form">
+                <input type="hidden" name="login_type" value="regular">
+                
                 <div class="form-group">
                     <label for="email">Email</label>
                     <div class="input-group">
@@ -54,7 +68,7 @@
             </form>
 
             <div class="auth-footer">
-                <p>Don't have an account? <a href="{{ url_for('register') }}">Sign Up</a></p>
+                <p>Don't have an account? <a href="{{ url_for('auth.register') }}">Sign Up</a></p>
             </div>
         </div>
     </div>

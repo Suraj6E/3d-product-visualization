@@ -17,10 +17,10 @@
                 <div class="nav-controls">
                     {% if current_user.is_authenticated %}
                     <span class="user-welcome">Welcome, {{ current_user.username }}</span>
-                    <a href="{{ url_for('logout') }}" class="nav-btn">Logout</a>
+                    <a href="{{ url_for('auth.logout') }}" class="nav-btn">Logout</a>
                     {% else %}
-                    <a href="{{ url_for('login') }}" class="nav-btn">Login</a>
-                    <a href="{{ url_for('register') }}" class="nav-btn primary">Register</a>
+                    <a href="{{ url_for('auth.login') }}" class="nav-btn">Login</a>
+                    <a href="{{ url_for('auth.register') }}" class="nav-btn primary">Register</a>
                     {% endif %}
                 </div>
             </nav>
@@ -91,8 +91,8 @@
                     <h2>Welcome to 3D Product Visualization</h2>
                     <p>Create stunning 3D visualizations of your products with our advanced tools.</p>
                     <div class="welcome-actions">
-                        <a href="{{ url_for('login') }}" class="welcome-btn">Get Started</a>
-                        <a href="{{ url_for('register') }}" class="welcome-btn secondary">Create Account</a>
+                        <a href="{{ url_for('auth.login') }}" class="welcome-btn">Get Started</a>
+                        <a href="{{ url_for('auth.register') }}" class="welcome-btn secondary">Create Account</a>
                     </div>
                 </div>
             </section>

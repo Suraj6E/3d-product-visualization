@@ -1,57 +1,61 @@
 import os
 import sys
 import json
-import numpy as np
-from datetime import datetime
 import traceback
 
-
-from models.vision_processing import process_image, process_orthogonal_views
+from flask import Flask, render_template, request, jsonify, current_app, session, url_for
+from flask_login import LoginManager, current_user, login_required
 import plotly.utils
 
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, current_app, session
-from flask_login import LoginManager, current_user, login_required, login_user, logout_user
-from urllib.parse import urlparse
-
-# Import our MongoDB managers and models
 from db.manager import user_manager, survey_manager, feedback_manager
 from db.models import User
 from models.vision_processing import process_image, process_orthogonal_views
-
-
 from config import Config
 from models.enhanced_visualization import Enhanced3DVisualizer
 from models.model_monitoring import ModelMonitor
 from utils.benchmark_system import BenchmarkSystem
 
 from routes.dashboard import dashboard
+from routes.auth import auth
 
 from botocore.exceptions import ClientError
-
 from storage import create_storage_manager, S3StorageManager
-
 from datetime import timedelta
 import secrets
 
-
-
 application = Flask(__name__)
-app = application  # This provides compatibility with both 'app' and 'application' names
+app = application
 app.config.from_object(Config)
 
 # Add these configurations after creating the Flask app
-app.config['SECRET_KEY'] = secrets.token_hex(32)  # Generate a secure secret key
-app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=30)  # Set remember me duration
+app.config['SECRET_KEY'] = secrets.token_hex(32)
+app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=30)
 app.config['SESSION_PROTECTION'] = 'strong'
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)  # Session lifetime
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=1)
 
-# Initialize Flask-Login with the correct login view
+# Google OAuth 2.0 configuration
+app.config['GOOGLE_CLIENT_ID'] = os.environ.get('GOOGLE_CLIENT_ID')
+app.config['GOOGLE_CLIENT_SECRET'] = os.environ.get('GOOGLE_CLIENT_SECRET')
+
+# Initialize Flask-Login
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'  # Changed from 'auth.login' to just 'login'
+login_manager.login_view = 'auth.login'
 login_manager.session_protection = 'strong'
 login_manager.login_message = 'Please log in to access this feature.'
 login_manager.login_message_category = 'info'
+
+# Initialize our systems
+visualizer = Enhanced3DVisualizer(log_dir=app.config['LOG_DIR'])
+monitor = ModelMonitor(log_dir=app.config['LOG_DIR'])
+benchmark_system = BenchmarkSystem(output_dir=app.config['BENCHMARK_DIR'])
+
+# Initialize storage manager
+storage = create_storage_manager(app)
+
+# Register blueprints
+app.register_blueprint(dashboard, url_prefix='/dashboard')
+app.register_blueprint(auth, url_prefix='/auth')
 
 
 # Initialize our enhanced visualization system
@@ -59,28 +63,12 @@ visualizer = Enhanced3DVisualizer(log_dir=app.config['LOG_DIR'])
 monitor = ModelMonitor(log_dir=app.config['LOG_DIR'])
 benchmark_system = BenchmarkSystem(output_dir=app.config['BENCHMARK_DIR'])
 
-# Initialize storage manager
-storage = create_storage_manager(app)
-        
-app.register_blueprint(dashboard)
-
 # Add a before_request handler to check session
 @app.before_request
 def before_request():
     if current_user.is_authenticated:
         # Refresh the user's session to prevent timeout
         session.modified = True
-
-def is_safe_url(target):
-    """
-    Validates if a URL is safe to redirect to by checking if it's relative
-    and doesn't contain a scheme or network location.
-    """
-    ref_url = urlparse(request.host_url)
-    test_url = urlparse(target)
-    return (not test_url.scheme and not test_url.netloc) or \
-           (test_url.scheme == ref_url.scheme and test_url.netloc == ref_url.netloc)
-
 
 @app.context_processor
 def utility_processor():
@@ -96,81 +84,6 @@ def load_user(user_id):
     if user_doc:
         return User(user_doc)
     return None
-
-# Authentication routes
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    """Handle user login with secure redirect handling"""
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-
-    if request.method == 'POST':
-        email = request.form.get('email')
-        password = request.form.get('password')
-        remember = bool(request.form.get('remember'))
-
-        user_doc = user_manager.get_user_by_email(email)
-        
-        if user_doc and user_manager.verify_password(user_doc, password):
-            user = User(user_doc)
-            login_user(user, remember=remember)
-            
-            # Safely handle the next parameter
-            next_page = request.args.get('next')
-            if next_page and is_safe_url(next_page):
-                return redirect(next_page)
-            
-            print(f"User {email} logged in successfully")
-            return redirect(url_for('index'))
-        
-        flash('Invalid email or password')
-        print(f"Failed login attempt for email: {email}")
-
-    return render_template('auth/login.html')
-
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    """Handle user registration"""
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-
-    if request.method == 'POST':
-        email = request.form.get('email')
-        username = request.form.get('username')
-        password = request.form.get('password')
-
-        # Check if user already exists
-        if user_manager.get_user_by_email(email):
-            flash('Email already registered')
-            return redirect(url_for('register'))  # Changed from 'auth.register'
-
-        # Create new user
-        user_doc = user_manager.create_user(
-            username=username,
-            email=email,
-            password=password
-        )
-
-        if user_doc:
-            user = User(user_doc)
-            login_user(user)
-            print(f"New user registered: {email}")
-            return redirect(url_for('index'))
-        else:
-            flash('Registration failed. Please try again.')
-            print(f"Registration failed for email: {email}")
-
-    return render_template('auth/register.html')
-
-@app.route('/logout')
-@login_required
-def logout():
-    """Handle user logout"""
-    if current_user.is_authenticated:
-        email = current_user.email
-        logout_user()
-        print(f"User {email} logged out")
-    return redirect(url_for('index'))
 
 # Update the routes to use the storage manager
 @app.route('/')

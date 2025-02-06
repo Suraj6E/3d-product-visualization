@@ -10,7 +10,7 @@ from botocore.exceptions import ClientError
 dashboard = Blueprint("dashboard", __name__)
 
 
-@dashboard.route("/dashboard")
+@dashboard.route("/")
 @login_required
 def overview():
     """Main dashboard overview showing key metrics"""
@@ -30,7 +30,7 @@ def overview():
         )
 
 
-@dashboard.route("/dashboard/analytics")
+@dashboard.route("/analytics")
 @login_required
 def analytics():
     """Detailed analytics dashboard with charts and metrics"""
@@ -52,7 +52,7 @@ def analytics():
         )
 
 
-@dashboard.route("/dashboard/feedback")
+@dashboard.route("/feedback")
 @login_required
 def feedback_analysis():
     """Feedback analysis dashboard"""
@@ -75,7 +75,7 @@ def feedback_analysis():
         )
 
 
-@dashboard.route("/dashboard/performance")
+@dashboard.route("/performance")
 @login_required
 def performance():
     """Performance metrics dashboard"""
@@ -101,7 +101,7 @@ def performance():
 
 
 # API endpoints for dynamic updates
-@dashboard.route("/api/dashboard/performance")
+@dashboard.route("/api/performance")
 @login_required
 def get_performance_data():
     """API endpoint for performance metrics updates"""
@@ -112,7 +112,7 @@ def get_performance_data():
         return jsonify({"success": False, "error": str(e)})
 
 
-@dashboard.route("/dashboard/metrics")
+@dashboard.route("/metrics")
 @login_required
 def get_dashboard_metrics():
     """API endpoint for dashboard metrics"""
@@ -130,7 +130,7 @@ def get_dashboard_metrics():
         return jsonify({"success": False, "error": str(e)})
 
 
-@dashboard.route("/dashboard/findings")
+@dashboard.route("/findings")
 @login_required
 def findings():
 
@@ -212,7 +212,7 @@ def findings():
     return render_template("dashboard/findings.html", findings_data=findings_data)
 
 
-@dashboard.route("/dashboard/run-benchmarks")
+@dashboard.route("/run-benchmarks")
 @login_required
 def run_benchmarks():
     """
