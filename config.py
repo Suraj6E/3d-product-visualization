@@ -30,6 +30,14 @@ class Config:
     LOG_DIR = BASE_DIR / 'logs'
     BENCHMARK_DIR = BASE_DIR / 'benchmarks'
 
+    # OAuth settings
+    PREFERRED_URL_SCHEME = 'https'  # Force HTTPS for url_for
+
+    if FLASK_ENV == 'production':
+        GOOGLE_OAUTH_REDIRECT_URI = 'https://3dvisualization.tech/auth/login/callback'
+    else:
+        GOOGLE_OAUTH_REDIRECT_URI = 'http://localhost:8000/auth/login/callback'
+
     # Storage configuration
     if FLASK_ENV == 'production':
         # AWS S3 configuration
@@ -73,6 +81,8 @@ class ProductionConfig(Config):
     SECRET_KEY = os.getenv('SECRET_KEY') or 'generate-a-proper-key-here'
     LOG_LEVEL = 'ERROR'
     SESSION_COOKIE_SECURE = True
+    PREFERRED_URL_SCHEME = 'https'
+
 
 # Choose configuration based on environment
 config = {

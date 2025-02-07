@@ -20,6 +20,7 @@ from functools import cached_property
 
 import os
 from oauthlib.oauth2.rfc6749.errors import InsecureTransportError
+from urllib.parse import urlparse, urlunparse
 
 auth = Blueprint("auth", __name__)
 
@@ -43,14 +44,15 @@ google_auth = GoogleAuth()
 
 
 # Add this function
+
 def get_redirect_uri():
     """Get the appropriate redirect URI based on environment"""
-    if current_app.config["FLASK_ENV"] == "development":
-        # For local development
-        return "http://localhost:8000/auth/login/callback"
+    if current_app.config['FLASK_ENV'] == 'development':
+        uri = 'http://localhost:8000/auth/login/callback'
     else:
-        # For production
-        return "https://3dvisualization.tech/auth/login/callback"
+        uri = 'https://3dvisualization.tech/auth/login/callback'
+    print(f"Generated redirect URI: {uri}")
+    return uri
 
 
 def get_google_provider_cfg():
@@ -73,37 +75,86 @@ def is_safe_url(target):
     )
 
 
+
+def ensure_https_url(url):
+    """Ensure URL uses HTTPS in production"""
+    if current_app.config['FLASK_ENV'] != 'development':
+        parsed = urlparse(url)
+        return urlunparse(('https', parsed.netloc, parsed.path, 
+                          parsed.params, parsed.query, parsed.fragment))
+    return url
+
+def get_scheme():
+    """Get the correct scheme based on headers and environment"""
+    if current_app.config['FLASK_ENV'] == 'development':
+        return 'http'
+    
+    # Check X-Forwarded-Proto header first
+    forwarded_proto = request.headers.get('X-Forwarded-Proto')
+    if forwarded_proto:
+        return forwarded_proto
+        
+    # Then check the request scheme
+    return request.scheme or 'https'
+
+def get_host():
+    """Get the correct host based on headers and environment"""
+    if current_app.config['FLASK_ENV'] == 'development':
+        return 'localhost:8000'
+    return request.headers.get('X-Forwarded-Host') or request.host or '3dvisualization.tech'
+
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
-    """Handle both regular and Google login with enhanced error handling"""
     if current_user.is_authenticated:
         return redirect(url_for('index'))
 
     if request.method == 'POST':
+        current_app.logger.debug(f"Login attempt - Login type: {request.form.get('login_type')}")
+        
         if request.form.get('login_type') == 'google':
-            # Handle Google login
-            google_provider_cfg = get_google_provider_cfg()
-            if not google_provider_cfg:
-                flash('Error connecting to Google. Please try again later.', 'error')
-                return redirect(url_for('auth.login'))
-
-            authorization_endpoint = google_provider_cfg["authorization_endpoint"]
-            
             try:
-                # Allow insecure transport in development
+                current_app.logger.debug("Starting Google OAuth process")
+                google_provider_cfg = get_google_provider_cfg()
+                if not google_provider_cfg:
+                    current_app.logger.error("Failed to get Google provider config")
+                    flash('Error connecting to Google')
+                    return redirect(url_for('auth.login'))
+
+                authorization_endpoint = google_provider_cfg["authorization_endpoint"]
+                redirect_uri = get_redirect_uri()
+                
+                scheme = get_scheme()
+                host = get_host()
+                
+                current_app.logger.debug(f"Environment: {current_app.config['FLASK_ENV']}")
+                current_app.logger.debug(f"Scheme: {scheme}")
+                current_app.logger.debug(f"Host: {host}")
+                
+                # Force OAUTHLIB_INSECURE_TRANSPORT based on environment
                 if current_app.config['FLASK_ENV'] == 'development':
                     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+                else:
+                    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '0'
+                
+                # Ensure the redirect URI uses HTTPS in production
+                if current_app.config['FLASK_ENV'] != 'development':
+                    redirect_uri = ensure_https_url(redirect_uri)
                 
                 request_uri = google_auth.client.prepare_request_uri(
                     authorization_endpoint,
-                    redirect_uri=get_redirect_uri(),
+                    redirect_uri=redirect_uri,
                     scope=["openid", "email", "profile"],
                 )
+                
+                current_app.logger.debug(f"Prepared request URI: {request_uri}")
                 return redirect(request_uri)
+                
             except Exception as e:
-                current_app.logger.error(f"Error preparing Google login: {e}")
-                flash('Error during Google login. Please try again.', 'error')
+                current_app.logger.error(f"Error in Google login: {str(e)}")
+                current_app.logger.exception("Full traceback:")
+                flash('Error during Google login. Please try again.')
                 return redirect(url_for('auth.login'))
+
         else:
             # Handle regular login
             email = request.form.get('email')
@@ -143,26 +194,47 @@ def login():
 
 @auth.route('/login/callback')
 def google_callback():
-    """Handle the Google OAuth 2.0 callback with enhanced error handling"""
-    code = request.args.get("code")
-    if not code:
-        flash('Error during Google login. Please try again.', 'error')
-        return redirect(url_for('auth.login'))
-
+    current_app.logger.debug("Received callback from Google")
+    current_app.logger.debug(f"Request URL: {request.url}")
+    current_app.logger.debug(f"Request headers: {dict(request.headers)}")
+    
     try:
+        code = request.args.get("code")
+        if not code:
+            current_app.logger.error("No code received in callback")
+            flash('Error during Google login')
+            return redirect(url_for('auth.login'))
+
+        # Create HTTPS URL for the callback
+        if current_app.config['FLASK_ENV'] != 'development':
+            parsed_url = urlparse(request.url)
+            authorization_response = f"https://{parsed_url.netloc}{parsed_url.path}?{parsed_url.query}"
+            current_app.logger.debug(f"Using HTTPS authorization response: {authorization_response}")
+        else:
+            authorization_response = request.url
+
         google_provider_cfg = get_google_provider_cfg()
         token_endpoint = google_provider_cfg["token_endpoint"]
+        redirect_uri = get_redirect_uri()
 
+        current_app.logger.debug(f"Preparing token request with redirect_uri: {redirect_uri}")
+        
         # Allow insecure transport in development
         if current_app.config['FLASK_ENV'] == 'development':
             os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+        else:
+            # Ensure HTTPS for production
+            os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '0'
 
         token_url, headers, body = google_auth.client.prepare_token_request(
             token_endpoint,
-            authorization_response=request.url,
-            redirect_url=get_redirect_uri(),
+            authorization_response=authorization_response,  # Use HTTPS URL in production
+            redirect_url=redirect_uri,
             code=code
         )
+
+        current_app.logger.debug(f"Token request prepared - URL: {token_url}")
+
         token_response = requests.post(
             token_url,
             headers=headers,
@@ -198,7 +270,10 @@ def google_callback():
             else:
                 # If existing user doesn't have Google ID, link it
                 if not user_doc.get('google_id'):
-                    success, message = user_manager.link_google_account(user_doc['_id'], google_id)
+                    success, message = user_manager.link_google_account(
+                        user_doc['_id'], 
+                        google_id
+                    )
                     if not success:
                         flash(message, 'error')
                         return redirect(url_for('auth.login'))
@@ -213,8 +288,9 @@ def google_callback():
         return redirect(url_for('auth.login'))
 
     except Exception as e:
-        current_app.logger.error(f"Error in Google callback: {e}")
-        flash('Error during Google login. Please try again.', 'error')
+        current_app.logger.error(f"Error in Google callback: {str(e)}")
+        current_app.logger.exception("Full traceback:")
+        flash('Error during Google login')
         return redirect(url_for('auth.login'))
 
 @auth.route('/register', methods=['GET', 'POST'])

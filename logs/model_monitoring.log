@@ -1281,3 +1281,50 @@ TypeError: expected str, bytes or os.PathLike object, not NoneType
 2025-02-06 19:33:09,106 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:33:09] "GET /auth/login?next=/ HTTP/1.1" 200 -
 2025-02-06 19:33:09,430 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:33:09] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
 2025-02-06 19:33:10,813 - werkzeug - INFO - 127.0.0.1 - - [06/Feb/2025 19:33:10] "[32mPOST /auth/login HTTP/1.1[0m" 302 -
+2025-02-07 18:06:55,890 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-07 18:06:55,891 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-07 18:11:00,124 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-07 18:11:00,124 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-07 18:11:09,314 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:11:09] "[32mGET / HTTP/1.1[0m" 302 -
+2025-02-07 18:11:09,673 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:11:09] "GET /auth/login?next=/ HTTP/1.1" 200 -
+2025-02-07 18:11:09,963 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:11:09] "GET /static/css/auth.css HTTP/1.1" 200 -
+2025-02-07 18:11:10,163 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:11:10] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-02-07 18:11:13,940 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:11:13] "[32mPOST /auth/login HTTP/1.1[0m" 302 -
+2025-02-07 18:11:18,629 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:11:18] "[32mGET /auth/login/callback?code=4/0ASVgi3J-UpB86WDLOHE2usgowkBeRuUbxFKgDd9gwMCRG59m8DgjBzB62H5xjHCQu1NKSg&scope=email+profile+https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile+openid&authuser=1&prompt=none HTTP/1.1[0m" 302 -
+2025-02-07 18:11:19,058 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:11:19] "GET / HTTP/1.1" 200 -
+2025-02-07 18:11:19,280 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:11:19] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-07 18:11:27,221 - application - INFO - User suraj.neupane151@gmail.com logged out
+2025-02-07 18:11:27,221 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:11:27] "[32mGET /auth/logout HTTP/1.1[0m" 302 -
+2025-02-07 18:11:27,545 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:11:27] "[32mGET / HTTP/1.1[0m" 302 -
+2025-02-07 18:11:27,812 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:11:27] "GET /auth/login?next=/ HTTP/1.1" 200 -
+2025-02-07 18:11:27,859 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:11:27] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-07 18:28:44,531 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-07 18:28:44,533 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-07 18:29:10,347 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-07 18:29:10,348 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-07 18:29:48,312 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:29:48] "[32mGET / HTTP/1.1[0m" 302 -
+2025-02-07 18:29:48,366 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:29:48] "GET /auth/login?next=/ HTTP/1.1" 200 -
+2025-02-07 18:29:48,609 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:29:48] "GET /static/css/auth.css HTTP/1.1" 200 -
+2025-02-07 18:29:48,847 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:29:48] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-02-07 18:29:50,182 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:29:50] "[32mPOST /auth/login HTTP/1.1[0m" 302 -
+2025-02-07 18:33:47,658 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-07 18:33:47,671 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-07 18:33:50,277 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:33:50] "[32mGET / HTTP/1.1[0m" 302 -
+2025-02-07 18:33:50,330 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:33:50] "GET /auth/login?next=/ HTTP/1.1" 200 -
+2025-02-07 18:33:50,482 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:33:50] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-07 18:33:52,153 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:33:52] "[32mPOST /auth/login HTTP/1.1[0m" 302 -

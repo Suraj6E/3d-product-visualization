@@ -16,8 +16,11 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
+
+
 # Copy only requirements first for better caching
 COPY requirements.txt .
+
 
 # Create a virtual environment and activate it
 RUN python -m venv /opt/venv
@@ -32,6 +35,9 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt || \
     (pip install --no-cache-dir -r requirements.txt --index-url https://pypi.tuna.tsinghua.edu.cn/simple && \
     pip install --no-cache-dir -r requirements.txt)
+
+    
+RUN pip install opencv-python-headless
 
 # Stage 2: Production stage
 FROM python:3.12-slim
