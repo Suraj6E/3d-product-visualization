@@ -15,6 +15,7 @@ B000E4HY42,furniture,../datasets\product_98\front.jpg,../datasets\product_98\bac
 B000E4K2SM,furniture,../datasets\product_100\front.jpg,../datasets\product_100\back.jpg,../datasets\product_100\top.jpg
 B000FGI5DI,furniture,../datasets\product_114\front.jpg,../datasets\product_114\back.jpg,../datasets\product_114\top.jpg
 B000FVW57K,furniture,../datasets\product_131\front.jpg,../datasets\product_131\back.jpg,../datasets\product_131\top.jpg
+B000FVW57U,furniture,,,
 B000H7EAT8,furniture,../datasets\product_169\front.jpg,../datasets\product_169\back.jpg,../datasets\product_169\top.jpg
 B000H7JXUY,furniture,../datasets\product_175\front.jpg,../datasets\product_175\back.jpg,../datasets\product_175\top.jpg
 B000HBXA5O,furniture,../datasets\product_186\front.jpg,../datasets\product_186\back.jpg,../datasets\product_186\top.jpg
@@ -55,7 +56,3 @@ B002VPE1PW,electronics,../datasets\product_1210\front.jpg,../datasets\product_12
 B002VPE1WK,other,../datasets\product_1211\front.jpg,../datasets\product_1211\back.jpg,../datasets\product_1211\top.jpg
 B002VPE1Y8,other,../datasets\product_1215\front.jpg,../datasets\product_1215\back.jpg,../datasets\product_1215\top.jpg
 B002VPE21A,other,../datasets\product_1218\front.jpg,../datasets\product_1218\back.jpg,../datasets\product_1218\top.jpg
-B0032FPVKE,outdoor,../datasets\product_1235\front.jpg,../datasets\product_1235\back.jpg,../datasets\product_1235\top.jpg
-B0035FZJY4,fashion,../datasets\product_1240\front.jpg,../datasets\product_1240\back.jpg,../datasets\product_1240\top.jpg
-B00381D50K,electronics,../datasets\product_1243\front.jpg,../datasets\product_1243\back.jpg,../datasets\product_1243\top.jpg
-B003AU5LHY,outdoor,../datasets\product_1250\front.jpg,../datasets\product_1250\back.jpg,../datasets\product_1250\top.jpg
