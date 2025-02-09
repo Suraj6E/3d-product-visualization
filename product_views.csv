@@ -1,0 +1,17 @@
+product_id,category,front_path,back_path,top_path
+B0009BOEH0,furniture,../datasets\product_40\front.jpg,../datasets\product_40\back.jpg,../datasets\product_40\top.jpg
+B0009JRWR6,furniture,../datasets\product_43\front.jpg,../datasets\product_43\back.jpg,../datasets\product_43\top.jpg
+B000BIU1XM,furniture,../datasets\product_50\front.jpg,../datasets\product_50\back.jpg,../datasets\product_50\top.jpg
+B000BIU20E,furniture,../datasets\product_52\front.jpg,../datasets\product_52\back.jpg,../datasets\product_52\top.jpg
+B000BIVK3C,furniture,../datasets\product_57\front.jpg,../datasets\product_57\back.jpg,../datasets\product_57\top.jpg
+B000BIXAO4,furniture,../datasets\product_62\front.jpg,../datasets\product_62\back.jpg,../datasets\product_62\top.jpg
+B000BIXAQM,furniture,../datasets\product_68\front.jpg,../datasets\product_68\back.jpg,../datasets\product_68\top.jpg
+B000BIXAQW,furniture,../datasets\product_69\front.jpg,../datasets\product_69\back.jpg,../datasets\product_69\top.jpg
+B000BIXAR6,furniture,../datasets\product_70\front.jpg,../datasets\product_70\back.jpg,../datasets\product_70\top.jpg
+B000BJKCLM,furniture,../datasets\product_75\front.jpg,../datasets\product_75\back.jpg,../datasets\product_75\top.jpg
+B000E4BE0C,furniture,../datasets\product_95\front.jpg,../datasets\product_95\back.jpg,../datasets\product_95\top.jpg
+B000E4CWI0,furniture,../datasets\product_96\front.jpg,../datasets\product_96\back.jpg,../datasets\product_96\top.jpg
+B000E4HY42,furniture,../datasets\product_98\front.jpg,../datasets\product_98\back.jpg,../datasets\product_98\top.jpg
+B000E4K2SM,furniture,../datasets\product_100\front.jpg,../datasets\product_100\back.jpg,../datasets\product_100\top.jpg
+B000FGI5DI,furniture,../datasets\product_114\front.jpg,../datasets\product_114\back.jpg,../datasets\product_114\top.jpg
+B000FVW57K,furniture,../datasets\product_131\front.jpg,../datasets\product_131\back.jpg,../datasets\product_131\top.jpg

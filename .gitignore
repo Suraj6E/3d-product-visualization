@@ -31,3 +31,5 @@ venv/
 .env*
 !package.json
 !package-lock.json
+/tests/co3d
+/datasets

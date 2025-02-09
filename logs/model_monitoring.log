@@ -1328,3 +1328,8 @@ TypeError: expected str, bytes or os.PathLike object, not NoneType
 2025-02-07 18:33:50,330 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:33:50] "GET /auth/login?next=/ HTTP/1.1" 200 -
 2025-02-07 18:33:50,482 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:33:50] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
 2025-02-07 18:33:52,153 - werkzeug - INFO - 127.0.0.1 - - [07/Feb/2025 18:33:52] "[32mPOST /auth/login HTTP/1.1[0m" 302 -
+2025-02-09 17:44:33,064 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-09 17:44:33,064 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
