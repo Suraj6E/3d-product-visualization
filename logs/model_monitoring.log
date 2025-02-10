@@ -1545,3 +1545,116 @@ TypeError: expected str, bytes or os.PathLike object, not NoneType
 2025-02-10 13:05:15,803 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 13:05:15] "POST /track-interaction/Chair HTTP/1.1" 200 -
 2025-02-10 13:05:28,736 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 13:05:28] "GET /process/Chair HTTP/1.1" 200 -
 2025-02-10 13:05:28,880 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 13:05:28] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:22:27,227 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-10 14:22:27,227 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-10 14:22:47,349 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:22:47] "[32mGET / HTTP/1.1[0m" 302 -
+2025-02-10 14:22:47,388 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:22:47] "GET /auth/login?next=/ HTTP/1.1" 200 -
+2025-02-10 14:22:47,560 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:22:47] "GET /static/css/auth.css HTTP/1.1" 200 -
+2025-02-10 14:22:47,750 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:22:47] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-02-10 14:22:49,485 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:22:49] "[32mPOST /auth/login HTTP/1.1[0m" 302 -
+2025-02-10 14:22:54,129 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:22:54] "[32mGET /auth/login/callback?code=4/0ASVgi3LTZt0CWI-fu0Yuy00SD8VqcpmR_h-SSNkRZpCt-1_x2P5jJevKdLY27jZUSmDRUQ&scope=email+profile+openid+https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile&authuser=0&prompt=none HTTP/1.1[0m" 302 -
+2025-02-10 14:22:54,184 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:22:54] "GET / HTTP/1.1" 200 -
+2025-02-10 14:22:54,578 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:22:54] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-10 14:22:56,828 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:22:56] "GET /folder/Chair HTTP/1.1" 200 -
+2025-02-10 14:22:57,211 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:22:57] "[36mGET /static/css/folder.css HTTP/1.1[0m" 304 -
+2025-02-10 14:22:57,452 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:22:57] "[36mGET /static/uploads/Chair/back.jpg HTTP/1.1[0m" 304 -
+2025-02-10 14:22:57,550 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:22:57] "GET /get-s3-data/Chair HTTP/1.1" 200 -
+2025-02-10 14:22:57,551 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:22:57] "[36mGET /static/uploads/Chair/front.jpg HTTP/1.1[0m" 304 -
+2025-02-10 14:22:57,624 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:22:57] "[36mGET /static/uploads/Chair/top.jpg HTTP/1.1[0m" 304 -
+2025-02-10 14:22:58,901 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:22:58] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:22:59,266 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:22:59] "GET /get_feedback/Chair HTTP/1.1" 200 -
+2025-02-10 14:23:04,054 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:23:04] "GET /process/Chair HTTP/1.1" 200 -
+2025-02-10 14:23:04,498 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:23:04] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:23:27,788 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:23:27] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:23:49,872 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-10 14:23:49,872 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-10 14:23:58,018 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:23:58] "[32mPOST /track-interaction/Chair HTTP/1.1[0m" 302 -
+2025-02-10 14:23:58,312 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:23:58] "GET /auth/login?next=/track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:24:06,457 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:06] "[32mPOST /track-interaction/Chair HTTP/1.1[0m" 302 -
+2025-02-10 14:24:06,773 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:06] "[32mGET /folder/Chair HTTP/1.1[0m" 302 -
+2025-02-10 14:24:06,775 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:06] "GET /auth/login?next=/track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:24:07,091 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:07] "GET /auth/login?next=/folder/Chair HTTP/1.1" 200 -
+2025-02-10 14:24:07,433 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:07] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-10 14:24:08,997 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:08] "[32mPOST /auth/login HTTP/1.1[0m" 302 -
+2025-02-10 14:24:12,957 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:12] "[32mGET /auth/login/callback?code=4/0ASVgi3IJ6Kl1TmhvccKcCZ0th2KxExv1dEWwkuRbjkF4mrtyuyuqSxrAPypZCuafS189QQ&scope=email+profile+https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile+openid&authuser=1&prompt=none HTTP/1.1[0m" 302 -
+2025-02-10 14:24:13,000 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:13] "GET / HTTP/1.1" 200 -
+2025-02-10 14:24:13,400 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:13] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-10 14:24:15,535 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:15] "GET /folder/Chair HTTP/1.1" 200 -
+2025-02-10 14:24:15,909 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:15] "[36mGET /static/css/folder.css HTTP/1.1[0m" 304 -
+2025-02-10 14:24:16,159 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:16] "[36mGET /static/uploads/Chair/front.jpg HTTP/1.1[0m" 304 -
+2025-02-10 14:24:16,172 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:16] "[36mGET /static/uploads/Chair/back.jpg HTTP/1.1[0m" 304 -
+2025-02-10 14:24:16,237 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:16] "GET /get-s3-data/Chair HTTP/1.1" 200 -
+2025-02-10 14:24:16,312 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:16] "[36mGET /static/uploads/Chair/top.jpg HTTP/1.1[0m" 304 -
+2025-02-10 14:24:17,735 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:17] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:24:18,097 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:18] "GET /get_feedback/Chair HTTP/1.1" 200 -
+2025-02-10 14:24:22,546 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:22] "GET /process/Chair HTTP/1.1" 200 -
+2025-02-10 14:24:22,961 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:22] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:24:46,796 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:24:46] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:25:17,094 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:25:17] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:33:36,809 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-10 14:33:36,809 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-10 14:33:40,777 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:33:40] "[32mGET /folder/Chair HTTP/1.1[0m" 302 -
+2025-02-10 14:33:40,780 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:33:40] "[32mPOST /track-interaction/Chair HTTP/1.1[0m" 302 -
+2025-02-10 14:33:41,043 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:33:41] "GET /auth/login?next=/folder/Chair HTTP/1.1" 200 -
+2025-02-10 14:33:41,183 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:33:41] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-10 14:33:43,120 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:33:43] "[32mPOST /auth/login HTTP/1.1[0m" 302 -
+2025-02-10 14:33:47,014 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:33:47] "[32mGET /auth/login/callback?code=4/0ASVgi3KjO5uOa49FNNTLU4vM7iNDe8TxF2FukjoAw9KIc-lhljQqYtUD6iyIT6N-msyCRA&scope=email+profile+https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile+openid&authuser=1&prompt=none HTTP/1.1[0m" 302 -
+2025-02-10 14:33:47,386 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:33:47] "GET / HTTP/1.1" 200 -
+2025-02-10 14:33:47,630 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:33:47] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-10 14:33:49,378 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:33:49] "GET /folder/Chair HTTP/1.1" 200 -
+2025-02-10 14:33:49,772 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:33:49] "[36mGET /static/css/folder.css HTTP/1.1[0m" 304 -
+2025-02-10 14:33:50,129 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:33:50] "[36mGET /static/uploads/Chair/front.jpg HTTP/1.1[0m" 304 -
+2025-02-10 14:33:50,130 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:33:50] "GET /get-s3-data/Chair HTTP/1.1" 200 -
+2025-02-10 14:33:50,130 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:33:50] "[36mGET /static/uploads/Chair/back.jpg HTTP/1.1[0m" 304 -
+2025-02-10 14:33:50,232 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:33:50] "[36mGET /static/uploads/Chair/top.jpg HTTP/1.1[0m" 304 -
+2025-02-10 14:33:51,476 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:33:51] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:33:51,839 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:33:51] "GET /get_feedback/Chair HTTP/1.1" 200 -
+2025-02-10 14:34:07,518 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:34:07] "GET /process/Chair HTTP/1.1" 200 -
+2025-02-10 14:34:07,966 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:34:07] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:34:20,809 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:34:20] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:34:51,118 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:34:51] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:35:20,798 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:35:20] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:35:50,330 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:35:50] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:36:20,793 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:36:20] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:37:20,132 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:37:20] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:37:50,810 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:37:50] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:38:21,115 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:38:21] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:39:27,098 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:39:27] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:39:50,795 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:39:50] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:40:21,108 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:40:21] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:41:25,018 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:41:25] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:41:50,800 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:41:50] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:42:21,117 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:42:21] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:43:27,096 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:43:27] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:44:26,803 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:44:26] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:45:27,088 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:45:27] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:46:26,790 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:46:26] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:47:27,166 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:47:27] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:48:26,797 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:48:26] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:49:27,108 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:49:27] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:50:26,802 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:50:26] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:51:27,100 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:51:27] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:52:26,798 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:52:26] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:53:27,101 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:53:27] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:54:26,790 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:54:26] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:55:27,090 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:55:27] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:56:27,121 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:56:27] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:57:26,787 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:57:26] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:58:27,092 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:58:27] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 14:59:26,836 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 14:59:26] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 15:00:26,717 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 15:00:26] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 15:00:50,791 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 15:00:50] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 15:01:21,089 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 15:01:21] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 15:02:27,111 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 15:02:27] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 15:02:49,998 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 15:02:49] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 15:03:20,300 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 15:03:20] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-10 15:03:50,790 - werkzeug - INFO - 127.0.0.1 - - [10/Feb/2025 15:03:50] "POST /track-interaction/Chair HTTP/1.1" 200 -

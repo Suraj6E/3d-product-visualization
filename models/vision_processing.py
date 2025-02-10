@@ -4,6 +4,7 @@ import numpy as np
 from PIL import Image
 import plotly.graph_objects as go
 from transformers import pipeline
+from models.foreground_processor import integrate_foreground_processing
 
 def load_and_normalize_images(image_paths):
     """
@@ -69,19 +70,46 @@ def create_object_mesh(image_input, depth_threshold=0.75):
         image_input: Can be either a file path (str) or a pre-loaded image (numpy array)
         depth_threshold: Threshold for depth filtering (0.0 to 1.0)
     """
-    # Handle input flexibly - either load from file or use provided array
+   # Step 1: Convert input to numpy array with proper format
     if isinstance(image_input, str):
+        # Loading from file path
         image = cv2.imread(image_input)
         if image is None:
             raise ValueError(f"Failed to load image from path: {image_input}")
+    elif isinstance(image_input, Image.Image):
+        # Convert PIL Image to numpy array
+        # First convert to RGB numpy array
+        image_array = np.array(image_input)
+        # Then convert from RGB to BGR for OpenCV
+        image = cv2.cvtColor(image_array, cv2.COLOR_RGB2BGR)
     else:
-        image = image_input  # Already a numpy array
-        
-    # Continue with edge detection and processing as before
-    image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    edges = cv2.Canny(image_gray, 100, 200)
-    kernel = np.ones((5, 5), np.uint8)
-    dilated_edges = cv2.dilate(edges, kernel, iterations=1)
+        # Assume it's already a numpy array
+        image = image_input
+    
+    # Step 2: Verify array format
+    if not isinstance(image, np.ndarray):
+        raise TypeError("Image must be converted to numpy array")
+    if len(image.shape) != 3:
+        raise ValueError("Image must be a 3-channel color image")
+    
+    # Step 3: Convert to grayscale
+    try:
+        image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    except cv2.error as e:
+        print("Error during color conversion. Image shape:", image.shape)
+        print("Image dtype:", image.dtype)
+        raise ValueError("Failed to convert image to grayscale") from e
+    
+     # Step 5: Edge detection
+    try:
+        edges = cv2.Canny(image_gray, 100, 200)
+        kernel = np.ones((5, 5), np.uint8)
+        dilated_edges = cv2.dilate(edges, kernel, iterations=1)
+    except cv2.error as e:
+        print("Error during edge detection. Grayscale image shape:", image_gray.shape)
+        print("Grayscale image dtype:", image_gray.dtype)
+        raise ValueError("Failed during edge detection") from e
+    
     contours, _ = cv2.findContours(dilated_edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
     if not contours:
@@ -104,6 +132,10 @@ def create_object_mesh(image_input, depth_threshold=0.75):
     image_pil = Image.fromarray(image_rgb)
     depth_predictions = depth_model(image_pil)
     depth_map = np.array(depth_predictions["depth"])
+
+    # Add this section
+    
+    # depth_map = integrate_foreground_processing(image, depth_map)
     
     # Process depth map
     height, width, _ = output_image.shape
