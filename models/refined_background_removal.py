@@ -205,9 +205,6 @@ def refined_background_removal(image_path, background_color=None, edge_smoothing
         else:
             bg_color = background_color
         
-        # Create background image and masks
-        background = np.full_like(image, bg_color[::-1])  # Convert to BGR
-        
         print("Detecting shadows...")
         shadow_mask = detect_shadows_enhanced(image, bg_color)
         
@@ -267,12 +264,12 @@ def refined_background_removal(image_path, background_color=None, edge_smoothing
         
         # # Display with checkered background
         # plt.subplot(155)
-        # checkered = np.zeros((image.shape[0], image.shape[1], 3), dtype=np.uint8)
-        # checkered[::20, ::20] = [200, 200, 200]
-        # checkered[10::20, 10::20] = [200, 200, 200]
+        checkered = np.zeros((image.shape[0], image.shape[1], 3), dtype=np.uint8)
+        checkered[::20, ::20] = [200, 200, 200]
+        checkered[10::20, 10::20] = [200, 200, 200]
         
-        # alpha_3d = alpha[:,:,np.newaxis] / 255.0
-        # blended = (image_rgb * alpha_3d + checkered * (1 - alpha_3d)).astype(np.uint8)
+        alpha_3d = alpha[:,:,np.newaxis] / 255.0
+        blended = (image_rgb * alpha_3d + checkered * (1 - alpha_3d)).astype(np.uint8)
         # plt.imshow(blended)
         # plt.title('Result (Transparent)')
         # plt.axis('off')
@@ -280,7 +277,7 @@ def refined_background_removal(image_path, background_color=None, edge_smoothing
         # plt.tight_layout()
         # plt.show()
         
-        return image_rgb, alpha, result_rgb, rgba
+        return image_rgb, alpha, result_rgb, blended, rgba
         
     except Exception as e:
         print(f"Error during processing: {str(e)}")
