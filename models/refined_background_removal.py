@@ -239,58 +239,15 @@ def refined_background_removal(image_path, background_color=None, edge_smoothing
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         result_rgb = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
         
-        # # Enhanced visualization to show shadow detection
-        # plt.figure(figsize=(20, 5))
-        
-        # plt.subplot(151)
-        # plt.imshow(image_rgb)
-        # plt.title('Original Image')
-        # plt.axis('off')
-        
-        # plt.subplot(152)
-        # plt.imshow(shadow_mask, cmap='gray')
-        # plt.title('Shadow Mask')
-        # plt.axis('off')
-        
-        # plt.subplot(153)
-        # plt.imshow(object_mask, cmap='gray')
-        # plt.title('Final Mask')
-        # plt.axis('off')
-        
-        # plt.subplot(154)
-        # plt.imshow(result_rgb)
-        # plt.title('Result (Black Background)')
-        # plt.axis('off')
-        
-        # # Display with checkered background
-        # plt.subplot(155)
         checkered = np.zeros((image.shape[0], image.shape[1], 3), dtype=np.uint8)
         checkered[::20, ::20] = [200, 200, 200]
         checkered[10::20, 10::20] = [200, 200, 200]
         
         alpha_3d = alpha[:,:,np.newaxis] / 255.0
         blended = (image_rgb * alpha_3d + checkered * (1 - alpha_3d)).astype(np.uint8)
-        # plt.imshow(blended)
-        # plt.title('Result (Transparent)')
-        # plt.axis('off')
-        
-        # plt.tight_layout()
-        # plt.show()
         
         return image_rgb, alpha, result_rgb, blended, rgba
         
     except Exception as e:
         print(f"Error during processing: {str(e)}")
         return None
-
-# # Example usage:
-# if __name__ == "__main__":
-#     try:
-#         results = refined_background_removal(
-#             "../static/uploads/Chair/front.jpg",
-#             background_color=None,  # Enable auto-detection
-#             edge_smoothing=5,
-#             preserve_whites=True
-#         )
-#     except Exception as e:
-#         print(f"Failed to process image: {str(e)}")
