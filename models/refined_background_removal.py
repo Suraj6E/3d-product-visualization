@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
+from PIL import Image
+import os
 
 def detect_background_color(img, samples_per_edge=100):
     """
@@ -114,41 +116,55 @@ def detect_shadows_enhanced(img, background_color):
                                  cv2.MORPH_OPEN, kernel)
     
     return shadow_mask
-def refined_background_removal(image_path, background_color=None, edge_smoothing=5, preserve_whites=True):
+
+def refined_background_removal(image_input, background_color=None, edge_smoothing=5, preserve_whites=True):
     """
     Advanced background removal with automatic background color detection and
     improved edge handling.
     
     Args:
-        image_path: Path to input image
+        image_input: Path to input image or Image.Image or numpy array
         background_color: RGB tuple or None for auto-detection
         edge_smoothing: Amount of edge smoothing (higher = smoother)
         preserve_whites: Whether to preserve white colors in the object
     """
-    def create_color_range_mask(img, target_color, tolerance=30):
-        """Create an adaptive mask for colors within tolerance of target color"""
-        # Convert target color from RGB to BGR
+    def create_color_range_mask(img, target_color, tolerance=20):  # Reduced tolerance
+        """Create a more precise mask for colors within tolerance of target color"""
         target_bgr = target_color[::-1]
-        
-        # Create bounds with tolerance
-        lower_bound = np.array([max(0, c - tolerance) for c in target_bgr])
-        upper_bound = np.array([min(255, c + tolerance) for c in target_bgr])
-        
-        return cv2.inRange(img, lower_bound, upper_bound)
+
+        # Convert to LAB color space for better color similarity matching
+        lab_image = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+        lab_target = cv2.cvtColor(np.uint8([[target_bgr]]), cv2.COLOR_BGR2LAB)[0,0]
+
+        # Create bounds with tolerance in LAB space
+        lower_bound = np.array([max(0, c - tolerance) for c in lab_target])
+        upper_bound = np.array([min(255, c + tolerance) for c in lab_target])
+
+        # Create mask in LAB space
+        mask = cv2.inRange(lab_image, lower_bound, upper_bound)
+
+        # Clean up the mask
+        kernel = np.ones((3,3), np.uint8)
+        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+
+        return mask
 
     def smooth_edges(mask, smooth_factor):
-        """Apply sophisticated edge smoothing with gradient preservation"""
-        # Convert to float for better precision
+        """Apply edge smoothing with outline removal"""
+        # Convert to float
         mask_float = mask.astype(np.float32) / 255.0
+        
+        # Apply erosion first to remove thin outlines
+        kernel = np.ones((2,2), np.uint8)
+        eroded = cv2.erode(mask_float, kernel, iterations=1)
         
         # Multi-scale smoothing
         smoothed = np.zeros_like(mask_float)
         weights_sum = 0
         
-        # Apply multiple scales of smoothing
         for i in range(1, 4):
             kernel_size = smooth_factor * 2 * i + 1
-            current_smooth = cv2.GaussianBlur(mask_float, 
+            current_smooth = cv2.GaussianBlur(eroded, 
                                             (kernel_size, kernel_size), 
                                             0)
             weight = 1.0 / i
@@ -157,45 +173,102 @@ def refined_background_removal(image_path, background_color=None, edge_smoothing
         
         smoothed /= weights_sum
         
-        # Edge-aware blending
-        gradient_x = cv2.Sobel(smoothed, cv2.CV_32F, 1, 0, ksize=3)
-        gradient_y = cv2.Sobel(smoothed, cv2.CV_32F, 0, 1, ksize=3)
-        gradient_magnitude = np.sqrt(gradient_x**2 + gradient_y**2)
+        # Threshold the result to make edges cleaner
+        smoothed = np.where(smoothed > 0.5, 1.0, 0.0)
         
-        edge_mask = (gradient_magnitude > 0.1).astype(np.float32)
-        result = np.where(edge_mask, 
-                         cv2.GaussianBlur(mask_float, (3, 3), 0),
-                         smoothed)
-        
-        return (result * 255).astype(np.uint8)
+        return (smoothed * 255).astype(np.uint8)
 
-    def preserve_white_details(img, mask, threshold=245):
-        """Preserve white details with connectivity analysis"""
+    def preserve_white_details(img, mask, threshold=250):
+        """
+        Preserve white details with proper handling of edge cases and division.
+        
+        Args:
+            img: Input image in BGR format
+            mask: Binary mask
+            threshold: Brightness threshold for white detection
+        """
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         
-        # Create adaptive threshold
+        # Create adaptive threshold with safety checks
         local_mean = cv2.GaussianBlur(gray, (15, 15), 0)
-        local_threshold = threshold - (255 - local_mean) * 0.1
+        
+        # Avoid division by zero and invalid values
+        local_mean = np.clip(local_mean, 1, 254)  # Ensure no zeros or 255s
+        adjustment = np.clip((255 - local_mean) * 0.05, 0, threshold)
+        local_threshold = threshold - adjustment
+        
+        # Create white mask with safety checks
         white_areas = gray > local_threshold
         
-        # Connect to main object
-        kernel = np.ones((3,3), np.uint8)
-        dilated_mask = cv2.dilate(mask, kernel, iterations=2)
+        # Reduce connectivity to main object
+        kernel = np.ones((2,2), np.uint8)
+        dilated_mask = cv2.dilate(mask, kernel, iterations=1)
         preserved_whites = white_areas & dilated_mask
         
         # Clean up artifacts
         preserved_whites = cv2.morphologyEx(preserved_whites.astype(np.uint8), 
-                                          cv2.MORPH_CLOSE, kernel)
+                                        cv2.MORPH_OPEN, kernel)
+        preserved_whites = cv2.morphologyEx(preserved_whites, 
+                                        cv2.MORPH_CLOSE, kernel)
         
         return mask | preserved_whites
+
+    def shrink_mask(mask, shrink_percent=1):
+        """
+        Shrink the mask by a percentage of its dimensions
+        Args:
+            mask: Binary mask
+            shrink_percent: Percentage to shrink (1 = 1%)
+        Returns:
+            Shrunk mask
+        """
+        # Get mask dimensions
+        height, width = mask.shape[:2]
+        
+        # Calculate pixels to shrink on each side
+        shrink_pixels_y = int(height * (shrink_percent / 100))
+        shrink_pixels_x = int(width * (shrink_percent / 100))
+        
+        # Ensure at least 1 pixel if percentage is too small
+        shrink_pixels_y = max(1, shrink_pixels_y)
+        shrink_pixels_x = max(1, shrink_pixels_x)
+        
+        # Create structuring element for erosion
+        kernel = cv2.getStructuringElement(
+            cv2.MORPH_ELLIPSE,
+            (2 * shrink_pixels_x + 1, 2 * shrink_pixels_y + 1)
+        )
+        
+        # Erode the mask
+        shrunk_mask = cv2.erode(mask, kernel, iterations=1)
+        
+        return shrunk_mask
 
     # Main processing pipeline
     try:
         print("Loading image...")
-        image = cv2.imread(image_path)
-        if image is None:
-            raise ValueError(f"Failed to load image from {image_path}")
+        # Input validation and conversion
+        if isinstance(image_input, str):
+            print("It's a file path - load the image")
+            if not os.path.exists(image_input):
+                raise ValueError(f"Image file not found: {image_input}")
+            image = cv2.imread(image_input)
+            if image is None:
+                raise ValueError(f"Failed to load image from {image_input}")
+        elif isinstance(image_input, np.ndarray):
+            print("It's already a numpy array - verify format")
+            if len(image_input.shape) != 3 or image_input.shape[2] != 3:
+                raise ValueError("Image array must be a 3-channel color image")
+            image = image_input
+        elif isinstance(image_input, Image.Image):
+            
+            print("Convert PIL Image to numpy array in BGR format")
+            image_array = np.array(image_input)
+            image = cv2.cvtColor(image_array, cv2.COLOR_RGB2BGR)
+        else:
+            raise TypeError("Image input must be either a file path, numpy array, or PIL Image")
         
+        print(image.__class__)
         # Handle background color detection
         if background_color is None:
             print("Detecting background color...")
@@ -213,6 +286,8 @@ def refined_background_removal(image_path, background_color=None, edge_smoothing
         
         # Combine color and shadow masks
         combined_mask = (color_mask | shadow_mask)
+
+        
         
         # Invert mask (we want to keep the object, not the background)
         object_mask = cv2.bitwise_not(combined_mask)
@@ -221,11 +296,17 @@ def refined_background_removal(image_path, background_color=None, edge_smoothing
         if preserve_whites:
             print("Preserving white details...")
             object_mask = preserve_white_details(image, object_mask)
+
         
         # Apply edge smoothing
         if edge_smoothing > 0:
             print("Smoothing edges...")
             object_mask = smooth_edges(object_mask, edge_smoothing)
+
+        # Shrinking mask
+        print("Shrinking mask...")
+        object_mask = shrink_mask(object_mask, shrink_percent=0.5)
+        
         
         # Create output images
         alpha = object_mask
