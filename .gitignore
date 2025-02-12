@@ -33,7 +33,7 @@ venv/
 !package-lock.json
 /tests/co3d
 /datasets
-
+/processed_data
 #it's models
 *pt
 *fine_tuned_depth_estimation
