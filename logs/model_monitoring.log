@@ -2219,3 +2219,55 @@ TypeError: expected str, bytes or os.PathLike object, not NoneType
 2025-02-12 20:24:07,564 - werkzeug - INFO - 127.0.0.1 - - [12/Feb/2025 20:24:07] "POST /track-interaction/Chair HTTP/1.1" 200 -
 2025-02-12 20:24:37,251 - werkzeug - INFO - 127.0.0.1 - - [12/Feb/2025 20:24:37] "POST /track-interaction/Chair HTTP/1.1" 200 -
 2025-02-12 20:25:07,567 - werkzeug - INFO - 127.0.0.1 - - [12/Feb/2025 20:25:07] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-13 01:05:04,670 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.64:8000
+2025-02-13 01:05:04,671 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-02-13 01:05:31,507 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:05:31] "[32mGET / HTTP/1.1[0m" 302 -
+2025-02-13 01:05:31,766 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:05:31] "GET /auth/login?next=/ HTTP/1.1" 200 -
+2025-02-13 01:05:31,916 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:05:31] "[36mGET /static/css/auth.css HTTP/1.1[0m" 304 -
+2025-02-13 01:05:34,496 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:05:34] "[32mPOST /auth/login HTTP/1.1[0m" 302 -
+2025-02-13 01:05:38,959 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:05:38] "[32mGET /auth/login/callback?code=4/0ASVgi3JQ3tCEd-jrMoIYjKmgtNC31X0QslagVI887B0WTK_G1HMqK4d1KC7QB3PbD0rrug&scope=email+profile+https://www.googleapis.com/auth/userinfo.email+https://www.googleapis.com/auth/userinfo.profile+openid&authuser=1&prompt=none HTTP/1.1[0m" 302 -
+2025-02-13 01:05:39,019 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:05:39] "GET / HTTP/1.1" 200 -
+2025-02-13 01:05:39,435 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:05:39] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-13 01:06:10,552 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:06:10] "GET /folder/Chair HTTP/1.1" 200 -
+2025-02-13 01:06:10,937 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:06:10] "[36mGET /static/css/folder.css HTTP/1.1[0m" 304 -
+2025-02-13 01:06:11,170 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:06:11] "[36mGET /static/uploads/Chair/front.jpg HTTP/1.1[0m" 304 -
+2025-02-13 01:06:11,181 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:06:11] "[36mGET /static/uploads/Chair/back.jpg HTTP/1.1[0m" 304 -
+2025-02-13 01:06:11,223 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:06:11] "GET /get-s3-data/Chair HTTP/1.1" 200 -
+2025-02-13 01:06:11,369 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:06:11] "[36mGET /static/uploads/Chair/top.jpg HTTP/1.1[0m" 304 -
+2025-02-13 01:06:11,832 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:06:11] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-13 01:06:12,188 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:06:12] "GET /get_feedback/Chair HTTP/1.1" 200 -
+2025-02-13 01:06:26,643 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:06:26] "GET /process/Chair HTTP/1.1" 200 -
+2025-02-13 01:06:28,222 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:06:28] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-13 01:06:41,591 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:06:41] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-13 01:07:05,612 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:07:05] "GET / HTTP/1.1" 200 -
+2025-02-13 01:07:05,659 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:07:05] "POST /track-interaction/Chair HTTP/1.1" 200 -
+2025-02-13 01:07:05,867 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:07:05] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-13 01:07:07,150 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:07:07] "GET /folder/green-tshirt HTTP/1.1" 200 -
+2025-02-13 01:07:07,548 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:07:07] "[36mGET /static/css/folder.css HTTP/1.1[0m" 304 -
+2025-02-13 01:07:07,550 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:07:07] "GET /static/uploads/green-tshirt/back.png HTTP/1.1" 200 -
+2025-02-13 01:07:07,553 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:07:07] "GET /static/uploads/green-tshirt/front.png HTTP/1.1" 200 -
+2025-02-13 01:07:08,322 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:07:08] "GET /get-s3-data/green-tshirt HTTP/1.1" 200 -
+2025-02-13 01:07:08,360 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:07:08] "GET /static/uploads/green-tshirt/top.png HTTP/1.1" 200 -
+2025-02-13 01:07:13,326 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:07:13] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-13 01:07:14,623 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:07:14] "GET /get_feedback/green-tshirt HTTP/1.1" 200 -
+2025-02-13 01:07:38,235 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:07:38] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-13 01:07:55,083 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:07:55] "GET /process/green-tshirt HTTP/1.1" 200 -
+2025-02-13 01:08:01,664 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:08:01] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-13 01:08:08,780 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:08:08] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-13 01:08:38,035 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:08:38] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-13 01:09:09,449 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:09:09] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-13 01:09:38,030 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:09:38] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-13 01:10:08,214 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:10:08] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-13 01:10:38,523 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:10:38] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-13 01:11:09,215 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:11:09] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-13 01:12:09,527 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:12:09] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-13 01:12:42,321 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:12:42] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-13 01:13:08,427 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:13:08] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-13 01:13:30,040 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:13:30] "GET / HTTP/1.1" 200 -
+2025-02-13 01:13:30,085 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:13:30] "POST /track-interaction/green-tshirt HTTP/1.1" 200 -
+2025-02-13 01:13:30,287 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 01:13:30] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -
+2025-02-13 05:13:15,968 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 05:13:15] "GET / HTTP/1.1" 200 -
+2025-02-13 05:13:16,062 - werkzeug - INFO - 127.0.0.1 - - [13/Feb/2025 05:13:16] "[36mGET /static/css/index.css HTTP/1.1[0m" 304 -

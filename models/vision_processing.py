@@ -291,73 +291,59 @@ def create_object_mesh(image_input, depth_threshold=0.0, target_size=256):
         print(f"Error during mesh creation: {str(e)}")
         return None
 
-
-def combine_views_with_gap_filling(combined_fig, point_spacing=5):
+def combine_views_with_gap_filling(combined_fig, point_spacing=2):
     """
-    Creates a complete fill from surface to center with configurable point spacing.
-    
-    Parameters:
-    -----------
-    combined_fig : plotly.graph_objects.Figure
-        The combined mesh containing front and back views
-    point_spacing : float, default=5
-        Distance between consecutive points during filling.
-        Higher values create more space between points.
+    Creates straight parallel lines with consistent, vibrant colors.
     """
     def create_fade_color(original_color, fade_factor):
-        """Creates a smoothly faded color with gamma correction for natural appearance."""
+        """
+        Creates a color transition that maintains vibrancy.
+        Instead of fading to black, we keep colors bright but adjust their intensity.
+        """
         original_color = np.array(original_color, dtype=float)
-        fade_factor = np.clip(fade_factor, 0, 1)
         
-        # Apply gamma correction for natural color fading
+        # Ensure fade factor never goes below 0.3 to maintain color visibility
+        fade_factor = max(0.3, fade_factor)
+        
+        # Apply gamma correction for natural color appearance
         gamma = 2.2
         color_linear = (original_color / 255.0) ** gamma
+        
+        # Calculate faded color while maintaining vibrancy
         faded_linear = color_linear * fade_factor
         faded_color = 255.0 * (faded_linear ** (1.0/gamma))
         
         return np.clip(faded_color, 0, 255).astype(np.uint8)
 
-    def fill_from_surface(surface_points, surface_colors, is_front):
+    def fill_straight(points, colors, is_front):
         """
-        Creates filling points from surface to center with dynamic point count.
-        Points are spaced according to point_spacing parameter.
+        Creates straight lines from points toward center with vibrant colors.
         """
         filled_points = []
         filled_colors = []
         
-        for point, color in zip(surface_points, surface_colors):
-            current_z = point[2]
-            target_z = 0.5  # Center point
-            
+        center_z = 0.5  # Center point
+        
+        for point, color in zip(points, colors):
             # Calculate distance to center
-            z_distance = abs(target_z - current_z)
+            z_distance = abs(center_z - point[2])
             
-            # Calculate number of points needed based on distance and spacing
-            # Add 1 to ensure we always have at least one point
+            # Calculate number of points needed
             num_points = max(2, int(z_distance / (point_spacing * 0.01)) + 1)
             
             # Create sequence of points
-            z_values = np.linspace(current_z, target_z, num_points)
-            
-            # For each point along the path to center
-            for i, z in enumerate(z_values):
-                # Calculate progress (0 at surface, 1 at center)
+            for i in range(num_points):
                 progress = i / (num_points - 1)
                 
                 # Create new point
                 new_point = point.copy()
-                new_point[2] = z
                 
-                # Move x coordinate toward center with smooth transition
-                if is_front:
-                    # Front view points move backward toward center
-                    new_point[0] = point[0] - progress * (point[0] - split_x)
-                else:
-                    # Back view points move forward toward center
-                    new_point[0] = point[0] + progress * (split_x - point[0])
+                # Only modify z coordinate
+                new_point[2] = point[2] + progress * (center_z - point[2])
                 
-                # Calculate color fade based on distance from surface
-                fade_factor = 1.0 - progress
+                # Calculate color with maintained vibrancy
+                # Use a gentler fade that never goes too dark
+                fade_factor = 1.0 - (progress * 0.5)  # Only fade to 50% intensity
                 faded_color = create_fade_color(color, fade_factor)
                 
                 filled_points.append(new_point)
@@ -365,7 +351,7 @@ def combine_views_with_gap_filling(combined_fig, point_spacing=5):
         
         if filled_points:
             return np.array(filled_points), np.array(filled_colors)
-        return [], []
+        return np.array([]), np.array([])
 
     # Extract points and colors
     points = np.column_stack([
@@ -376,54 +362,46 @@ def combine_views_with_gap_filling(combined_fig, point_spacing=5):
     colors = np.array([list(map(int, c.strip('rgb()').split(','))) 
                       for c in combined_fig.data[0].marker.color])
     
-    # Find the center splitting plane
+    # Split front and back
     split_x = np.median(points[:, 0])
-    
-    # Separate into front and back views
     front_mask = points[:, 0] > split_x
     back_mask = ~front_mask
     
-    print("\nSurface Analysis:")
-    print(f"Front surface points: {np.sum(front_mask)}")
-    print(f"Back surface points: {np.sum(back_mask)}")
-    
-    # Fill from both surfaces toward center
-    front_filled_points, front_filled_colors = fill_from_surface(
+    # Fill from both surfaces
+    front_filled_points, front_filled_colors = fill_straight(
         points[front_mask], colors[front_mask], True)
-    back_filled_points, back_filled_colors = fill_from_surface(
+    back_filled_points, back_filled_colors = fill_straight(
         points[back_mask], colors[back_mask], False)
     
-    print("\nFill Results:")
-    print(f"Added {len(front_filled_points)} front fill points")
-    print(f"Added {len(back_filled_points)} back fill points")
+    print(f"\nFill Results:")
+    print(f"Front fill points: {len(front_filled_points)}")
+    print(f"Back fill points: {len(back_filled_points)}")
     
     # Combine all points
     all_points = np.vstack([
-        points,  # Original surface points
+        points,  # Original points
         front_filled_points,
         back_filled_points
     ])
-    
     all_colors = np.vstack([
-        colors,  # Original surface colors
+        colors,  # Original colors
         front_filled_colors,
         back_filled_colors
     ])
     
-    # Create visualization with updated point size
+    # Create visualization
     filled_fig = go.Figure(data=[go.Scatter3d(
         x=all_points[:, 0],
         y=all_points[:, 1],
         z=all_points[:, 2],
         mode='markers',
         marker=dict(
-            size=5,  # Fixed point size of 5
+            size=5,
             color=[f'rgb({r},{g},{b})' for r,g,b in all_colors],
             opacity=combined_fig.data[0].marker.opacity
         )
     )])
     
-    # Copy layout settings
     filled_fig.update_layout(combined_fig.layout)
     
     return filled_fig
