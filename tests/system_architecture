@@ -1,0 +1,57 @@
+// 3D Reconstruction System Architecture
+digraph {
+	rankdir=TB
+	node [fillcolor=lightblue shape=box style="rounded,filled"]
+	subgraph cluster_input {
+		label="Input Layer" style=rounded
+		front_view [label="Front View Image"]
+		back_view [label="Back View Image
+(Optional)"]
+		top_view [label="Top View Image
+(Optional)"]
+		config [label="Configuration
+Parameters"]
+	}
+	subgraph cluster_preprocess {
+		label="Preprocessing Module"
+		normalize [label="Image Normalization"]
+		background [label="Background Removal"]
+		color [label="Color Processing"]
+	}
+	subgraph cluster_core {
+		label="3D Reconstruction Core"
+		depth_est [label="Depth Estimation
+(Depth Anything V2)"]
+		point_cloud [label="Point Cloud Processing"]
+		view_integ [label="View Integration"]
+	}
+	subgraph cluster_optimize {
+		label="Optimization Layer"
+		perf_mgmt [label="Performance Management"]
+		quality [label="Quality Control"]
+	}
+	subgraph cluster_web {
+		label="Web Application Interface"
+		upload [label="File Upload Management"]
+		visualize [label="Visualization Component"]
+	}
+	front_view -> normalize
+	back_view -> normalize
+	top_view -> normalize
+	config -> normalize
+	normalize -> background
+	background -> color
+	color -> depth_est
+	depth_est -> point_cloud
+	point_cloud -> view_integ
+	view_integ -> perf_mgmt
+	perf_mgmt -> quality
+	quality -> upload
+	upload -> visualize
+	node [fillcolor=lightgrey shape=note]
+	metrics [label="Key Metrics:
+- Color Consistency: 94.6%
+- Spatial Uniformity: 55.4%
+- Processing Time: 19.16s"]
+	quality -> metrics [style=dashed]
+}
