@@ -276,7 +276,7 @@ def create_object_mesh(image_input, depth_threshold=0.0, target_size=256):
                     z=z_filtered,
                     mode="markers",
                     marker=dict(
-                        size=2,
+                        size=3,
                         color=[f"rgb({r},{g},{b})" for r, g, b in colors_filtered],
                         opacity=1,
                     ),
@@ -623,9 +623,9 @@ def process_orthogonal_views(
 
         # Combine meshes
         combined_mesh = combine_front_back_meshes(front_fig, back_fig)
-        # combined_mesh.show()
         filled_mesh = combine_views_with_gap_filling(
-            combined_mesh
+            combined_mesh,
+            point_spacing=3
         )
         # filled_mesh.show()
         return filled_mesh.to_dict()
